@@ -1,0 +1,332 @@
+// AssetFi UAE - Prisma Schema (SQLite Compatible)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USERS & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String    @map("password_hash")
+  name             String
+  role             String    // SME, INVESTOR, UNDERWRITER, ADMIN
+  companyId        String?   @map("company_id")
+  company          Company?  @relation(fields: [companyId], references: [id])
+  stellarPublicKey String?   @map("stellar_public_key")
+  
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  isActive         Boolean   @default(true) @map("is_active")
+  lastLoginAt      DateTime? @map("last_login_at")
+  
+  applications     Application[]
+  investments      Investment[]
+  auditLogs        AuditLog[]
+  underwritingReviews UnderwritingReview[]
+
+  @@index([email])
+  @@index([companyId])
+  @@map("users")
+}
+
+// ============================================================================
+// COMPANIES (SME PROFILES)
+// ============================================================================
+
+model Company {
+  id              String    @id @default(cuid())
+  tradeLicenseNo  String    @unique @map("trade_license_no")
+  legalName       String    @map("legal_name")
+  tradingName     String?   @map("trading_name")
+  emirate         String
+  industry        String
+  establishedDate DateTime  @map("established_date")
+  
+  monthlyRevenue  Float?    @map("monthly_revenue")
+  monthlyExpenses Float?    @map("monthly_expenses")
+  liabilities     Float?
+  
+  contactEmail    String    @map("contact_email")
+  contactPhone    String    @map("contact_phone")
+  address         String
+  
+  verifiedAt      DateTime? @map("verified_at")
+  verifiedBy      String?   @map("verified_by")
+  
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  isActive        Boolean   @default(true) @map("is_active")
+  
+  users           User[]
+  applications    Application[]
+
+  @@index([tradeLicenseNo])
+  @@map("companies")
+}
+
+// ============================================================================
+// APPLICATIONS (FINANCING REQUESTS)
+// ============================================================================
+
+model Application {
+  id               String   @id @default(cuid())
+  applicationNo    String   @unique @map("application_no")
+  companyId        String   @map("company_id")
+  company          Company  @relation(fields: [companyId], references: [id])
+  submittedBy      String   @map("submitted_by")
+  submitter        User     @relation(fields: [submittedBy], references: [id])
+  
+  assetType        String   @map("asset_type") // TRUCK, DELIVERY_VAN, etc.
+  assetDescription String   @map("asset_description")
+  assetValue       Float    @map("asset_value")
+  smeContribution  Float    @map("sme_contribution")
+  financeAmount    Float    @map("finance_amount")
+  requestedTerm    Int      @map("requested_term")
+  
+  status           String   // DRAFT, SUBMITTED, UNDER_REVIEW, etc.
+  
+  companyRiskScore Int?     @map("company_risk_score")
+  assetRiskScore   Int?     @map("asset_risk_score")
+  dealRiskScore    Int?     @map("deal_risk_score")
+  riskTier         String?  @map("risk_tier") // TIER_A, TIER_B, TIER_C, TIER_D
+  
+  approvedAt       DateTime? @map("approved_at")
+  approvedBy       String?   @map("approved_by")
+  rejectedAt       DateTime? @map("rejected_at")
+  rejectionReason  String?   @map("rejection_reason")
+  
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  
+  documents        Document[]
+  reviews          UnderwritingReview[]
+  facility         Facility?
+
+  @@index([applicationNo])
+  @@index([status])
+  @@map("applications")
+}
+
+// ============================================================================
+// DOCUMENTS
+// ============================================================================
+
+model Document {
+  id            String   @id @default(cuid())
+  applicationId String   @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id])
+  
+  documentType  String   @map("document_type") // TRADE_LICENSE, EMIRATES_ID, etc.
+  fileName      String   @map("file_name")
+  fileSize      Int      @map("file_size")
+  mimeType      String   @map("mime_type")
+  storagePath   String   @map("storage_path")
+  documentHash  String   @map("document_hash")
+  
+  uploadedAt    DateTime @default(now()) @map("uploaded_at")
+  uploadedBy    String   @map("uploaded_by")
+  
+  verifiedAt    DateTime? @map("verified_at")
+  verifiedBy    String?   @map("verified_by")
+
+  @@map("documents")
+}
+
+// ============================================================================
+// UNDERWRITING REVIEWS
+// ============================================================================
+
+model UnderwritingReview {
+  id               String   @id @default(cuid())
+  applicationId    String   @map("application_id")
+  application      Application @relation(fields: [applicationId], references: [id])
+  reviewedBy       String   @map("reviewed_by")
+  reviewer         User     @relation(fields: [reviewedBy], references: [id])
+  
+  decision         String   // APPROVED, CONDITIONALLY_APPROVED, REJECTED, etc.
+  comments         String?
+  conditions       String?
+  
+  recommendedTier  String?  @map("recommended_tier")
+  recommendedTerms String?  @map("recommended_terms")
+  
+  reviewedAt       DateTime @default(now()) @map("reviewed_at")
+
+  @@map("underwriting_reviews")
+}
+
+// ============================================================================
+// FACILITIES (APPROVED FINANCING STRUCTURES)
+// ============================================================================
+
+model Facility {
+  id             String   @id @default(cuid())
+  facilityNo     String   @unique @map("facility_no")
+  applicationId  String   @unique @map("application_id")
+  application    Application @relation(fields: [applicationId], references: [id])
+  
+  poolId         String?  @map("pool_id")
+  pool           Pool?    @relation(fields: [poolId], references: [id])
+  
+  financeAmount  Float    @map("finance_amount")
+  term           Int
+  monthlyPayment Float    @map("monthly_payment")
+  
+  status         String   // PENDING_FUNDING, ACTIVE, CURRENT, etc.
+  
+  stellarTxHash  String?  @map("stellar_tx_hash")
+  stellarAssetId String?  @map("stellar_asset_id")
+  
+  activatedAt    DateTime? @map("activated_at")
+  maturityDate   DateTime? @map("maturity_date")
+  closedAt       DateTime? @map("closed_at")
+  
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  
+  payments       Payment[]
+
+  @@index([facilityNo])
+  @@map("facilities")
+}
+
+// ============================================================================
+// POOLS (INVESTOR VEHICLES)
+// ============================================================================
+
+model Pool {
+  id            String   @id @default(cuid())
+  poolNo        String   @unique @map("pool_no")
+  poolName      String   @map("pool_name")
+  
+  targetAmount  Float    @map("target_amount")
+  raisedAmount  Float    @default(0) @map("raised_amount")
+  
+  minInvestment Float    @map("min_investment")
+  targetReturn  Float    @map("target_return")
+  
+  status        String   // DRAFT, OPEN, FUNDING, etc.
+  assetFocus    String   @map("asset_focus")
+  
+  stellarTxHash String?  @map("stellar_tx_hash")
+  stellarPoolId String?  @map("stellar_pool_id")
+  
+  openedAt      DateTime? @map("opened_at")
+  closedAt      DateTime? @map("closed_at")
+  
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  facilities    Facility[]
+  investments   Investment[]
+
+  @@index([poolNo])
+  @@map("pools")
+}
+
+// ============================================================================
+// INVESTMENTS (INVESTOR POSITIONS)
+// ============================================================================
+
+model Investment {
+  id            String   @id @default(cuid())
+  investorId    String   @map("investor_id")
+  investor      User     @relation(fields: [investorId], references: [id])
+  poolId        String   @map("pool_id")
+  pool          Pool     @relation(fields: [poolId], references: [id])
+  
+  amount        Float
+  shares        Float
+  
+  status        String   // PENDING, ACTIVE, REDEEMED, CANCELLED
+  
+  stellarTxHash String?  @map("stellar_tx_hash")
+  
+  subscribedAt  DateTime @default(now()) @map("subscribed_at")
+  activatedAt   DateTime? @map("activated_at")
+  
+  distributions Distribution[]
+
+  @@index([investorId, poolId])
+  @@map("investments")
+}
+
+// ============================================================================
+// PAYMENTS (LEASE PAYMENTS)
+// ============================================================================
+
+model Payment {
+  id            String   @id @default(cuid())
+  facilityId    String   @map("facility_id")
+  facility      Facility @relation(fields: [facilityId], references: [id])
+  
+  paymentNo     Int      @map("payment_no")
+  dueDate       DateTime @map("due_date")
+  amount        Float
+  
+  paidAt        DateTime? @map("paid_at")
+  paidAmount    Float?    @map("paid_amount")
+  
+  status        String   // SCHEDULED, PENDING, PAID, LATE, MISSED
+  
+  stellarTxHash String?  @map("stellar_tx_hash")
+  
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  distributions Distribution[]
+
+  @@unique([facilityId, paymentNo])
+  @@map("payments")
+}
+
+// ============================================================================
+// DISTRIBUTIONS (INVESTOR PAYOUTS)
+// ============================================================================
+
+model Distribution {
+  id            String   @id @default(cuid())
+  investmentId  String   @map("investment_id")
+  investment    Investment @relation(fields: [investmentId], references: [id])
+  paymentId     String   @map("payment_id")
+  payment       Payment  @relation(fields: [paymentId], references: [id])
+  
+  amount        Float
+  
+  stellarTxHash String?  @map("stellar_tx_hash")
+  
+  distributedAt DateTime @default(now()) @map("distributed_at")
+
+  @@map("distributions")
+}
+
+// ============================================================================
+// AUDIT LOGS
+// ============================================================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  changes    String?  // JSON stored as string
+  
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
+}

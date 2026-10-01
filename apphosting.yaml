@@ -1,0 +1,44 @@
+# Firebase App Hosting configuration for AssetFi UAE
+# Requires Firebase Blaze plan for deployment
+
+runConfig:
+  # CPU allocation (1 = 1 vCPU)
+  cpu: 1
+  # Memory in MiB
+  memoryMiB: 1024
+  # Minimum instances (0 = scale to zero when idle)
+  minInstances: 0
+  # Maximum instances for auto-scaling
+  maxInstances: 10
+  # Concurrency per instance (default: 80 for Node.js)
+  # concurrency: 80
+
+env:
+  # Database Configuration
+  # IMPORTANT: SQLite is NOT durable on Cloud Run - use PostgreSQL for production
+  # Example: postgresql://user:password@host:5432/database
+  - variable: DATABASE_URL
+    # Use 'secret' for sensitive data stored in Google Secret Manager
+    # availability: BUILD
+    
+  # NextAuth Configuration
+  - variable: NEXTAUTH_SECRET
+    secret: NEXTAUTH_SECRET
+    # Generate with: openssl rand -base64 32
+    
+  - variable: NEXTAUTH_URL
+    value: https://assetfi-web-assetfi-uae.app
+    # Update with your actual App Hosting URL after first deployment
+    
+  # Blockchain API Configuration
+  - variable: ALCHEMY_API_KEY
+    secret: ALCHEMY_API_KEY
+    # Obtain from https://dashboard.alchemy.com/
+    
+  - variable: STELLAR_RPC_URL
+    value: https://soroban-testnet.stellar.org
+    # Update to mainnet URL for production: https://soroban-rpc.stellar.org
+    
+  # Additional environment variables can be added here
+  # - variable: EXAMPLE_VAR
+  #   value: example_value

@@ -20,6 +20,7 @@ interface PlatformConfig {
 
 export default function AdminSetupPage() {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [config, setConfig] = useState<PlatformConfig>({
     stellarNetwork: 'testnet',
     stellarHorizonUrl: 'https://horizon-testnet.stellar.org',

@@ -24,6 +24,7 @@ interface Pool {
 
 export default function PoolsManagementPage() {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [pools, setPools] = useState<Pool[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);

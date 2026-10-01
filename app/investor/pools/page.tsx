@@ -23,6 +23,7 @@ interface Pool {
 
 export default function PoolsBrowsePage() {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [pools, setPools] = useState<Pool[]>([]);
   const [loading, setLoading] = useState(true);
 

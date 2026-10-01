@@ -26,6 +26,7 @@ interface Pool {
 export default function PoolDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [pool, setPool] = useState<Pool | null>(null);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);

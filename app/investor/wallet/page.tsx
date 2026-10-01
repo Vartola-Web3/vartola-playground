@@ -10,6 +10,7 @@ import { formatCurrency } from '@/lib/formatters';
 
 export default function WalletFaucetPage() {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState(false);

@@ -40,6 +40,7 @@ interface Application {
 
 export default function ApplicationDetailPage({ params }: { params: { id: string } }) {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [application, setApplication] = useState<Application | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

@@ -22,6 +22,7 @@ interface AuditLog {
 
 export default function AuditLogPage() {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('ALL');

@@ -12,6 +12,7 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 export default function NewApplicationPage() {
   const router = useRouter();
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);

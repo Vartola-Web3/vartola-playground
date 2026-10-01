@@ -10,6 +10,7 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 
 export default function AIAssistPage() {
   const { data: session } = useSession();
+  if (!session) return <div>Loading...</div>;
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
 

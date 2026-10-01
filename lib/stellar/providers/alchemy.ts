@@ -1,6 +1,6 @@
-import { Server } from '@stellar/stellar-sdk/lib/horizon';
-import { Server as SorobanRpcServer } from '@stellar/stellar-sdk/lib/soroban';
 import {
+  Horizon,
+  rpc,
   Transaction,
   FeeBumpTransaction,
 } from '@stellar/stellar-sdk';
@@ -15,8 +15,8 @@ import type { StellarProvider, StellarProviderConfig } from './base';
  * Documentation: https://docs.alchemy.com/reference/stellar-api-quickstart
  */
 export class AlchemyStellarProvider implements StellarProvider {
-  private horizonServer: Server;
-  private sorobanServer: SorobanRpcServer;
+  private horizonServer: Horizon.Server;
+  private sorobanServer: rpc.Server;
   private config: StellarProviderConfig;
   private apiKey: string;
 
@@ -37,22 +37,22 @@ export class AlchemyStellarProvider implements StellarProvider {
       ? config.sorobanUrl
       : `https://stellar-${config.network}.g.alchemy.com/v2/${apiKey}`;
 
-    this.horizonServer = new Server(alchemyHorizonUrl, {
+    this.horizonServer = new Horizon.Server(alchemyHorizonUrl, {
       allowHttp: false,
     });
 
-    this.sorobanServer = new SorobanRpcServer(alchemySorobanUrl, {
+    this.sorobanServer = new rpc.Server(alchemySorobanUrl, {
       allowHttp: false,
     });
 
     console.log('[Alchemy] Stellar provider initialized for', config.network);
   }
 
-  getHorizonServer(): Server {
+  getHorizonServer(): Horizon.Server {
     return this.horizonServer;
   }
 
-  getSorobanServer(): SorobanRpcServer {
+  getSorobanServer(): rpc.Server {
     return this.sorobanServer;
   }
 

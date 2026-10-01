@@ -3,6 +3,37 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      {/* Navigation */}
+      <nav className="border-b border-white/10 bg-black/20 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="text-2xl font-bold text-white">
+              AssetFi UAE 🇦🇪
+            </Link>
+            <div className="flex gap-6 text-sm">
+              <Link href="/" className="text-white font-semibold">
+                Home
+              </Link>
+              <Link href="/whitepaper" className="text-blue-200 hover:text-white transition-colors">
+                Whitepaper
+              </Link>
+              <Link href="/pitch" className="text-blue-200 hover:text-white transition-colors">
+                Pitch Deck
+              </Link>
+              <Link href="/documents" className="text-blue-200 hover:text-white transition-colors">
+                Documents
+              </Link>
+              <Link href="/about" className="text-blue-200 hover:text-white transition-colors">
+                About
+              </Link>
+              <Link href="/login" className="text-blue-200 hover:text-white transition-colors">
+                Login
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <header className="text-center mb-16">
@@ -11,6 +42,9 @@ export default function Home() {
           </h1>
           <p className="text-xl text-blue-200">
             Tokenized Lease-to-Own Asset Finance on Stellar
+          </p>
+          <p className="text-lg text-blue-300 mt-2" dir="rtl" lang="ar">
+            تمويل الأصول المرمز على شبكة Stellar
           </p>
           <div className="mt-4 inline-block px-4 py-2 bg-yellow-500/20 rounded-lg border border-yellow-500/50">
             <span className="text-yellow-300 font-semibold">⚠️ Testnet Demo Only - No Real Value</span>
@@ -68,22 +102,67 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Roadmap Summary */}
+          <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg p-6 mb-8 border border-green-500/30">
+            <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Development Status</h3>
+            <div className="grid md:grid-cols-3 gap-4 text-sm text-blue-100">
+              <div className="text-center">
+                <div className="text-3xl mb-2">✅</div>
+                <p className="font-semibold text-white">Phase 1: Complete</p>
+                <p className="text-xs mt-1">MVP portals, risk engine, authentication</p>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl mb-2">✅</div>
+                <p className="font-semibold text-white">Phase 2: Complete</p>
+                <p className="text-xs mt-1">5 Soroban contract stubs (simulated)</p>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl mb-2">✅</div>
+                <p className="font-semibold text-white">Phase 3: Complete</p>
+                <p className="text-xs mt-1">Rule-based risk framework</p>
+              </div>
+            </div>
+            <p className="text-center text-blue-300 text-xs mt-4">
+              Next: Real Rust Soroban deployment, ML models, compliance • Mainnet requires regulatory approval
+            </p>
+          </div>
+
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center mb-8">
             <Link
               href="/login"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
             >
-              Launch Demo (Coming Soon)
+              🎬 Launch Live Demo
             </Link>
-            <a
-              href="https://github.com"
-              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/whitepaper"
+              className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
             >
-              View Documentation
-            </a>
+              📄 Read Whitepaper
+            </Link>
+            <Link
+              href="/pitch"
+              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
+            >
+              📊 View Pitch Deck
+            </Link>
+          </div>
+
+          {/* Quick Links */}
+          <div className="grid md:grid-cols-3 gap-4 mb-8">
+            <Link href="/about" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
+              <h4 className="font-semibold text-white mb-2">ℹ️ About AssetFi</h4>
+              <p className="text-sm text-blue-200">Mission, vision, and current status</p>
+            </Link>
+            <Link href="/documents" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
+              <h4 className="font-semibold text-white mb-2">📋 Required Documents</h4>
+              <p className="text-sm text-blue-200">KYC checklist for SMEs & investors</p>
+            </Link>
+            <Link href="/pitch#timeline" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
+              <h4 className="font-semibold text-white mb-2">🗺️ Full Roadmap</h4>
+              <p className="text-sm text-blue-200">Detailed phase timeline & next steps</p>
+            </Link>
           </div>
 
           {/* Tech Stack */}

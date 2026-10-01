@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDateTime } from '@/lib/formatters';
 
@@ -27,7 +27,7 @@ export default async function UsersListPage() {
   };
 
   return (
-    <DashboardLayout user={session.user}>
+    <DashboardLayout role={session.user.role}>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">User Management</h1>

@@ -1,63 +1,181 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
 import { auth } from '@/lib/auth/auth';
 
+import { prisma } from '@/lib/db';
+import { calculateRisk } from '@/lib/risk-engine';
+import { createFacilityOnStellar } from '@/lib/stellar/facility-operations';
+
 export async function POST(request: NextRequest) {
-  const session = await auth();
-
-  if (!session?.user || session.user.role !== 'UNDERWRITER') {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
   try {
-    const body = await request.json();
-    const { applicationId, underwriterId, decision, comments, conditions, riskTier, riskScores } = body;
+    const session = await auth();
+    if (!session || session.user.role !== 'UNDERWRITER') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    // Create review record
-    await prisma.underwritingReview.create({
+    const body = await request.json();
+    const { applicationId, decision, comments, conditions } = body;
+
+    const application = await prisma.application.findUnique({
+      where: { id: applicationId },
+      include: { company: true },
+    });
+
+    if (!application) {
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+
+    const riskInput = {
+      company: {
+        establishedDate: application.company.establishedDate,
+        monthlyRevenue: application.company.monthlyRevenue || 0,
+        monthlyExpenses: application.company.monthlyExpenses || 0,
+        liabilities: application.company.liabilities || 0,
+        industry: application.company.industry,
+      },
+      asset: {
+        assetType: application.assetType as 'TRUCK' | 'DELIVERY_VAN' | 'REFRIGERATED_VEHICLE' | 'TRAILER' | 'FORKLIFT' | 'OTHER',
+        assetDescription: application.assetDescription,
+        assetValue: application.assetValue,
+      },
+      deal: {
+        financeAmount: application.financeAmount,
+        assetValue: application.assetValue,
+        requestedTerm: application.requestedTerm,
+      },
+      application: {
+        documents: [],
+      },
+    };
+
+    const riskResult = calculateRisk(riskInput);
+
+    const review = await prisma.underwritingReview.create({
       data: {
         applicationId,
-        reviewedBy: underwriterId,
+        reviewedBy: session.user.id,
         decision,
         comments,
         conditions,
-        recommendedTier: riskTier,
+        recommendedTier: riskResult.riskTier,
       },
     });
 
-    // Update application status and risk scores
     const newStatus =
-      decision === 'APPROVED' || decision === 'CONDITIONALLY_APPROVED' ? 'APPROVED' : 'REJECTED';
+      decision === 'APPROVED'
+        ? 'APPROVED'
+        : decision === 'CONDITIONALLY_APPROVED'
+          ? 'CONDITIONALLY_APPROVED'
+          : 'REJECTED';
 
     await prisma.application.update({
       where: { id: applicationId },
       data: {
         status: newStatus,
-        companyRiskScore: riskScores.companyRiskScore,
-        assetRiskScore: riskScores.assetRiskScore,
-        dealRiskScore: riskScores.dealRiskScore,
-        riskTier,
-        approvedAt: decision === 'APPROVED' || decision === 'CONDITIONALLY_APPROVED' ? new Date() : null,
-        approvedBy: decision === 'APPROVED' || decision === 'CONDITIONALLY_APPROVED' ? underwriterId : null,
+        companyRiskScore: riskResult.companyRiskScore,
+        assetRiskScore: riskResult.assetRiskScore,
+        dealRiskScore: riskResult.dealRiskScore,
+        riskTier: riskResult.riskTier,
+        approvedAt: decision === 'APPROVED' ? new Date() : null,
+        approvedBy: decision === 'APPROVED' ? session.user.id : null,
         rejectedAt: decision === 'REJECTED' ? new Date() : null,
         rejectionReason: decision === 'REJECTED' ? comments : null,
       },
     });
 
-    // Create audit log
+    if (decision === 'APPROVED') {
+      const facilityNo = `FAC-${new Date().getFullYear()}-${String(await prisma.facility.count() + 1).padStart(4, '0')}`;
+      
+      const monthlyPayment = calculateMonthlyPayment(
+        application.financeAmount,
+        application.requestedTerm,
+        riskResult.tierParameters.indicativeRate.min / 100
+      );
+
+      const stellarResult = await createFacilityOnStellar({
+        facilityNo,
+        assetValue: application.assetValue,
+        financeAmount: application.financeAmount,
+        term: application.requestedTerm,
+        companyId: application.companyId,
+      });
+
+      const openPool = await prisma.pool.findFirst({
+        where: { status: 'OPEN' },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      const facility = await prisma.facility.create({
+        data: {
+          facilityNo,
+          applicationId: application.id,
+          poolId: openPool?.id,
+          financeAmount: application.financeAmount,
+          term: application.requestedTerm,
+          monthlyPayment,
+          status: 'ACTIVE',
+          stellarTxHash: stellarResult.txHash,
+          stellarAssetId: stellarResult.assetId,
+          activatedAt: new Date(),
+          maturityDate: new Date(Date.now() + application.requestedTerm * 30 * 24 * 60 * 60 * 1000),
+        },
+      });
+
+      for (let i = 1; i <= application.requestedTerm; i++) {
+        await prisma.payment.create({
+          data: {
+            facilityId: facility.id,
+            paymentNo: i,
+            dueDate: new Date(Date.now() + i * 30 * 24 * 60 * 60 * 1000),
+            amount: monthlyPayment,
+            status: 'SCHEDULED',
+          },
+        });
+      }
+
+      if (openPool) {
+        await prisma.pool.update({
+          where: { id: openPool.id },
+          data: {
+            raisedAmount: {
+              increment: application.financeAmount,
+            },
+          },
+        });
+      }
+    }
+
     await prisma.auditLog.create({
       data: {
-        userId: underwriterId,
-        action: `REVIEW_APPLICATION_${decision}`,
+        userId: session.user.id,
+        action: `APPLICATION_${decision}`,
         entityType: 'Application',
         entityId: applicationId,
-        changes: JSON.stringify({ decision, riskTier, ...riskScores }),
+        changes: JSON.stringify({
+          decision,
+          comments,
+          riskTier: riskResult.riskTier,
+          companyRiskScore: riskResult.companyRiskScore,
+          assetRiskScore: riskResult.assetRiskScore,
+          dealRiskScore: riskResult.dealRiskScore,
+        }),
       },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, review, riskResult });
   } catch (error) {
     console.error('Review submission error:', error);
-    return NextResponse.json({ error: 'Failed to submit review' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to submit review' },
+      { status: 500 }
+    );
   }
+}
+
+function calculateMonthlyPayment(principal: number, termMonths: number, annualRate: number): number {
+  const monthlyRate = annualRate / 12;
+  if (monthlyRate === 0) return principal / termMonths;
+  
+  const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / 
+    (Math.pow(1 + monthlyRate, termMonths) - 1);
+  return Math.round(payment * 100) / 100;
 }

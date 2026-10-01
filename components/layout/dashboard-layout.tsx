@@ -7,26 +7,19 @@ import { Button } from '@/components/ui/button';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  user: {
-    name: string;
-    email: string;
-    role: string;
-  };
+  role: string;
 }
 
-export function DashboardLayout({ children, user }: DashboardLayoutProps) {
+export default function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const pathname = usePathname();
-
-  const navigation = getNavigationForRole(user.role);
+  const navigation = getNavigationForRole(role);
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Testnet Banner */}
       <div className="bg-yellow-500 text-yellow-900 px-4 py-2 text-center text-sm font-semibold">
         ⚠️ TESTNET DEMO ONLY - NO REAL VALUE - SIMULATED TRANSACTIONS
       </div>
 
-      {/* Header */}
       <header className="bg-white border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -42,9 +35,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
                       key={item.href}
                       href={item.href}
                       className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        isActive
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'text-slate-600 hover:bg-slate-100'
+                        isActive ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
                       }`}
                     >
                       {item.label}
@@ -55,8 +46,7 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-sm font-medium text-slate-900">{user.name}</div>
-                <div className="text-xs text-slate-500">{user.role}</div>
+                <div className="text-xs text-slate-500">{role}</div>
               </div>
               <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/login' })}>
                 Sign Out
@@ -66,10 +56,8 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
 
-      {/* Footer */}
       <footer className="border-t border-slate-200 mt-12 py-6 text-center text-sm text-slate-500">
         AssetFi UAE - Institutional Asset Finance Platform | Testnet Demo
       </footer>
@@ -82,20 +70,17 @@ function getNavigationForRole(role: string) {
     case 'SME':
       return [
         { label: 'Dashboard', href: '/sme' },
-        { label: 'Applications', href: '/sme/applications' },
-        { label: 'Facilities', href: '/sme/facilities' },
-        { label: 'Profile', href: '/sme/profile' },
+        { label: 'New Application', href: '/sme/applications/new' },
       ];
     case 'INVESTOR':
       return [
         { label: 'Dashboard', href: '/investor' },
         { label: 'Pools', href: '/investor/pools' },
-        { label: 'Portfolio', href: '/investor/portfolio' },
+        { label: 'Wallet', href: '/investor/wallet' },
       ];
     case 'UNDERWRITER':
       return [
         { label: 'Dashboard', href: '/underwriter' },
-        { label: 'Queue', href: '/underwriter/queue' },
       ];
     case 'ADMIN':
       return [
@@ -103,6 +88,7 @@ function getNavigationForRole(role: string) {
         { label: 'Users', href: '/admin/users' },
         { label: 'Pools', href: '/admin/pools' },
         { label: 'Audit Log', href: '/admin/audit' },
+        { label: 'Setup', href: '/admin/setup' },
       ];
     default:
       return [];

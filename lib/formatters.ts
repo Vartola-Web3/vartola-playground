@@ -7,6 +7,8 @@ export function formatAED(amount: number): string {
   }).format(amount);
 }
 
+export const formatCurrency = formatAED;
+
 export function formatAEDWithDecimals(amount: number): string {
   return new Intl.NumberFormat('en-AE', {
     style: 'currency',

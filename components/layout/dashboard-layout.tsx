@@ -81,6 +81,7 @@ function getNavigationForRole(role: string) {
     case 'UNDERWRITER':
       return [
         { label: 'Dashboard', href: '/underwriter' },
+        { label: 'AI Assistant', href: '/underwriter/ai-assist' },
       ];
     case 'ADMIN':
       return [

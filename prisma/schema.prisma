@@ -330,3 +330,58 @@ model AuditLog {
   @@index([userId, createdAt])
   @@map("audit_logs")
 }
+
+// ============================================================================
+// STELLAR TRANSACTIONS (Phase 2 - Real Blockchain Integration)
+// ============================================================================
+
+model StellarTransaction {
+  id           String    @id @default(cuid())
+  
+  // Transaction type and target entity
+  type         String    // CREATE_FACILITY, RECORD_PAYMENT, DISTRIBUTE_PAYMENT, SUBSCRIBE_POOL, CREATE_WALLET, FUND_WALLET
+  entityType   String    @map("entity_type") // Facility, Payment, Investment, User
+  entityId     String    @map("entity_id")
+  
+  // Transaction status tracking
+  status       String    @default("PENDING") // PENDING, SUBMITTED, CONFIRMED, FAILED, CANCELLED
+  txHash       String?   @map("tx_hash") @unique // Stellar transaction hash (once submitted)
+  
+  // Payload and error information
+  payload      String    // JSON: transaction parameters and metadata
+  error        String?   // Error message if failed
+  
+  // Retry management
+  attempts     Int       @default(0)
+  maxAttempts  Int       @default(3) @map("max_attempts")
+  
+  // Timestamps
+  createdAt    DateTime  @default(now()) @map("created_at")
+  submittedAt  DateTime? @map("submitted_at")
+  confirmedAt  DateTime? @map("confirmed_at")
+  failedAt     DateTime? @map("failed_at")
+  cancelledAt  DateTime? @map("cancelled_at")
+  
+  // Indexes for efficient queries
+  @@index([status, createdAt])
+  @@index([entityType, entityId])
+  @@index([type, status])
+  @@map("stellar_transactions")
+}
+
+// ============================================================================
+// SYSTEM SETTINGS (Live Active Configuration)
+// ============================================================================
+
+model SystemSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   // JSON or plain text
+  category  String   // blockchain, general, feature_flags, etc.
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@index([category])
+  @@map("system_settings")
+}

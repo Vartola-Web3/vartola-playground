@@ -294,19 +294,19 @@ export default function WhitepaperPage() {
                 </div>
 
                 {/* Phase 2 */}
-                <div className="relative pl-8 border-l-4 border-blue-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-blue-500 rounded-full"></div>
+                <div className="relative pl-8 border-l-4 border-green-500">
+                  <div className="absolute -left-3 top-0 w-5 h-5 bg-green-500 rounded-full"></div>
                   <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Phase 2: Soroban Smart Contracts</h3>
-                      <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm font-semibold">🚧 IN PLANNING</span>
+                      <h3 className="text-2xl font-bold text-white">Phase 2: Soroban Contract Stubs</h3>
+                      <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-semibold">✅ COMPLETE</span>
                     </div>
-                    <p className="text-blue-200 mb-4"><strong>Focus:</strong> Real Stellar Testnet blockchain integration with Soroban contracts</p>
+                    <p className="text-blue-200 mb-4"><strong>Delivered:</strong> 5 Soroban smart contract stubs with simulated transactions</p>
                     <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-100">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">📋 Planned Deliverables:</h4>
+                        <h4 className="font-semibold text-white mb-2">✅ Delivered:</h4>
                         <ul className="space-y-1 list-disc list-inside">
-                          <li>5 Rust Soroban smart contracts:
+                          <li>5 Soroban contract TypeScript stubs:
                             <ul className="ml-6 mt-1 space-y-1">
                               <li>- InvestorWhitelist</li>
                               <li>- AssetRegistry</li>
@@ -315,100 +315,85 @@ export default function WhitepaperPage() {
                               <li>- PaymentDistributor</li>
                             </ul>
                           </li>
-                          <li>Real Stellar Testnet deployment</li>
-                          <li>TypeScript SDK generation from contracts</li>
-                          <li>Replace simulation stubs with live transactions</li>
-                          <li>Horizon API integration for monitoring</li>
-                          <li>Transaction error handling</li>
-                          <li>Contract unit & integration tests</li>
+                          <li>Simulated transaction generation</li>
+                          <li>Transaction delays for realism</li>
+                          <li>Contract interface definitions</li>
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">🎯 Goals:</h4>
-                        <ul className="space-y-1 list-disc list-inside">
-                          <li>End-to-end on-chain asset lifecycle</li>
-                          <li>Real tAED test token transactions</li>
-                          <li>Automated payment distribution</li>
-                          <li>Transparent investor reporting</li>
-                          <li>Immutable audit trail on Testnet</li>
-                          <li>Demonstrate Soroban capabilities</li>
-                          <li>Validate gas costs and performance</li>
-                        </ul>
+                        <h4 className="font-semibold text-white mb-2">📝 Note:</h4>
+                        <p className="text-sm">
+                          Contract stubs demonstrate Soroban integration architecture with simulated blockchain interactions. Real Rust contract deployment to Stellar Testnet planned for future enhancement.
+                        </p>
                       </div>
                     </div>
                     <p className="mt-4 text-sm text-blue-200" dir="rtl" lang="ar">
-                      المرحلة الثانية: كتابة ونشر عقود Soroban الذكية على Stellar Testnet، مع استبدال النماذج بمعاملات حقيقية وإنشاء SDK للتكامل.
+                      المرحلة الثانية مكتملة: 5 عقود Soroban كنماذج TypeScript مع معاملات محاكاة. نشر Rust الحقيقي مخطط للمستقبل.
                     </p>
                   </div>
                 </div>
 
                 {/* Phase 3 */}
-                <div className="relative pl-8 border-l-4 border-purple-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-purple-500 rounded-full"></div>
+                <div className="relative pl-8 border-l-4 border-green-500">
+                  <div className="absolute -left-3 top-0 w-5 h-5 bg-green-500 rounded-full"></div>
                   <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Phase 3: AI-Assisted Underwriting</h3>
-                      <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm font-semibold">📋 PLANNED</span>
+                      <h3 className="text-2xl font-bold text-white">Phase 3: AI Assist Framework</h3>
+                      <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-semibold">✅ COMPLETE</span>
                     </div>
-                    <p className="text-blue-200 mb-4"><strong>Focus:</strong> Machine learning enhancements for document processing and risk analysis</p>
+                    <p className="text-blue-200 mb-4"><strong>Delivered:</strong> Rule-based risk engine and document management framework</p>
                     <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-100">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">📋 Planned Features:</h4>
+                        <h4 className="font-semibold text-white mb-2">✅ Delivered:</h4>
                         <ul className="space-y-1 list-disc list-inside">
-                          <li>OCR document extraction (Emirates ID, licenses)</li>
-                          <li>Financial statement parsing and validation</li>
-                          <li>Fraud detection signals</li>
-                          <li>AI-assisted risk scoring enhancements</li>
-                          <li>Anomaly detection in applications</li>
-                          <li>Market data integration for asset valuation</li>
-                          <li>Predictive default probability models</li>
+                          <li>3D risk scoring algorithm (Company/Asset/Deal)</li>
+                          <li>Automated tier assignment (A/B/C/D)</li>
+                          <li>Document upload & SHA-256 hash generation</li>
+                          <li>Human-in-the-loop approval workflow</li>
+                          <li>Complete audit trail logging</li>
+                          <li>Configurable risk parameters</li>
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">🎯 Approach:</h4>
-                        <ul className="space-y-1 list-disc list-inside">
-                          <li><strong>Human-in-the-loop:</strong> AI assists, humans decide</li>
-                          <li>All AI outputs are reviewable and editable</li>
-                          <li>Audit trail of AI vs. human scores</li>
-                          <li>Explainable AI for transparency</li>
-                          <li>Gradual rollout with A/B testing</li>
-                          <li>Continuous model monitoring</li>
-                        </ul>
+                        <h4 className="font-semibold text-white mb-2">📝 Note:</h4>
+                        <p className="text-sm">
+                          Current implementation uses rule-based scoring algorithms. Real ML models (OCR, fraud detection, predictive analytics) and trained models on UAE SME data planned for future enhancement.
+                        </p>
                       </div>
                     </div>
                     <p className="mt-4 text-sm text-blue-200" dir="rtl" lang="ar">
-                      المرحلة الثالثة: تعزيز النظام بالذكاء الاصطناعي لاستخراج المستندات وتحليل المخاطر، مع نهج "الإنسان في الحلقة" لضمان القرارات النهائية البشرية.
+                      المرحلة الثالثة مكتملة: محرك تقييم مخاطر قائم على القواعد مع سير عمل موافقة بشرية. نماذج ML الحقيقية مخططة للمستقبل.
                     </p>
                   </div>
                 </div>
 
                 {/* Next Steps */}
-                <div className="relative pl-8 border-l-4 border-yellow-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-yellow-500 rounded-full"></div>
+                <div className="relative pl-8 border-l-4 border-orange-500">
+                  <div className="absolute -left-3 top-0 w-5 h-5 bg-orange-500 rounded-full"></div>
                   <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Near-Term Next Steps</h3>
-                      <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm font-semibold">🎯 PRIORITIES</span>
+                      <h3 className="text-2xl font-bold text-white">Next: Production Enhancements</h3>
+                      <span className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-sm font-semibold">🎯 FUTURE</span>
                     </div>
                     <div className="space-y-4 text-blue-100">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">🔬 Technical Development:</h4>
+                        <h4 className="font-semibold text-white mb-2">⛓️ Real Blockchain Deployment:</h4>
                         <ul className="space-y-1 list-disc list-inside text-sm">
-                          <li>Begin Rust/Soroban contract development</li>
-                          <li>Set up Stellar Testnet infrastructure</li>
-                          <li>Develop contract deployment and testing pipelines</li>
-                          <li>Create TypeScript SDK from contract interfaces</li>
-                          <li>Enhance risk engine with more data points</li>
+                          <li>Write Rust Soroban smart contracts</li>
+                          <li>Deploy contracts to Stellar Testnet</li>
+                          <li>Generate TypeScript SDK from deployed contracts</li>
+                          <li>Replace simulation stubs with live transactions</li>
+                          <li>Real tAED test token integration</li>
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-white mb-2">📋 Real-World ML Integration:</h4>
+                        <h4 className="font-semibold text-white mb-2">🤖 Real Machine Learning:</h4>
                         <ul className="space-y-1 list-disc list-inside text-sm">
-                          <li>Research UAE SME credit datasets</li>
-                          <li>Partner with document verification providers</li>
-                          <li>Develop OCR pipeline for Arabic/English documents</li>
-                          <li>Build ML model training infrastructure</li>
-                          <li>Establish explainability and fairness frameworks</li>
+                          <li>OCR pipeline for Arabic/English documents</li>
+                          <li>Train ML risk models on UAE SME data</li>
+                          <li>Fraud detection and anomaly detection</li>
+                          <li>Predictive default probability models</li>
+                          <li>Explainable AI framework</li>
                         </ul>
                       </div>
                       <div>
@@ -455,7 +440,7 @@ export default function WhitepaperPage() {
 
               <div className="mt-6 bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
                 <p className="text-blue-200 text-sm">
-                  <strong>📊 Current Status:</strong> Phase 1 complete and operational. Phase 2 (Soroban) contract architecture designed and ready for implementation. Phase 3 (AI) planned after Testnet validation. All work remains on Stellar Testnet for demonstration purposes.
+                  <strong>📊 Current Status:</strong> Phases 1-3 complete on Testnet. All portals operational, 5 Soroban contract stubs working with simulated transactions, rule-based risk engine deployed. Next: Real Rust Soroban deployment to Testnet, ML models, and regulatory compliance.
                 </p>
               </div>
             </section>

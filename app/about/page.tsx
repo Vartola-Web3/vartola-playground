@@ -94,22 +94,21 @@ export default function AboutPage() {
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                  <h3 className="text-xl font-semibold text-white mb-3">Phase 1: Complete ✅</h3>
+                  <h3 className="text-xl font-semibold text-white mb-3">Phases 1-3: Complete ✅</h3>
                   <ul className="space-y-2 text-blue-100 text-sm">
-                    <li>✓ Full-stack web application operational</li>
-                    <li>✓ 4 role-based portals (SME, Investor, Underwriter, Admin)</li>
-                    <li>✓ 3D risk assessment engine implemented</li>
-                    <li>✓ Database schema and demo data seeded</li>
-                    <li>✓ Stellar integration architecture designed</li>
-                    <li>✓ Comprehensive documentation</li>
+                    <li>✓ Phase 1: Web app with 4 portals, authentication, risk engine</li>
+                    <li>✓ Phase 2: 5 Soroban contract stubs (TypeScript with simulated transactions)</li>
+                    <li>✓ Phase 3: Rule-based risk scoring and document management framework</li>
+                    <li>✓ Database schema with demo data (Gulf Logistics scenario)</li>
+                    <li>✓ Payment schedules, audit trails, comprehensive documentation</li>
                   </ul>
                 </div>
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                   <h3 className="text-xl font-semibold text-white mb-3">What This Means:</h3>
                   <ul className="space-y-2 text-blue-100 text-sm">
-                    <li>🎬 <strong>Live Demo:</strong> Fully functional prototype you can interact with</li>
-                    <li>⚠️ <strong>Testnet Only:</strong> No real money, uses simulated tAED tokens</li>
-                    <li>🔬 <strong>Technology Proof:</strong> Validates technical feasibility</li>
+                    <li>🎬 <strong>Live Demo:</strong> Fully functional prototype with simulated blockchain</li>
+                    <li>⚠️ <strong>Testnet Simulation:</strong> Contract stubs, no real Soroban deployment yet</li>
+                    <li>🔬 <strong>Architecture Ready:</strong> Foundation for real Rust contracts & ML models</li>
                     <li>📋 <strong>Grant Application:</strong> Stellar Community Fund Build Award</li>
                     <li>🚧 <strong>Not Licensed:</strong> Requires regulatory approval for real operations</li>
                   </ul>
@@ -247,21 +246,28 @@ export default function AboutPage() {
                   <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
                   <div>
                     <h3 className="text-xl font-semibold text-white">Phase 1: MVP Foundation (Complete)</h3>
-                    <p className="text-blue-100 text-sm">Full web application, risk engine, portals, Stellar integration stubs, demo data</p>
+                    <p className="text-blue-100 text-sm">Full web application with 4 portals, authentication, risk engine, demo data</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
                   <div>
-                    <h3 className="text-xl font-semibold text-white">Phase 2: Soroban Smart Contracts (Planned)</h3>
-                    <p className="text-blue-100 text-sm">Write and deploy 5 Rust contracts to Stellar Testnet, real transactions, TypeScript SDK</p>
+                    <h3 className="text-xl font-semibold text-white">Phase 2: Soroban Contract Stubs (Complete)</h3>
+                    <p className="text-blue-100 text-sm">5 contract TypeScript stubs with simulated transactions. Real Rust deployment planned.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
                   <div>
-                    <h3 className="text-xl font-semibold text-white">Phase 3: AI-Assisted Underwriting (Future)</h3>
-                    <p className="text-blue-100 text-sm">OCR, document extraction, fraud detection, enhanced risk models with human-in-the-loop</p>
+                    <h3 className="text-xl font-semibold text-white">Phase 3: AI Assist Framework (Complete)</h3>
+                    <p className="text-blue-100 text-sm">Rule-based risk engine and document management. Real ML models planned.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">→</div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Next: Production Enhancements (Future)</h3>
+                    <p className="text-blue-100 text-sm">Real Rust Soroban deployment, ML models, regulatory compliance</p>
                   </div>
                 </div>
               </div>

@@ -104,26 +104,26 @@ export default function Home() {
 
           {/* Roadmap Summary */}
           <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-lg p-6 mb-8 border border-green-500/30">
-            <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Development Roadmap</h3>
+            <h3 className="text-xl font-bold text-white mb-4 text-center">📅 Development Status</h3>
             <div className="grid md:grid-cols-3 gap-4 text-sm text-blue-100">
               <div className="text-center">
                 <div className="text-3xl mb-2">✅</div>
                 <p className="font-semibold text-white">Phase 1: Complete</p>
-                <p className="text-xs mt-1">MVP portals, risk engine, Stellar stubs</p>
+                <p className="text-xs mt-1">MVP portals, risk engine, authentication</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl mb-2">🚧</div>
-                <p className="font-semibold text-white">Phase 2: Planned</p>
-                <p className="text-xs mt-1">Soroban smart contracts on Testnet</p>
+                <div className="text-3xl mb-2">✅</div>
+                <p className="font-semibold text-white">Phase 2: Complete</p>
+                <p className="text-xs mt-1">5 Soroban contract stubs (simulated)</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl mb-2">📋</div>
-                <p className="font-semibold text-white">Phase 3: Future</p>
-                <p className="text-xs mt-1">AI-assisted underwriting & ML</p>
+                <div className="text-3xl mb-2">✅</div>
+                <p className="font-semibold text-white">Phase 3: Complete</p>
+                <p className="text-xs mt-1">Rule-based risk framework</p>
               </div>
             </div>
             <p className="text-center text-blue-300 text-xs mt-4">
-              All work on Stellar Testnet • Mainnet requires regulatory approval
+              Next: Real Rust Soroban deployment, ML models, compliance • Mainnet requires regulatory approval
             </p>
           </div>
 

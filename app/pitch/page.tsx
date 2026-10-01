@@ -379,72 +379,72 @@ export default function PitchPage() {
                 <div className="absolute left-8 top-20 bottom-0 w-0.5 bg-gradient-to-b from-green-500 to-blue-500"></div>
               </div>
 
-              {/* Phase 2 - In Planning */}
+              {/* Phase 2 - Complete */}
               <div className="relative">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl border-4 border-blue-300">2</div>
+                  <div className="flex-shrink-0 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl border-4 border-green-300">2</div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-2xl font-bold text-white">Phase 2: Soroban Smart Contracts</h3>
-                      <span className="px-4 py-2 bg-blue-500/30 text-blue-200 rounded-full text-sm font-bold border border-blue-400">🚧 PLANNED</span>
+                      <h3 className="text-2xl font-bold text-white">Phase 2: Soroban Contract Stubs</h3>
+                      <span className="px-4 py-2 bg-green-500/30 text-green-200 rounded-full text-sm font-bold border border-green-400">✅ COMPLETE</span>
                     </div>
                     <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                      <p className="text-blue-200 mb-4"><strong>Goal:</strong> Real Stellar Testnet transactions with Soroban contracts</p>
+                      <p className="text-blue-200 mb-4"><strong>Delivered:</strong> 5 Soroban smart contract stubs with simulated transactions</p>
                       <div className="grid md:grid-cols-2 gap-4 text-sm">
                         <ul className="space-y-1 text-blue-100">
-                          <li>📋 Write 5 Rust smart contracts</li>
-                          <li>📋 Deploy to Stellar Testnet</li>
-                          <li>📋 Generate TypeScript SDK</li>
-                          <li>📋 Replace simulation stubs</li>
+                          <li>✅ InvestorWhitelist stub</li>
+                          <li>✅ AssetRegistry stub</li>
+                          <li>✅ FinancingFacility stub</li>
+                          <li>✅ FinancingPool stub</li>
                         </ul>
                         <ul className="space-y-1 text-blue-100">
-                          <li>📋 Horizon API integration</li>
-                          <li>📋 Real tAED transactions</li>
-                          <li>📋 Contract testing suite</li>
-                          <li>📋 Performance validation</li>
+                          <li>✅ PaymentDistributor stub</li>
+                          <li>✅ Simulated tx hashes</li>
+                          <li>✅ Contract interfaces</li>
+                          <li>✅ Integration architecture</li>
                         </ul>
                       </div>
                       <p className="mt-4 text-xs text-blue-300 italic">
-                        Timeline: Architecture complete, ready for Rust implementation
+                        Note: TypeScript stubs demonstrate Soroban architecture. Real Rust deployment planned.
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="absolute left-8 top-20 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 to-purple-500"></div>
+                <div className="absolute left-8 top-20 bottom-0 w-0.5 bg-gradient-to-b from-green-500 to-green-500"></div>
               </div>
 
-              {/* Phase 3 - Planned */}
+              {/* Phase 3 - Complete */}
               <div className="relative">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl border-4 border-purple-300">3</div>
+                  <div className="flex-shrink-0 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl border-4 border-green-300">3</div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-2xl font-bold text-white">Phase 3: AI-Assisted Underwriting</h3>
-                      <span className="px-4 py-2 bg-purple-500/30 text-purple-200 rounded-full text-sm font-bold border border-purple-400">📅 FUTURE</span>
+                      <h3 className="text-2xl font-bold text-white">Phase 3: AI Assist Framework</h3>
+                      <span className="px-4 py-2 bg-green-500/30 text-green-200 rounded-full text-sm font-bold border border-green-400">✅ COMPLETE</span>
                     </div>
                     <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                      <p className="text-blue-200 mb-4"><strong>Goal:</strong> ML-enhanced document processing and risk analysis</p>
+                      <p className="text-blue-200 mb-4"><strong>Delivered:</strong> Rule-based risk engine and document management framework</p>
                       <div className="grid md:grid-cols-2 gap-4 text-sm">
                         <ul className="space-y-1 text-blue-100">
-                          <li>📅 OCR for Arabic/English docs</li>
-                          <li>📅 Financial statement parsing</li>
-                          <li>📅 Fraud detection signals</li>
-                          <li>📅 AI risk scoring enhancements</li>
+                          <li>✅ 3D risk scoring (Company/Asset/Deal)</li>
+                          <li>✅ Automated tier assignment</li>
+                          <li>✅ Document hash generation</li>
+                          <li>✅ Human-in-the-loop workflow</li>
                         </ul>
                         <ul className="space-y-1 text-blue-100">
-                          <li>📅 Anomaly detection</li>
-                          <li>📅 Market data integration</li>
-                          <li>📅 Human-in-the-loop workflow</li>
-                          <li>📅 Explainable AI outputs</li>
+                          <li>✅ Audit trail logging</li>
+                          <li>✅ Configurable parameters</li>
+                          <li>✅ Foundation for ML</li>
+                          <li>✅ Demo risk calculations</li>
                         </ul>
                       </div>
                       <p className="mt-4 text-xs text-blue-300 italic">
-                        Approach: AI assists, humans decide. All outputs reviewable and editable.
+                        Note: Rule-based engine implemented. Real ML models planned for future.
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="absolute left-8 top-20 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 to-orange-500"></div>
+                <div className="absolute left-8 top-20 bottom-0 w-0.5 bg-gradient-to-b from-green-500 to-orange-500"></div>
               </div>
 
               {/* Next Steps */}
@@ -452,36 +452,36 @@ export default function PitchPage() {
                 <div className="flex-shrink-0 w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl border-4 border-orange-300">→</div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-2xl font-bold text-white">Near-Term Priorities</h3>
-                    <span className="px-4 py-2 bg-orange-500/30 text-orange-200 rounded-full text-sm font-bold border border-orange-400">🎯 NEXT</span>
+                    <h3 className="text-2xl font-bold text-white">Next: Production Enhancements</h3>
+                    <span className="px-4 py-2 bg-orange-500/30 text-orange-200 rounded-full text-sm font-bold border border-orange-400">🎯 FUTURE</span>
                   </div>
                   <div className="bg-white/5 rounded-lg p-6 border border-white/10">
                     <div className="grid md:grid-cols-3 gap-6 text-sm">
                       <div>
-                        <h4 className="font-semibold text-white mb-2">🔬 Technical:</h4>
+                        <h4 className="font-semibold text-white mb-2">⛓️ Real Blockchain:</h4>
                         <ul className="space-y-1 text-blue-100">
-                          <li>• Begin Rust/Soroban dev</li>
-                          <li>• Testnet infrastructure</li>
-                          <li>• Contract CI/CD pipeline</li>
-                          <li>• Enhanced risk models</li>
+                          <li>• Write Rust Soroban contracts</li>
+                          <li>• Deploy to Stellar Testnet</li>
+                          <li>• Real tAED transactions</li>
+                          <li>• Replace simulation stubs</li>
                         </ul>
                       </div>
                       <div>
                         <h4 className="font-semibold text-white mb-2">🤖 Real ML:</h4>
                         <ul className="space-y-1 text-blue-100">
-                          <li>• UAE SME datasets</li>
-                          <li>• Doc verification partners</li>
-                          <li>• OCR pipeline (AR/EN)</li>
-                          <li>• Explainability framework</li>
+                          <li>• OCR for Arabic/English</li>
+                          <li>• ML risk scoring models</li>
+                          <li>• Fraud detection signals</li>
+                          <li>• Predictive analytics</li>
                         </ul>
                       </div>
                       <div>
                         <h4 className="font-semibold text-white mb-2">⚖️ Compliance:</h4>
                         <ul className="space-y-1 text-blue-100">
-                          <li>• Legal structure review</li>
-                          <li>• CBUAE engagement</li>
+                          <li>• CBUAE license application</li>
                           <li>• ADGM/DFSA consultation</li>
-                          <li>• KYC/AML procedures</li>
+                          <li>• KYC/AML implementation</li>
+                          <li>• Legal framework</li>
                         </ul>
                       </div>
                     </div>

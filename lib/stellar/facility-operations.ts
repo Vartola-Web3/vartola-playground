@@ -1,7 +1,13 @@
 import { Keypair, Horizon, TransactionBuilder, Networks, Operation, Asset } from '@stellar/stellar-sdk';
 import { generateSimulatedTxHash, generateSimulatedAssetId, STELLAR_CONFIG } from './config';
+import {
+  createFacilityOnSoroban,
+  isContractsConfigured,
+  type FacilityParams as SorobanFacilityParams,
+} from './soroban-client';
 
 const USE_TESTNET = process.env.ENABLE_STELLAR_TESTNET === 'true';
+const USE_SOROBAN = process.env.ENABLE_SOROBAN_CONTRACTS === 'true';
 const server = new Horizon.Server(STELLAR_CONFIG.horizonUrl);
 
 interface FacilityParams {
@@ -19,6 +25,34 @@ interface FacilityResult {
 }
 
 export async function createFacilityOnStellar(params: FacilityParams): Promise<FacilityResult> {
+  if (USE_SOROBAN && isContractsConfigured()) {
+    try {
+      const adminKeypair = Keypair.random();
+      
+      const sorobanParams: SorobanFacilityParams = {
+        facilityId: params.facilityNo,
+        company: params.companyId,
+        assetValue: BigInt(Math.floor(params.assetValue * 10000000)),
+        financeAmount: BigInt(Math.floor(params.financeAmount * 10000000)),
+        termMonths: params.term,
+        monthlyPayment: BigInt(0),
+        poolId: 'POOL-001',
+      };
+
+      const result = await createFacilityOnSoroban(sorobanParams, adminKeypair);
+      
+      if (result.success) {
+        return {
+          txHash: result.txHash || generateSimulatedTxHash(),
+          assetId: generateSimulatedAssetId(),
+          success: true,
+        };
+      }
+    } catch (error) {
+      console.error('Soroban contract call failed, falling back to Horizon:', error);
+    }
+  }
+
   if (!USE_TESTNET) {
     return {
       txHash: generateSimulatedTxHash(),

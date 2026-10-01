@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/db';
-import { generateSimulatedTxHash } from '@/lib/stellar/config';
+import { enqueueJob, processJob } from '@/lib/stellar/outbox';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,25 +30,55 @@ export async function POST(request: NextRequest) {
 
     const shares = amount / pool.targetAmount;
 
+    // Create investment record
     const investment = await prisma.investment.create({
       data: {
         investorId: session.user.id,
         poolId,
         amount,
         shares,
-        status: 'ACTIVE',
-        stellarTxHash: generateSimulatedTxHash(),
-        activatedAt: new Date(),
+        status: 'PENDING',
       },
     });
 
-    await prisma.pool.update({
-      where: { id: poolId },
-      data: {
-        raisedAmount: {
-          increment: amount,
-        },
+    // Enqueue blockchain job
+    const jobId = await enqueueJob({
+      type: 'SUBSCRIBE_POOL',
+      entityType: 'Investment',
+      entityId: investment.id,
+      payload: {
+        investorId: session.user.id,
+        poolId,
+        amount,
+        shares,
       },
+    });
+
+    // Process job immediately (async)
+    processJob(jobId).then(async (txHash) => {
+      if (txHash) {
+        // Update investment with tx hash and mark as active
+        await prisma.investment.update({
+          where: { id: investment.id },
+          data: {
+            stellarTxHash: txHash,
+            status: 'ACTIVE',
+            activatedAt: new Date(),
+          },
+        });
+
+        // Update pool raised amount
+        await prisma.pool.update({
+          where: { id: poolId },
+          data: {
+            raisedAmount: {
+              increment: amount,
+            },
+          },
+        });
+      }
+    }).catch(error => {
+      console.error('Failed to process subscription job:', error);
     });
 
     await prisma.auditLog.create({
@@ -57,11 +87,16 @@ export async function POST(request: NextRequest) {
         action: 'INVESTMENT_SUBSCRIBED',
         entityType: 'Investment',
         entityId: investment.id,
-        changes: JSON.stringify({ poolId, amount, shares }),
+        changes: JSON.stringify({ poolId, amount, shares, jobId }),
       },
     });
 
-    return NextResponse.json({ success: true, investment });
+    return NextResponse.json({ 
+      success: true, 
+      investment,
+      jobId,
+      message: 'Subscription queued for blockchain processing'
+    });
   } catch (error) {
     console.error('Investment subscription error:', error);
     return NextResponse.json(

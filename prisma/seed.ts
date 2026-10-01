@@ -1,10 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import { bootstrapConfigFromEnv } from '../lib/config/blockchain-config';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Seeding database...');
+
+  // Bootstrap blockchain configuration from environment variables
+  console.log('📡 Bootstrapping blockchain configuration from environment...');
+  await bootstrapConfigFromEnv();
+  console.log('✅ Blockchain configuration bootstrapped');
 
   // Create Admin User
   const adminPassword = await bcrypt.hash('admin123', 10);

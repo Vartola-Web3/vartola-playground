@@ -1,6 +1,6 @@
-import { Server } from '@stellar/stellar-sdk/lib/horizon';
-import { Server as SorobanRpcServer } from '@stellar/stellar-sdk/lib/soroban';
 import {
+  Horizon,
+  rpc,
   Transaction,
   FeeBumpTransaction,
 } from '@stellar/stellar-sdk';
@@ -14,13 +14,13 @@ export interface StellarProvider {
    * Get Horizon server instance for classic Stellar operations
    * Used for: account creation, payments, trustlines, asset transfers
    */
-  getHorizonServer(): Server;
+  getHorizonServer(): Horizon.Server;
 
   /**
    * Get Soroban RPC server instance for smart contract operations
    * Used for: contract deployment, contract invocation, contract queries
    */
-  getSorobanServer(): SorobanRpcServer;
+  getSorobanServer(): rpc.Server;
 
   /**
    * Submit a transaction to the Stellar network

@@ -1,6 +1,6 @@
-import { Server } from '@stellar/stellar-sdk/lib/horizon';
-import { Server as SorobanRpcServer } from '@stellar/stellar-sdk/lib/soroban';
 import {
+  Horizon,
+  rpc,
   Transaction,
   FeeBumpTransaction,
 } from '@stellar/stellar-sdk';
@@ -14,8 +14,8 @@ import type { StellarProvider, StellarProviderConfig } from './base';
  * Automatically used as fallback when Alchemy is not configured.
  */
 export class StellarPublicRpcProvider implements StellarProvider {
-  private horizonServer: Server;
-  private sorobanServer: SorobanRpcServer;
+  private horizonServer: Horizon.Server;
+  private sorobanServer: rpc.Server;
   private config: StellarProviderConfig;
 
   constructor(config: StellarProviderConfig) {
@@ -25,22 +25,22 @@ export class StellarPublicRpcProvider implements StellarProvider {
     const horizonUrl = config.horizonUrl || 'https://horizon-testnet.stellar.org';
     const sorobanUrl = config.sorobanUrl || 'https://soroban-testnet.stellar.org';
 
-    this.horizonServer = new Server(horizonUrl, {
+    this.horizonServer = new Horizon.Server(horizonUrl, {
       allowHttp: false,
     });
 
-    this.sorobanServer = new SorobanRpcServer(sorobanUrl, {
+    this.sorobanServer = new rpc.Server(sorobanUrl, {
       allowHttp: false,
     });
 
     console.log('[Public RPC] Stellar provider initialized for', config.network);
   }
 
-  getHorizonServer(): Server {
+  getHorizonServer(): Horizon.Server {
     return this.horizonServer;
   }
 
-  getSorobanServer(): SorobanRpcServer {
+  getSorobanServer(): rpc.Server {
     return this.sorobanServer;
   }
 

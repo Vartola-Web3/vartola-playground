@@ -59,6 +59,17 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
 
       <footer className="border-t border-slate-200 mt-12 py-6 text-center text-sm text-slate-500">
+        <div className="mb-2">
+          <Link href="/how-it-works" className="text-blue-600 hover:text-blue-800 underline mr-4">
+            How It Works
+          </Link>
+          <Link href="/about" className="text-blue-600 hover:text-blue-800 underline mr-4">
+            About
+          </Link>
+          <Link href="/whitepaper" className="text-blue-600 hover:text-blue-800 underline">
+            Whitepaper
+          </Link>
+        </div>
         AssetFi UAE - Institutional Asset Finance Platform | Testnet Demo
       </footer>
     </div>

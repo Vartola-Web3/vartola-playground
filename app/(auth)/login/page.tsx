@@ -129,9 +129,22 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-blue-200 mt-4">
-          AssetFi UAE - Institutional Asset Finance Platform
-        </p>
+        <div className="mt-4 text-center space-y-2">
+          <div className="flex justify-center gap-4 text-xs">
+            <a href="/how-it-works" className="text-blue-300 hover:text-blue-100 underline">
+              How It Works
+            </a>
+            <a href="/about" className="text-blue-300 hover:text-blue-100 underline">
+              About
+            </a>
+            <a href="/whitepaper" className="text-blue-300 hover:text-blue-100 underline">
+              Whitepaper
+            </a>
+          </div>
+          <p className="text-xs text-blue-200">
+            AssetFi UAE - Institutional Asset Finance Platform
+          </p>
+        </div>
       </div>
     </div>
   );

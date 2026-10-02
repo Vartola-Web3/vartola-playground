@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 48px; font-weight: bold; fill: #ffffff; }
+      .subtitle { font-family: Arial, sans-serif; font-size: 24px; fill: #93c5fd; }
+      .ar-text { font-family: Arial, sans-serif; font-size: 22px; font-weight: bold; fill: #ffffff; direction: rtl; }
+      .en-text { font-family: Arial, sans-serif; font-size: 16px; fill: #bfdbfe; }
+      .step-number { font-family: Arial, sans-serif; font-size: 32px; font-weight: bold; fill: #ffffff; }
+      .step-title-ar { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; fill: #ffffff; }
+      .step-title-en { font-family: Arial, sans-serif; font-size: 14px; fill: #e0e7ff; }
+      .step-desc { font-family: Arial, sans-serif; font-size: 13px; fill: #e0e7ff; }
+      .warning-text { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #fcd34d; }
+      .small-text { font-family: Arial, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .arrow { fill: none; stroke: #60a5fa; stroke-width: 3; marker-end: url(#arrowhead); }
+      .role-text { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #ffffff; }
+      .role-desc { font-family: Arial, sans-serif; font-size: 11px; fill: #e0e7ff; }
+    </style>
+    
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#60a5fa" />
+    </marker>
+
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Header -->
+  <text x="600" y="60" text-anchor="middle" class="title">AssetFi UAE <æ<ê</text>
+  <text x="600" y="95" text-anchor="middle" class="ar-text">CJA J9ED *EHJD 'D#5HD 'DE1E2</text>
+  <text x="600" y="120" text-anchor="middle" class="subtitle">How Tokenized Asset Finance Works</text>
+  
+  <!-- Warning Badge -->
+  <rect x="450" y="135" width="300" height="35" rx="8" fill="#854d0e" opacity="0.3"/>
+  <rect x="450" y="135" width="300" height="35" rx="8" fill="none" stroke="#fbbf24" stroke-width="2"/>
+  <text x="600" y="158" text-anchor="middle" class="warning-text">  Stellar Testnet Demo</text>
+
+  <!-- User Roles Section -->
+  <text x="600" y="210" text-anchor="middle" class="ar-text">EF J3*./E E'0'</text>
+  <text x="600" y="232" text-anchor="middle" class="en-text">Who Uses What?</text>
+  
+  <g id="roles">
+    <!-- SME -->
+    <rect x="50" y="250" width="240" height="100" rx="10" fill="url(#blueGrad)" opacity="0.8"/>
+    <text x="170" y="275" text-anchor="middle" class="role-text"><â 'D41C'* 'D5:J1)</text>
+    <text x="170" y="292" text-anchor="middle" class="role-desc">SME Portal</text>
+    <text x="170" y="310" text-anchor="middle" class="role-desc">Apply, Upload Docs,</text>
+    <text x="170" y="325" text-anchor="middle" class="role-desc">Track Status, Pay</text>
+
+    <!-- Underwriter -->
+    <rect x="310" y="250" width="240" height="100" rx="10" fill="url(#purpleGrad)" opacity="0.8"/>
+    <text x="430" y="275" text-anchor="middle" class="role-text">=h=¼ E3$HD 'D'C**'(</text>
+    <text x="430" y="292" text-anchor="middle" class="role-desc">Underwriter Portal</text>
+    <text x="430" y="310" text-anchor="middle" class="role-desc">Review, Verify,</text>
+    <text x="430" y="325" text-anchor="middle" class="role-desc">Approve/Reject</text>
+
+    <!-- Investor -->
+    <rect x="570" y="250" width="240" height="100" rx="10" fill="url(#greenGrad)" opacity="0.8"/>
+    <text x="690" y="275" text-anchor="middle" class="role-text">=° 'DE3*+E1</text>
+    <text x="690" y="292" text-anchor="middle" class="role-desc">Investor Portal</text>
+    <text x="690" y="310" text-anchor="middle" class="role-desc">Browse Pools,</text>
+    <text x="690" y="325" text-anchor="middle" class="role-desc">Invest, Track Returns</text>
+
+    <!-- Admin -->
+    <rect x="830" y="250" width="240" height="100" rx="10" fill="url(#yellowGrad)" opacity="0.8"/>
+    <text x="950" y="275" text-anchor="middle" class="role-text">™ 'DE/J1</text>
+    <text x="950" y="292" text-anchor="middle" class="role-desc">Admin Portal</text>
+    <text x="950" y="310" text-anchor="middle" class="role-desc">Manage Users, Pools,</text>
+    <text x="950" y="325" text-anchor="middle" class="role-desc">Blockchain Settings</text>
+  </g>
+
+  <!-- Main Flow Title -->
+  <text x="600" y="400" text-anchor="middle" class="ar-text">/H1) 'D*EHJD 'DC'ED) - 6 .7H'*</text>
+  <text x="600" y="422" text-anchor="middle" class="en-text">Complete Financing Cycle - 6 Steps</text>
+
+  <!-- Step 1: SME Application -->
+  <g id="step1">
+    <rect x="50" y="450" width="340" height="140" rx="12" fill="url(#blueGrad)" opacity="0.9"/>
+    <circle cx="80" cy="480" r="25" fill="#1e40af"/>
+    <text x="80" y="490" text-anchor="middle" class="step-number">1</text>
+    <text x="220" y="480" text-anchor="middle" class="step-title-ar">*B/JE 7D( 'D*EHJD <â</text>
+    <text x="220" y="500" text-anchor="middle" class="step-title-en">SME Application Submission</text>
+    <text x="220" y="525" text-anchor="middle" class="step-desc">SME logs in and fills application form</text>
+    <text x="220" y="543" text-anchor="middle" class="step-desc">Specifies asset type, value, down payment</text>
+    <text x="220" y="561" text-anchor="middle" class="step-desc">Uploads required documents (license, financials)</text>
+    <text x="220" y="579" text-anchor="middle" class="step-desc">Submits for review</text>
+  </g>
+
+  <!-- Arrow 1 to 2 -->
+  <path d="M 220 595 L 220 625" class="arrow"/>
+
+  <!-- Step 2: Risk Assessment -->
+  <g id="step2">
+    <rect x="50" y="630" width="340" height="140" rx="12" fill="url(#purpleGrad)" opacity="0.9"/>
+    <circle cx="80" cy="660" r="25" fill="#6b21a8"/>
+    <text x="80" y="670" text-anchor="middle" class="step-number">2</text>
+    <text x="220" y="660" text-anchor="middle" class="step-title-ar">*BJJE 'DE.'71 'D"DJ ></text>
+    <text x="220" y="680" text-anchor="middle" class="step-title-en">Automated Risk Assessment</text>
+    <text x="220" y="705" text-anchor="middle" class="step-desc">3D Risk Engine analyzes:</text>
+    <text x="220" y="723" text-anchor="middle" class="step-desc">Company (age, revenue, cashflow, credit)</text>
+    <text x="220" y="741" text-anchor="middle" class="step-desc">Asset (type, value, resale, depreciation)</text>
+    <text x="220" y="759" text-anchor="middle" class="step-desc">Deal (LTV, term, collateral) ’ Score A/B/C/D</text>
+  </g>
+
+  <!-- Arrow 2 to 3 -->
+  <path d="M 220 775 L 220 805" class="arrow"/>
+
+  <!-- Step 3: Underwriter Review -->
+  <g id="step3">
+    <rect x="50" y="810" width="340" height="140" rx="12" fill="url(#indigoGrad)" opacity="0.9"/>
+    <circle cx="80" cy="840" r="25" fill="#3730a3"/>
+    <text x="80" y="850" text-anchor="middle" class="step-number">3</text>
+    <text x="220" y="840" text-anchor="middle" class="step-title-ar">'DE1',9) 'D(41J) =h=¼</text>
+    <text x="220" y="860" text-anchor="middle" class="step-title-en">Human Underwriter Review</text>
+    <text x="220" y="885" text-anchor="middle" class="step-desc">Reviews AI risk score and validates it</text>
+    <text x="220" y="903" text-anchor="middle" class="step-desc">Verifies all submitted documents</text>
+    <text x="220" y="921" text-anchor="middle" class="step-desc">Uses AI Assistant for additional insights</text>
+    <text x="220" y="939" text-anchor="middle" class="step-desc">Final decision: Approve / Reject / Request Info</text>
+  </g>
+
+  <!-- Arrow 3 to 4 -->
+  <path d="M 390 880 L 810 700" class="arrow"/>
+
+  <!-- Step 4: Pool Funding -->
+  <g id="step4">
+    <rect x="810" y="630" width="340" height="140" rx="12" fill="url(#greenGrad)" opacity="0.9"/>
+    <circle cx="840" cy="660" r="25" fill="#065f46"/>
+    <text x="840" y="670" text-anchor="middle" class="step-number">4</text>
+    <text x="980" y="660" text-anchor="middle" class="step-title-ar">%F4'! 'D5F'/JB H'D*EHJD =°</text>
+    <text x="980" y="680" text-anchor="middle" class="step-title-en">Pool Creation & Investor Funding</text>
+    <text x="980" y="705" text-anchor="middle" class="step-desc">Approved deals grouped into investment pools</text>
+    <text x="980" y="723" text-anchor="middle" class="step-desc">Investors browse pools by risk tier</text>
+    <text x="980" y="741" text-anchor="middle" class="step-desc">Min investment: AED 25,000</text>
+    <text x="980" y="759" text-anchor="middle" class="step-desc">Pool closes when target amount reached</text>
+  </g>
+
+  <!-- Arrow 4 to 5 -->
+  <path d="M 980 775 L 980 805" class="arrow"/>
+
+  <!-- Step 5: Blockchain Registration -->
+  <g id="step5">
+    <rect x="810" y="810" width="340" height="140" rx="12" fill="url(#yellowGrad)" opacity="0.9"/>
+    <circle cx="840" cy="840" r="25" fill="#92400e"/>
+    <text x="840" y="850" text-anchor="middle" class="step-number">5</text>
+    <text x="980" y="840" text-anchor="middle" class="step-title-ar">'D*3,JD 9DI 'D(DHC4JF Ó</text>
+    <text x="980" y="860" text-anchor="middle" class="step-title-en">Blockchain Registration (Stellar)</text>
+    <text x="980" y="885" text-anchor="middle" class="step-desc">Asset details registered on-chain</text>
+    <text x="980" y="903" text-anchor="middle" class="step-desc">Document hashes stored immutably</text>
+    <text x="980" y="921" text-anchor="middle" class="step-desc">Smart contracts manage facility lifecycle</text>
+    <text x="980" y="939" text-anchor="middle" class="step-desc">Investor shares and payment schedule set</text>
+  </g>
+
+  <!-- Arrow 5 to 6 -->
+  <path d="M 980 955 L 980 985" class="arrow"/>
+
+  <!-- Step 6: Repayments & Distributions -->
+  <g id="step6">
+    <rect x="810" y="990" width="340" height="160" rx="12" fill="url(#redGrad)" opacity="0.9"/>
+    <circle cx="840" cy="1020" r="25" fill="#991b1b"/>
+    <text x="840" y="1030" text-anchor="middle" class="step-number">6</text>
+    <text x="980" y="1020" text-anchor="middle" class="step-title-ar">'D3/'/ H'D*H2J9'* =Ê</text>
+    <text x="980" y="1040" text-anchor="middle" class="step-title-en">Repayments & Distributions</text>
+    <text x="980" y="1065" text-anchor="middle" class="step-desc">SME pays monthly installments via portal</text>
+    <text x="980" y="1083" text-anchor="middle" class="step-desc">Payment recorded on blockchain instantly</text>
+    <text x="980" y="1101" text-anchor="middle" class="step-desc">Smart contract calculates each investor's share</text>
+    <text x="980" y="1119" text-anchor="middle" class="step-desc">Automatic distribution to investor wallets</text>
+    <text x="980" y="1137" text-anchor="middle" class="step-desc">Full transparency & real-time tracking</text>
+  </g>
+
+  <!-- Circular Arrow from 6 back to payment cycle -->
+  <path d="M 1150 1070 Q 1200 1070 1200 1120 L 1200 1550 Q 1200 1570 1180 1570 L 220 1570 Q 200 1570 200 1550 L 200 600" 
+        fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrowhead)"/>
+  <text x="1100" y="1300" class="small-text">Monthly</text>
+  <text x="1100" y="1315" class="small-text">Cycle</text>
+
+  <!-- Risk Engine Detail Box -->
+  <g id="risk-engine">
+    <rect x="50" y="1170" width="340" height="180" rx="12" fill="#1e293b" opacity="0.9" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="220" y="1200" text-anchor="middle" class="step-title-ar">E-1C 'DE.'71 3D ></text>
+    <text x="220" y="1220" text-anchor="middle" class="step-title-en">3D Risk Engine</text>
+    
+    <text x="70" y="1245" class="step-desc"><â Company: Age, revenue, profit, cashflow</text>
+    <text x="70" y="1265" class="step-desc">=š Asset: Type, value, resale, depreciation</text>
+    <text x="70" y="1285" class="step-desc">=Ê Deal: LTV, term, down payment, collateral</text>
+    
+    <rect x="70" y="1300" width="280" height="35" rx="5" fill="#166534" opacity="0.5"/>
+    <text x="210" y="1320" text-anchor="middle" class="step-desc">’ Score: 0-100 ’ Tier: A/B/C/D</text>
+  </g>
+
+  <!-- Admin & Blockchain Box -->
+  <g id="admin-blockchain">
+    <rect x="410" y="1170" width="340" height="180" rx="12" fill="#1e293b" opacity="0.9" stroke="#f59e0b" stroke-width="2"/>
+    <text x="580" y="1200" text-anchor="middle" class="step-title-ar">(H'() 'DE/J1 ™</text>
+    <text x="580" y="1220" text-anchor="middle" class="step-title-en">Admin Portal</text>
+    
+    <text x="430" y="1245" class="step-desc">" Manage users and assign roles</text>
+    <text x="430" y="1263" class="step-desc">" Create and manage investment pools</text>
+    <text x="430" y="1281" class="step-desc">" Blockchain settings (/admin/blockchain)</text>
+    <text x="430" y="1299" class="step-desc">" Configure Stellar network (Testnet/Mainnet)</text>
+    <text x="430" y="1317" class="step-desc">" Audit trail: Full transparency log</text>
+    <text x="430" y="1335" class="step-desc">" Monitor smart contract transactions</text>
+  </g>
+
+  <!-- Testnet Warning -->
+  <g id="warning">
+    <rect x="50" y="1380" width="1100" height="100" rx="12" fill="#7c2d12" opacity="0.8" stroke="#fbbf24" stroke-width="3"/>
+    <text x="600" y="1410" text-anchor="middle" class="warning-text">  *F(JG EGE: 916 *BFJ 9DI Stellar Testnet AB7</text>
+    <text x="600" y="1435" text-anchor="middle" class="en-text">IMPORTANT: Testnet Technology Demo Only - No Real Money</text>
+    <text x="600" y="1458" text-anchor="middle" class="small-text">This platform is NOT licensed for real financial operations. All transactions are simulated on Stellar Testnet.</text>
+    <text x="600" y="1473" text-anchor="middle" class="small-text">Real deployment requires CBUAE license, Rust Soroban contracts on Mainnet, and full regulatory compliance.</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="1520" text-anchor="middle" class="en-text">AssetFi UAE - Tokenized Asset Finance on Stellar</text>
+  <text x="600" y="1545" text-anchor="middle" class="small-text">Built with d in UAE | Stellar Testnet Demo | github.com/fouxh/vartola-playground</text>
+  <text x="600" y="1565" text-anchor="middle" class="small-text">For inquiries: Phase 1 MVP Complete | Phases 2-3 Complete | Stellar Community Fund Application</text>
+
+</svg>

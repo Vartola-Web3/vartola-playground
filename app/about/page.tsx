@@ -14,6 +14,9 @@ export default function AboutPage() {
               <Link href="/" className="text-blue-200 hover:text-white transition-colors">
                 Home
               </Link>
+              <Link href="/how-it-works" className="text-blue-200 hover:text-white transition-colors">
+                How It Works
+              </Link>
               <Link href="/whitepaper" className="text-blue-200 hover:text-white transition-colors">
                 Whitepaper
               </Link>

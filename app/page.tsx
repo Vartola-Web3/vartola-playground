@@ -14,6 +14,9 @@ export default function Home() {
               <Link href="/" className="text-white font-semibold">
                 Home
               </Link>
+              <Link href="/how-it-works" className="text-blue-200 hover:text-white transition-colors">
+                How It Works
+              </Link>
               <Link href="/whitepaper" className="text-blue-200 hover:text-white transition-colors">
                 Whitepaper
               </Link>
@@ -151,6 +154,10 @@ export default function Home() {
 
           {/* Quick Links */}
           <div className="grid md:grid-cols-3 gap-4 mb-8">
+            <Link href="/how-it-works" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
+              <h4 className="font-semibold text-white mb-2">📖 How It Works</h4>
+              <p className="text-sm text-blue-200">Complete guide to our platform</p>
+            </Link>
             <Link href="/about" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
               <h4 className="font-semibold text-white mb-2">ℹ️ About AssetFi</h4>
               <p className="text-sm text-blue-200">Mission, vision, and current status</p>
@@ -158,10 +165,6 @@ export default function Home() {
             <Link href="/documents" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
               <h4 className="font-semibold text-white mb-2">📋 Required Documents</h4>
               <p className="text-sm text-blue-200">KYC checklist for SMEs & investors</p>
-            </Link>
-            <Link href="/pitch#timeline" className="bg-white/5 hover:bg-white/10 rounded-lg p-4 border border-white/10 transition-colors">
-              <h4 className="font-semibold text-white mb-2">🗺️ Full Roadmap</h4>
-              <p className="text-sm text-blue-200">Detailed phase timeline & next steps</p>
             </Link>
           </div>
 

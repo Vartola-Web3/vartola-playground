@@ -94,6 +94,7 @@ export async function PATCH(
     const updates: Record<string, unknown> = {};
 
     if (typeof body.assetType === "string") updates.assetType = body.assetType;
+    if (body.unitCount != null) updates.unitCount = Math.max(1, Math.floor(Number(body.unitCount) || 1));
     if (typeof body.assetDescription === "string") updates.assetDescription = body.assetDescription;
     if (body.assetValue != null) updates.assetValue = Number(body.assetValue);
     if (body.smeContribution != null) updates.smeContribution = Number(body.smeContribution);

@@ -84,7 +84,8 @@ model Application {
   submittedBy      String   @map("submitted_by")
   submitter        User     @relation(fields: [submittedBy], references: [id])
   
-  assetType        String   @map("asset_type") // TRUCK, DELIVERY_VAN, etc.
+  assetType        String   @map("asset_type")
+  unitCount        Int      @default(1) @map("unit_count")
   assetDescription String   @map("asset_description")
   assetValue       Float    @map("asset_value")
   smeContribution  Float    @map("sme_contribution")
@@ -181,6 +182,11 @@ model Facility {
   monthlyPayment Float    @map("monthly_payment")
   
   status         String   // PENDING_FUNDING, ACTIVE, CURRENT, etc.
+  priorityOrder  Int      @default(100) @map("priority_order")
+  fundedAmount   Float    @default(0) @map("funded_amount")
+  leaseYield     Float?   @map("lease_yield")
+  riskScore      Int?     @map("risk_score")
+  riskTier       String?  @map("risk_tier")
   
   stellarTxHash  String?  @map("stellar_tx_hash")
   stellarAssetId String?  @map("stellar_asset_id")
@@ -188,11 +194,22 @@ model Facility {
   activatedAt    DateTime? @map("activated_at")
   maturityDate   DateTime? @map("maturity_date")
   closedAt       DateTime? @map("closed_at")
+  incomeStartDate DateTime? @map("income_start_date")
+  settledEarly   Boolean  @default(false) @map("settled_early")
+  serviceFeeRate Float    @default(0) @map("service_fee_rate")
+  reserveRate    Float    @default(0) @map("reserve_rate")
+  beneficiaryId  String?  @map("beneficiary_id")
+  beneficiary    Beneficiary? @relation(fields: [beneficiaryId], references: [id])
   
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
   
   payments       Payment[]
+  allocations    FacilityAllocation[]
+  releaseConditions FacilityReleaseCondition[]
+  releases       FacilityRelease[]
+  activationChecks FacilityActivationCheck[]
+  recoveries     FacilityRecovery[]
 
   @@index([facilityNo])
   @@map("facilities")
@@ -215,6 +232,13 @@ model Pool {
   
   status        String   // DRAFT, OPEN, FUNDING, etc.
   assetFocus    String   @map("asset_focus")
+  description   String   @default("")
+  fleetType     String   @default("MIXED") @map("fleet_type")
+  riskScore     Int?     @map("risk_score")
+  riskRating    String?  @map("risk_rating")
+  termMonths    Int?     @map("term_months")
+  incompletePolicy String @default("MANUAL_REVIEW") @map("incomplete_policy")
+  priorityLocked Boolean @default(false) @map("priority_locked")
   
   stellarTxHash String?  @map("stellar_tx_hash")
   stellarPoolId String?  @map("stellar_pool_id")
@@ -247,6 +271,11 @@ model Investment {
   shares        Float
   
   status        String   // PENDING, ACTIVE, REDEEMED, CANCELLED
+  reservedAmount Float   @default(0) @map("reserved_amount")
+  deployedAmount Float   @default(0) @map("deployed_amount")
+  principalReturned Float @default(0) @map("principal_returned")
+  leaseIncomeReceived Float @default(0) @map("lease_income_received")
+  termsSnapshot String?  @map("terms_snapshot")
   
   stellarTxHash String?  @map("stellar_tx_hash")
   
@@ -254,6 +283,7 @@ model Investment {
   activatedAt   DateTime? @map("activated_at")
   
   distributions Distribution[]
+  allocations   FacilityAllocation[]
 
   @@index([investorId, poolId])
   @@map("investments")
@@ -271,6 +301,11 @@ model Payment {
   paymentNo     Int      @map("payment_no")
   dueDate       DateTime @map("due_date")
   amount        Float
+  principalComponent Float @default(0) @map("principal_component")
+  leaseIncomeComponent Float @default(0) @map("lease_income_component")
+  serviceFee    Float    @default(0) @map("service_fee")
+  reserveComponent Float @default(0) @map("reserve_component")
+  idempotencyKey String? @unique @map("idempotency_key")
   
   paidAt        DateTime? @map("paid_at")
   paidAmount    Float?    @map("paid_amount")
@@ -299,12 +334,113 @@ model Distribution {
   payment       Payment  @relation(fields: [paymentId], references: [id])
   
   amount        Float
+  facilityId    String?  @map("facility_id")
+  principalAmount Float  @default(0) @map("principal_amount")
+  leaseIncomeAmount Float @default(0) @map("lease_income_amount")
+  recoveryAmount Float   @default(0) @map("recovery_amount")
+  status        String   @default("CONFIRMED")
   
   stellarTxHash String?  @map("stellar_tx_hash")
   
   distributedAt DateTime @default(now()) @map("distributed_at")
 
   @@map("distributions")
+}
+
+model FacilityAllocation {
+  id               String   @id @default(cuid())
+  investmentId     String   @map("investment_id")
+  investment       Investment @relation(fields: [investmentId], references: [id])
+  facilityId       String   @map("facility_id")
+  facility         Facility @relation(fields: [facilityId], references: [id])
+  investorId       String   @map("investor_id")
+  poolId           String   @map("pool_id")
+  allocatedAmount  Float    @map("allocated_amount")
+  reservedAmount   Float    @map("reserved_amount")
+  deployedAmount   Float    @default(0) @map("deployed_amount")
+  principalReturned Float @default(0) @map("principal_returned")
+  leaseIncomeReceived Float @default(0) @map("lease_income_received")
+  recoveryReceived Float   @default(0) @map("recovery_received")
+  status           String   @default("RESERVED")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([poolId, facilityId])
+  @@map("investor_facility_allocations")
+}
+
+model WalletLedger {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  type      String
+  amount    Float
+  refId     String?  @map("ref_id")
+  note      String   @default("")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("wallet_ledger")
+}
+
+model Beneficiary {
+  id            String   @id @default(cuid())
+  type          String
+  legalName     String   @map("legal_name")
+  walletAddress String?  @map("wallet_address")
+  verificationStatus String @default("PENDING") @map("verification_status")
+  facilities    Facility[]
+
+  @@map("beneficiaries")
+}
+
+model FacilityReleaseCondition {
+  id          String   @id @default(cuid())
+  facilityId  String   @map("facility_id")
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  conditionType String @map("condition_type")
+  label       String
+  isRequired  Boolean  @default(true) @map("is_required")
+  status      String   @default("PENDING")
+  verifiedAt  DateTime? @map("verified_at")
+  notes       String   @default("")
+
+  @@unique([facilityId, conditionType])
+  @@map("facility_release_conditions")
+}
+
+model FacilityRelease {
+  id             String   @id @default(cuid())
+  facilityId     String   @unique @map("facility_id")
+  facility       Facility @relation(fields: [facilityId], references: [id])
+  amount         Float
+  idempotencyKey String   @unique @map("idempotency_key")
+  status         String
+  txHash         String?  @map("tx_hash")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@map("facility_releases")
+}
+
+model FacilityActivationCheck {
+  id          String   @id @default(cuid())
+  facilityId  String   @map("facility_id")
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  checkType   String   @map("check_type")
+  label       String
+  status      String   @default("PENDING")
+
+  @@unique([facilityId, checkType])
+  @@map("facility_activation_checks")
+}
+
+model FacilityRecovery {
+  id            String   @id @default(cuid())
+  facilityId    String   @map("facility_id")
+  facility      Facility @relation(fields: [facilityId], references: [id])
+  netProceeds   Float    @map("net_proceeds")
+  note          String   @default("")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("facility_recoveries")
 }
 
 // ============================================================================
@@ -384,4 +520,39 @@ model SystemSettings {
   
   @@index([category])
   @@map("system_settings")
+}
+
+model SimWallet {
+  id         String   @id @default(cuid())
+  ownerType  String   @map("owner_type")
+  ownerId    String   @map("owner_id")
+  label      String   @default("")
+  currency   String   @default("tAED")
+  available  Float    @default(0)
+  reserved   Float    @default(0)
+  deployed   Float    @default(0)
+  entries    SimLedgerEntry[]
+
+  @@unique([ownerType, ownerId])
+  @@map("sim_wallets")
+}
+
+model SimLedgerEntry {
+  id             String   @id @default(cuid())
+  walletId       String   @map("wallet_id")
+  wallet         SimWallet @relation(fields: [walletId], references: [id])
+  type           String
+  direction      String
+  amount         Float
+  balanceBefore  Float    @map("balance_before")
+  balanceAfter   Float    @map("balance_after")
+  idempotencyKey String   @unique @map("idempotency_key")
+  referenceType  String   @default("") @map("reference_type")
+  referenceId    String   @default("") @map("reference_id")
+  description    String   @default("")
+  createdBy      String   @default("") @map("created_by")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([walletId, createdAt])
+  @@map("sim_ledger_entries")
 }

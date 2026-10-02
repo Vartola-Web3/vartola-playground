@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth/auth';
 
 import { prisma } from '@/lib/db';
 import { calculateRisk } from '@/lib/risk-engine';
+import { AssetType } from '@/lib/types';
 import { createFacilityOnStellar } from '@/lib/stellar/facility-operations';
 
 export async function POST(request: NextRequest) {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
         industry: application.company.industry,
       },
       asset: {
-        assetType: application.assetType as 'TRUCK' | 'DELIVERY_VAN' | 'REFRIGERATED_VEHICLE' | 'TRAILER' | 'FORKLIFT' | 'OTHER',
+        assetType: application.assetType as AssetType,
         assetDescription: application.assetDescription,
         assetValue: application.assetValue,
       },
@@ -147,7 +148,10 @@ export async function POST(request: NextRequest) {
         });
         await prisma.pool.update({
           where: { id: openPool.id },
-          data: { raisedAmount: linked.reduce((sum, item) => sum + item.financeAmount, 0) },
+          data: {
+            raisedAmount: linked.reduce((sum, item) => sum + item.financeAmount, 0),
+            targetAmount: linked.reduce((sum, item) => sum + item.financeAmount, 0),
+          },
         });
       }
     }

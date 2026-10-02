@@ -1,186 +1,144 @@
-'use client';
-
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
-import { FloatingFinanceCard } from './FloatingFinanceCard';
-import { HeroVideoBackground } from './HeroVideoBackground';
+import { FleetDashboardCard } from '@/components/fleet/FleetDashboardCard';
+import { FleetMetricStrip } from '@/components/fleet/FleetMetricStrip';
+import { FleetTypeCard } from '@/components/fleet/FleetTypeCard';
+import { HeroFleetScene } from '@/components/fleet/HeroFleetScene';
+import { HowItWorksTimeline } from '@/components/fleet/HowItWorksTimeline';
+import { VehicleCard } from '@/components/fleet/VehicleCard';
 
-const Hero3D = dynamic(() => import('./Hero3D').then((mod) => mod.Hero3D), { ssr: false });
+const nav = [
+  ['Home', '/'],
+  ['How It Works', '/how-it-works'],
+  ['Whitepaper', '/whitepaper'],
+  ['About', '/about'],
+];
 
-const heroMode = process.env.NEXT_PUBLIC_HERO_MODE === 'video' ? 'video' : '3d';
+const types = [
+  ['Delivery Motorcycles', 'Last-mile delivery fleets', '/fleet/moto.jpg'],
+  ['Cargo Vans', 'E-commerce & logistics', '/fleet/van.jpg'],
+  ['Pickup Fleets', 'Field operations & SME use', '/fleet/pickup.jpg'],
+  ['Small & Medium Trucks', 'Distribution & transport', '/fleet/truck.jpg'],
+];
 
-function Reveal({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
-  return (
-    <motion.div ref={ref} className={className} initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
-      {children}
-    </motion.div>
-  );
-}
+const fleet = [
+  ['Motorcycles', '120 units', '95% Operational', '/fleet/moto.jpg'],
+  ['Cargo Vans', '85 units', '97% Operational', '/fleet/van.jpg'],
+  ['Pickup Fleets', '40 units', '93% Operational', '/fleet/pickup.jpg'],
+  ['Trucks', '25 units', '100% Operational', '/fleet/truck.jpg'],
+];
 
 export function LandingPage() {
-  const [scrolled, setScrolled] = useState(false);
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 768);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-[#040711] text-[#F8FAFC]">
-      <header className={`fixed inset-x-0 top-0 z-30 transition ${scrolled ? 'border-b border-white/10 bg-[#040711]/75 backdrop-blur-xl' : 'bg-transparent'}`}>
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-semibold tracking-tight">AssetFi UAE</Link>
-          <nav className="hidden items-center gap-5 text-sm text-[#94A3B8] lg:flex">
-            {[
-              ['Home', '/'],
-              ['How It Works', '/how-it-works'],
-              ['Why AssetFi', '#why'],
-              ['Whitepaper', '/whitepaper'],
-              ['Pitch Deck', '/pitch'],
-              ['Documents', '/documents'],
-              ['About', '/about'],
-            ].map(([label, href]) => (
-              <Link key={label} href={href} className="hover:text-white">{label}</Link>
-            ))}
-          </nav>
-          <Link href="/login" className="rounded-full bg-[#3B82F6] px-4 py-2 text-sm font-medium text-white">Launch Demo</Link>
-        </div>
+    <div className="min-h-screen bg-[#07120F] text-[#F6FFF9]">
+      <header className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6">
+        <Link href="/" className="text-sm font-semibold tracking-wide text-[#70FFB8]">
+          AssetFi UAE
+        </Link>
+        <nav className="hidden gap-6 text-sm text-[#9FB8AD] md:flex">
+          {nav.map(([label, href]) => (
+            <Link key={href} href={href} className="hover:text-[#F6FFF9]">
+              {label}
+            </Link>
+          ))}
+        </nav>
+        <Link href="/login" className="rounded-full bg-[#35F49A] px-4 py-2 text-sm font-semibold text-[#07120F]">
+          Launch Demo
+        </Link>
       </header>
 
-      <section className="relative min-h-screen overflow-hidden pt-16">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(59,130,246,0.25),transparent_32%),radial-gradient(circle_at_20%_80%,rgba(139,92,246,0.14),transparent_28%)]" />
-        <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl items-center gap-10 px-4 py-16 lg:grid-cols-2">
+      <main className="mx-auto max-w-7xl space-y-8 px-4 pb-16 sm:px-6">
+        <section className="grid items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-[#94A3B8]">
-              Built on Stellar Testnet · Demo only, no real value
-            </motion.p>
-            <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mt-6 max-w-xl text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-              The Future of Tokenized Asset Finance
-            </motion.h1>
-            <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-5 max-w-xl text-lg leading-8 text-[#94A3B8]">
-              AssetFi transforms real-world business assets into risk-scored, tokenized lease-to-own financing opportunities for UAE SMEs, powered by Stellar.
-            </motion.p>
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.32 }} className="mt-8 flex flex-wrap gap-3">
-              <Link href="/login" className="rounded-full bg-[#3B82F6] px-5 py-3 text-sm font-medium">Launch Demo</Link>
-              <Link href="/whitepaper" className="rounded-full border border-white/15 px-5 py-3 text-sm font-medium">View Whitepaper</Link>
-              <Link href="#model" className="rounded-full px-5 py-3 text-sm text-[#94A3B8]">Explore the Model</Link>
-            </motion.div>
+            <p className="text-xs uppercase tracking-[0.18em] text-[#70FFB8]">Real vehicles. Real businesses. Tokenized finance.</p>
+            <h1 className="mt-3 text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+              The Future of <span className="text-[#35F49A]">Fleet Finance</span>
+            </h1>
+            <p className="mt-4 max-w-xl text-lg text-[#9FB8AD]">
+              Tokenized lease-to-own financing for UAE delivery and transport fleets, powered by Stellar.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/login" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">
+                Launch Demo
+              </Link>
+              <Link href="/whitepaper" className="rounded-full border border-[rgba(112,255,184,0.3)] px-5 py-3 text-sm text-[#F6FFF9]">
+                View Whitepaper
+              </Link>
+            </div>
+            <ul className="mt-6 grid grid-cols-2 gap-2 text-xs text-[#9FB8AD]">
+              {['Real Assets on Blockchain', 'Built for UAE Fleets', 'Shariah-Aligned Finance Options', 'Powered by Stellar'].map((item) => (
+                <li key={item} className="rounded-full border border-[rgba(112,255,184,0.14)] px-3 py-2">
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="relative h-[460px]">
-            {heroMode === 'video' ? <HeroVideoBackground /> : <Hero3D reduced={reduced} />}
-            <div className="pointer-events-none absolute inset-x-4 bottom-4 grid grid-cols-2 gap-3 md:grid-cols-3">
-              <FloatingFinanceCard label="Asset" value="Commercial truck" delay={0.2} />
-              <FloatingFinanceCard label="Asset value" value="AED 300,000" delay={0.3} />
-              <FloatingFinanceCard label="Finance" value="AED 225,000" delay={0.4} />
-              <FloatingFinanceCard label="Risk tier" value="B" delay={0.5} />
-              <FloatingFinanceCard label="Term" value="36 months" delay={0.6} />
-              <FloatingFinanceCard label="Network" value="Stellar testnet" delay={0.7} />
+          <HeroFleetScene />
+        </section>
+
+        <FleetMetricStrip />
+
+        <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-3xl border border-[rgba(112,255,184,0.14)] bg-[#0E211B] p-5">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Fleet Types</h2>
+              <span className="text-xs text-[#70FFB8]">Commercial vehicles only</span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {types.map(([title, useCase, image]) => (
+                <FleetTypeCard key={title} title={title} useCase={useCase} image={image} />
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+          <HowItWorksTimeline />
+        </section>
 
-      <section className="border-y border-white/10 bg-[#060B18]">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-10 md:grid-cols-4">
-          {[
-            ['AED 2.4M', 'Demo pipeline'],
-            ['15', 'Tokenized assets'],
-            ['8', 'Demo SMEs'],
-            ['3', 'Financing pools'],
-          ].map(([value, label]) => (
-            <div key={label}>
-              <p className="text-3xl font-semibold">{value}</p>
-              <p className="mt-1 text-sm text-[#94A3B8]">{label}</p>
+        <section className="overflow-hidden rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#091713]">
+          <div className="grid lg:grid-cols-[220px_1fr]">
+            <aside className="border-b border-[rgba(112,255,184,0.12)] p-5 lg:border-b-0 lg:border-r">
+              <p className="text-sm font-semibold text-[#70FFB8]">AssetFi UAE</p>
+              <ul className="mt-6 space-y-2 text-sm text-[#9FB8AD]">
+                {['Dashboard', 'My Fleet', 'Payments', 'Contracts', 'Documents', 'Activity', 'Settings'].map((item, index) => (
+                  <li key={item} className={index === 0 ? 'rounded-xl bg-[#132D24] px-3 py-2 text-[#F6FFF9]' : 'px-3 py-2'}>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </aside>
+            <div className="p-5">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-xl font-semibold">Dashboard</h2>
+                <span className="text-xs text-[#9FB8AD]">Fleet owner preview</span>
+              </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <FleetDashboardCard label="Fleet Units" value="245" hint="+12%" />
+                <FleetDashboardCard label="Active Facilities" value="3" hint="Active" />
+                <FleetDashboardCard label="Upcoming Payment" value="AED 320,000" hint="in 5 days" />
+                <FleetDashboardCard label="Fleet Status" value="96%" hint="Operational" />
+              </div>
+              <h3 className="mb-3 mt-6 text-sm uppercase tracking-[0.14em] text-[#9FB8AD]">Your Fleet</h3>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {fleet.map(([title, units, status, image]) => (
+                  <VehicleCard key={title} title={title} units={units} status={status} image={image} />
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <section id="model" className="mx-auto max-w-6xl px-4 py-24">
-        <Reveal>
-          <p className="text-xs uppercase tracking-[0.18em] text-[#22D3EE]">How it works</p>
-          <h2 className="mt-3 text-4xl font-semibold">From a working asset to a financed facility</h2>
-        </Reveal>
-        <div className="mt-10 grid gap-4 md:grid-cols-5">
-          {['SME applies', 'Asset and business scored', 'Facility tokenized', 'Investors fund the pool', 'Lease payments distributed'].map((step, index) => (
-            <Reveal key={step}>
-              <article className="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-                <p className="text-xs text-[#22D3EE]">0{index + 1}</p>
-                <h3 className="mt-4 text-lg font-medium">{step}</h3>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-[#060B18] py-24">
-        <div className="mx-auto max-w-6xl px-4">
-          <Reveal>
-            <h2 className="text-4xl font-semibold">One physical asset. A digital financing facility.</h2>
-          </Reveal>
-          <div className="mt-10 grid gap-3 md:grid-cols-6">
-            {['Physical asset', 'Asset registry', 'Financing facility', 'Tokenized pool', 'Investor allocation', 'Lease repayment'].map((node) => (
-              <div key={node} className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-6 text-sm">{node}</div>
+        <section className="rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[linear-gradient(180deg,#0E211B,#07120F)] px-6 py-10">
+          <h2 className="max-w-xl text-3xl font-semibold">Financing the Movement of a Stronger UAE</h2>
+          <p className="mt-3 max-w-2xl text-[#9FB8AD]">
+            Empowering businesses. Enabling opportunities. Tokenizing real fleet impact.
+          </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {['A Smarter Fleet Economy', 'More Businesses On The Move', 'Real Assets, Real Operations', 'A Stronger UAE Tomorrow'].map((item) => (
+              <p key={item} className="rounded-2xl border border-[rgba(112,255,184,0.14)] px-4 py-5 text-sm text-[#F6FFF9]">
+                {item}
+              </p>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section id="why" className="mx-auto grid max-w-6xl gap-10 px-4 py-24 md:grid-cols-2">
-        <Reveal>
-          <h2 className="text-4xl font-semibold">Why Stellar</h2>
-          <p className="mt-4 leading-7 text-[#94A3B8]">Settlement stays fast and inexpensive, while the financing record stays programmable and visible. AssetFi uses that layer for tokenized real-world asset facilities, not for speculative coins.</p>
-        </Reveal>
-        <div className="grid gap-3">
-          {['Fast settlement', 'Low transaction cost', 'Programmable asset finance', 'Transparent records', 'Tokenized real-world assets'].map((item) => (
-            <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm">{item}</div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 pb-24">
-        <Reveal>
-          <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 md:p-10">
-            <p className="text-xs uppercase tracking-[0.18em] text-[#8B5CF6]">Reference facility</p>
-            <h2 className="mt-3 text-3xl font-semibold">Gulf Logistics LLC</h2>
-            <div className="mt-8 grid gap-6 md:grid-cols-3">
-              {[
-                ['Asset', 'Isuzu NPR truck'],
-                ['Value', 'AED 300,000'],
-                ['SME contribution', 'AED 75,000'],
-                ['Financing', 'AED 225,000'],
-                ['Term', '36 months'],
-                ['Risk', 'Tier B'],
-              ].map(([label, value]) => (
-                <div key={label}>
-                  <p className="text-xs uppercase tracking-wide text-[#94A3B8]">{label}</p>
-                  <p className="mt-1 text-lg">{value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 flex flex-wrap gap-2 text-xs text-[#94A3B8]">
-              {['Application', 'Approved', 'Tokenized', 'Funded', 'Active'].map((stage) => (
-                <span key={stage} className="rounded-full border border-white/10 px-3 py-1">{stage}</span>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
-      <section className="border-t border-white/10 px-4 py-20 text-center">
-        <h2 className="text-4xl font-semibold">Infrastructure for tokenized SME asset finance.</h2>
-        <p className="mx-auto mt-4 max-w-xl text-[#94A3B8]">A testnet demonstration for investors, partners, and reviewers. No real value is transferred.</p>
-        <Link href="/login" className="mt-8 inline-flex rounded-full bg-[#3B82F6] px-6 py-3 text-sm font-medium">Launch Demo</Link>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

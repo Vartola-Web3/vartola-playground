@@ -22,19 +22,34 @@ export async function GET() {
 
     const withTotals = await Promise.all(
       pools.map(async (pool) => {
-        const raisedAmount = pool.facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
-        if (raisedAmount !== pool.raisedAmount) {
-          await prisma.pool.update({ where: { id: pool.id }, data: { raisedAmount } });
+        const size = pool.facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
+        const targetAmount = pool.targetAmount > 0 ? pool.targetAmount : size;
+        if (targetAmount !== pool.targetAmount) {
+          await prisma.pool.update({ where: { id: pool.id }, data: { targetAmount } });
         }
-        return { ...pool, raisedAmount };
+        return { ...pool, targetAmount };
       })
     );
 
-    const availableFacilities = await prisma.facility.findMany({
-      where: { poolId: null },
-      include: { application: { select: { applicationNo: true, assetDescription: true } } },
+    const approved = await prisma.application.findMany({
+      where: { status: { in: ['APPROVED', 'FUNDED'] } },
+      include: {
+        facility: true,
+      },
       orderBy: { createdAt: 'desc' },
     });
+    const availableFacilities = approved
+      .filter((application) => application.facility && !application.facility.poolId)
+      .map((application) => ({
+        id: application.facility!.id,
+        facilityNo: application.facility!.facilityNo,
+        financeAmount: application.facility!.financeAmount,
+        application: {
+          applicationNo: application.applicationNo,
+          assetDescription: application.assetDescription,
+          status: application.status,
+        },
+      }));
 
     return NextResponse.json({ pools: withTotals, availableFacilities });
   } catch (error) {
@@ -51,24 +66,33 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { poolName, targetAmount, minInvestment, targetReturn, assetFocus } = body;
+    const { poolName, minInvestment, targetReturn, assetFocus, facilityIds } = body;
+    const ids = Array.isArray(facilityIds) ? facilityIds.filter((id: unknown) => typeof id === 'string') : [];
 
     const poolCount = await prisma.pool.count();
     const poolNo = `POOL-${new Date().getFullYear()}-${String(poolCount + 1).padStart(3, '0')}`;
+
+    const facilities = ids.length
+      ? await prisma.facility.findMany({ where: { id: { in: ids }, poolId: null } })
+      : [];
+    const amount = facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
 
     const pool = await prisma.pool.create({
       data: {
         poolNo,
         poolName,
-        targetAmount,
+        targetAmount: amount,
         minInvestment,
         targetReturn,
         assetFocus,
         status: 'OPEN',
-        raisedAmount: 0,
+        raisedAmount: amount,
         stellarPoolId: generateSimulatedPoolId(),
         stellarTxHash: generateSimulatedTxHash(),
         openedAt: new Date(),
+        facilities: facilities.length
+          ? { connect: facilities.map((facility) => ({ id: facility.id })) }
+          : undefined,
       },
     });
 
@@ -78,7 +102,7 @@ export async function POST(request: NextRequest) {
         action: 'POOL_CREATED',
         entityType: 'Pool',
         entityId: pool.id,
-        changes: JSON.stringify({ poolNo, poolName, targetAmount }),
+        changes: JSON.stringify({ poolNo, poolName, targetAmount: amount }),
       },
     });
 

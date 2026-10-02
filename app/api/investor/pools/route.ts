@@ -25,6 +25,7 @@ export async function GET() {
     for (const pool of pools) {
       const raisedAmount = pool.facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
       pool.raisedAmount = raisedAmount;
+      pool.targetAmount = raisedAmount;
     }
 
     return NextResponse.json({ pools });

@@ -54,7 +54,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F7F9FC] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#07120F] p-4 text-[#F6FFF9]">
       <div className="w-full max-w-md">
         <div className="mb-4 rounded-full bg-amber-50 px-3 py-2 text-center text-xs font-medium text-amber-900">
           Testnet demo only. No real value.
@@ -62,7 +62,7 @@ export default function LoginPage() {
 
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-center text-2xl font-semibold text-[#0B1F4D]">AssetFi UAE</CardTitle>
+            <CardTitle className="text-center text-2xl font-semibold text-[#F6FFF9]">AssetFi UAE</CardTitle>
             <CardDescription className="text-center">Sign in to your account</CardDescription>
           </CardHeader>
           <CardContent>
@@ -100,7 +100,7 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <Button type="submit" className="w-full bg-[#1D4ED8] hover:bg-[#1e40af]" disabled={loading}>
+              <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
@@ -113,7 +113,7 @@ export default function LoginPage() {
                     key={cred.role}
                     type="button"
                     onClick={() => quickLogin(cred.email, cred.password)}
-                    className="rounded-xl border border-[#E2E8F0] bg-[#F7F9FC] p-3 text-left text-xs transition-colors hover:border-[#1D4ED8]"
+                    className="rounded-xl border border-[rgba(112,255,184,0.16)] bg-[#091713] p-3 text-left text-xs text-[#F6FFF9] transition-colors hover:border-[#35F49A]"
                   >
                     <div className="font-semibold text-[#0F172A]">{cred.role}</div>
                     <div className="truncate text-[#475569]">{cred.email}</div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
@@ -16,7 +16,8 @@ export default function NewApplicationPage() {
   const [error, setError] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState({
-    assetType: 'TRUCK',
+    assetType: 'CARGO_VAN',
+    unitCount: '1',
     assetDescription: '',
     assetValue: '',
     smeContribution: '',
@@ -41,6 +42,7 @@ export default function NewApplicationPage() {
     try {
       const submitData = new FormData();
       submitData.set('assetType', formData.assetType);
+      submitData.set('unitCount', formData.unitCount);
       submitData.set('assetDescription', formData.assetDescription);
       submitData.set('assetValue', formData.assetValue);
       submitData.set('smeContribution', formData.smeContribution);
@@ -102,10 +104,23 @@ export default function NewApplicationPage() {
                     onChange={(e) => setFormData({ ...formData, assetType: e.target.value })}
                     required
                   >
-                    <option value="TRUCK">Truck</option>
-                    <option value="DELIVERY_VAN">Delivery Van</option>
-                    <option value="EQUIPMENT">Equipment</option>
+                    <option value="DELIVERY_MOTORCYCLE">Delivery Motorcycle</option>
+                    <option value="CARGO_VAN">Cargo Van</option>
+                    <option value="PICKUP">Pickup</option>
+                    <option value="SMALL_TRUCK">Small Truck</option>
+                    <option value="MEDIUM_TRUCK">Medium Truck</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Number of units *</label>
+                  <Input
+                    type="number"
+                    required
+                    min="1"
+                    step="1"
+                    value={formData.unitCount}
+                    onChange={(e) => setFormData({ ...formData, unitCount: e.target.value })}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Asset Description *</label>

@@ -11,7 +11,7 @@ describe('Risk Engine', () => {
   };
 
   const mockAsset: AssetData = {
-    assetType: 'TRUCK',
+    assetType: 'SMALL_TRUCK',
     assetDescription: 'Isuzu NPR 75P 16FT Box Truck - Brand New',
     assetValue: 300000,
   };

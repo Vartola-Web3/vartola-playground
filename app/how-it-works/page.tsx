@@ -72,12 +72,30 @@ export default function HowItWorksPage() {
             </div>
             <div className="space-y-4 text-[#475569]" dir="rtl" lang="ar">
               <p className="leading-relaxed text-lg">
-                AssetFi UAE هي منصة تمويل أصول مبتكرة تجمع بين التمويل التقليدي وتقنية البلوكشين على شبكة Stellar، لتوفير حلول تمويل شفافة وفعالة للشركات الصغيرة والمتوسطة في الإمارات.
+                AssetFi UAE هي منصة تمويل أصول مبتكرة تجمع بين التمويل التقليدي وتقنية البلوكشين على شبكة Stellar، لتوفير حلول تمويل شفافة وفعالة للشركات الصغيرة والمتوسطة في الإمارات. التركيز الحالي هو أسطول التوصيل والنقل: دراجات، فانات، بيك أب، وشاحنات.
               </p>
               <p className="leading-relaxed text-base text-[#475569]">
                 AssetFi UAE is an innovative asset finance platform that combines traditional finance with blockchain technology on the Stellar network, providing transparent and efficient financing solutions for UAE SMEs.
               </p>
             </div>
+          </section>
+
+          <section className="rounded-2xl border border-[#E2E8F0] bg-white p-8 shadow-[0_8px_24px_rgba(15,23,42,0.04)] mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-4xl">🚚</span>
+              <div>
+                <h2 className="text-3xl font-bold text-[#0F172A]" dir="rtl" lang="ar">دورة تمويل الأسطول</h2>
+                <p className="text-[#475569]">Fleet finance lifecycle</p>
+              </div>
+            </div>
+            <ol className="space-y-3 text-[#475569]" dir="rtl" lang="ar">
+              <li>الشركة تقدم طلب مركبة بعدد وحدات وقيمة ومدة، وترفع المستندات، وتتابع التذكرة مع المراجع.</li>
+              <li>الموافقة تنشئ تسهيلاً. الإدارة تربطه بفرصة استثمار، وحجم الفرصة هو مجموع مبالغ الأصول.</li>
+              <li>المستثمر يختار مبلغاً ضمن الحد الأدنى والمتاح. رأس المال يبقى محجوزاً، والعائد لا يبدأ عند الاكتتاب.</li>
+              <li>بعد اكتمال التمويل تُراجع شروط الإفراج، وتُسجَّل الأموال للمستفيد المعتمد وليس للشركة مباشرة.</li>
+              <li>بعد تأكيد التسليم يصبح التسهيل نشطاً، ويتحول المحجوز في هذا التسهيل فقط إلى رأس مال منشور.</li>
+              <li>كل قسط يُوزَّع على المستثمرين المنشورين في ذلك التسهيل. يمكن تسجيل تسوية مبكرة أو تأخر أو تعثر واسترداد.</li>
+            </ol>
           </section>
 
           {/* User Roles Section */}
@@ -578,7 +596,7 @@ export default function HowItWorksPage() {
                 <ul className="space-y-2 mr-6">
                   <li>• لا تستخدم أموال حقيقية أو معلومات مالية حقيقية</li>
                   <li>• جميع المعاملات محاكاة على Stellar Testnet</li>
-                  <li>• العقود الذكية حالياً stubs مكتوبة بـ TypeScript (لا توجد عقود Rust Soroban حقيقية بعد)</li>
+                  <li>• العقود على الشبكة ما زالت محاكاة؛ دورة الإفراج والأقساط تعمل داخل التطبيق</li>
                   <li>• البيانات التجريبية (مثل Gulf Logistics) خيالية</li>
                   <li>• المنصة غير مرخصة لإجراء عمليات تمويل حقيقية</li>
                 </ul>

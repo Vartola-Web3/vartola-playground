@@ -17,12 +17,11 @@ export type RiskTier = 'TIER_A' | 'TIER_B' | 'TIER_C' | 'TIER_D';
 
 // Asset Types
 export type AssetType =
-  | 'TRUCK'
-  | 'DELIVERY_VAN'
-  | 'TRAILER'
-  | 'REFRIGERATED_VEHICLE'
-  | 'FORKLIFT'
-  | 'OTHER';
+  | 'DELIVERY_MOTORCYCLE'
+  | 'CARGO_VAN'
+  | 'PICKUP'
+  | 'SMALL_TRUCK'
+  | 'MEDIUM_TRUCK';
 
 // Facility Statuses
 export type FacilityStatus =

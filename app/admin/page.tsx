@@ -2,151 +2,56 @@ import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatAED, formatDateTime } from '@/lib/formatters';
+import { formatDateTime } from '@/lib/formatters';
 import Link from 'next/link';
 
 export default async function AdminDashboard() {
   const session = await auth();
+  if (!session?.user || session.user.role !== 'ADMIN') redirect('/login');
 
-  if (!session?.user || session.user.role !== 'ADMIN') {
-    redirect('/login');
-  }
-
-  const [users, applications, facilities, pools, recentAudit] = await Promise.all([
-    prisma.user.count(),
-    prisma.application.count(),
-    prisma.facility.count(),
-    prisma.pool.count(),
-    prisma.auditLog.findMany({
-      take: 10,
-      orderBy: { createdAt: 'desc' },
-      include: { user: true },
-    }),
+  const [pending, awaiting, late, active, recent] = await Promise.all([
+    prisma.application.count({ where: { status: { in: ['SUBMITTED', 'UNDER_REVIEW', 'CONDITIONALLY_APPROVED'] } } }),
+    prisma.facility.count({ where: { status: { in: ['APPROVED', 'FUNDED', 'RELEASED'] } } }),
+    prisma.payment.count({ where: { status: 'LATE' } }),
+    prisma.pool.count({ where: { status: { in: ['OPEN', 'FUNDING', 'ACTIVE', 'FULLY_FUNDED'] } } }),
+    prisma.auditLog.findMany({ take: 5, orderBy: { createdAt: 'desc' }, include: { user: true } }),
   ]);
 
-  const totalFinanced = await prisma.facility.aggregate({
-    _sum: { financeAmount: true },
-  });
-
-  const stats = {
-    totalUsers: users,
-    totalApplications: applications,
-    activeFacilities: facilities,
-    totalPools: pools,
-    totalFinanced: Number(totalFinanced._sum.financeAmount || 0),
-  };
-
   return (
-    <DashboardLayout role={session.user.role}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Admin Dashboard</h1>
-          <p className="text-slate-600 mt-1">System management and monitoring</p>
+    <DashboardLayout role="ADMIN">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div className="flex items-end justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold">Operations</h1>
+            <p className="text-[#708078]">What needs attention today.</p>
+          </div>
+          <Link href="/admin/pools" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">Opportunities</Link>
         </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Users</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalUsers}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Applications</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalApplications}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Active Facilities</CardDescription>
-              <CardTitle className="text-3xl">{stats.activeFacilities}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Investment Pools</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalPools}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Financed</CardDescription>
-              <CardTitle className="text-xl">{formatAED(stats.totalFinanced)}</CardTitle>
-            </CardHeader>
-          </Card>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            ['Applications pending', String(pending), '/admin/users'],
+            ['Facilities awaiting release', String(awaiting), '/admin/pools'],
+            ['Payments late', String(late), '/admin/simulation'],
+            ['Active investments', String(active), '/admin/pools'],
+          ].map(([label, value, href]) => (
+            <Link key={label} href={href} className="rounded-3xl border-l-4 border-[#15C77A] bg-white p-5 shadow-sm">
+              <p className="text-sm text-[#708078]">{label}</p>
+              <p className="mt-2 text-2xl font-semibold">{value}</p>
+            </Link>
+          ))}
         </div>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link
-                href="/admin/users"
-                className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-center"
-              >
-                <div className="font-semibold text-slate-900">Manage Users</div>
-                <div className="text-sm text-slate-600 mt-1">View and manage user accounts</div>
-              </Link>
-              <Link
-                href="/admin/pools"
-                className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-center"
-              >
-                <div className="font-semibold text-slate-900">Manage Pools</div>
-                <div className="text-sm text-slate-600 mt-1">Create and manage investment pools</div>
-              </Link>
-              <Link
-                href="/admin/audit"
-                className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-center"
-              >
-                <div className="font-semibold text-slate-900">Audit Log</div>
-                <div className="text-sm text-slate-600 mt-1">View system activity logs</div>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle>Recent System Activity</CardTitle>
-                <CardDescription>Latest audit log entries</CardDescription>
+        <section className="rounded-3xl bg-white p-5 shadow-sm">
+          <h2 className="font-semibold">Recent actions</h2>
+          <div className="mt-3 space-y-2">
+            {recent.map((log) => (
+              <div key={log.id} className="flex justify-between gap-3 text-sm">
+                <span>{log.user?.name || 'System'} · {log.action.replace(/_/g, ' ')}</span>
+                <span className="text-[#708078]">{formatDateTime(log.createdAt)}</span>
               </div>
-              <Link
-                href="/admin/audit"
-                className="text-sm text-blue-600 hover:underline font-medium"
-              >
-                View All →
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {recentAudit.map((log) => (
-                <div
-                  key={log.id}
-                  className="flex justify-between items-center p-3 border border-slate-200 rounded text-sm"
-                >
-                  <div>
-                    <span className="font-medium">{log.user.name}</span>
-                    <span className="text-slate-600 mx-2">•</span>
-                    <span className="text-slate-700">{log.action.replace(/_/g, ' ')}</span>
-                    <span className="text-slate-600 mx-2">•</span>
-                    <span className="text-slate-600">{log.entityType}</span>
-                  </div>
-                  <div className="text-slate-500 text-xs">{formatDateTime(log.createdAt)}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+            ))}
+            {recent.length === 0 && <p className="text-sm text-[#708078]">No recent actions.</p>}
+          </div>
+        </section>
       </div>
     </DashboardLayout>
   );

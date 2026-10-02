@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/db';
 import { calculateRisk } from '@/lib/risk-engine';
@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     const form = await request.formData();
     const asDraft = form.get('asDraft') === 'true';
     const assetType = String(form.get('assetType') || '');
+    const unitCount = Math.max(1, Math.floor(Number(form.get('unitCount')) || 1));
     const assetDescription = String(form.get('assetDescription') || '');
     const assetValue = Number(form.get('assetValue'));
     const smeContribution = Number(form.get('smeContribution'));
@@ -55,6 +56,7 @@ export async function POST(request: NextRequest) {
             companyId: user.company.id,
             submittedBy: user.id,
             assetType,
+            unitCount,
             assetDescription,
             assetValue,
             smeContribution,

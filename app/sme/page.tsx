@@ -2,16 +2,13 @@ import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatAED, formatDate, getStatusColor } from '@/lib/formatters';
+import { formatAED, formatDate } from '@/lib/formatters';
+import { countsFromAssetTypes, fleetImage, getFleetVisualType } from '@/lib/fleet-visual';
 import Link from 'next/link';
 
 export default async function SMEDashboard() {
   const session = await auth();
-
-  if (!session?.user || session.user.role !== 'SME') {
-    redirect('/login');
-  }
+  if (!session?.user || session.user.role !== 'SME') redirect('/login');
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
@@ -24,198 +21,83 @@ export default async function SMEDashboard() {
       },
     },
   });
-
-  if (!user || !user.companyId) {
-    redirect('/login');
-  }
-
-  const notices = await prisma.underwritingReview.findMany({
-    where: {
-      decision: { in: ['MESSAGE', 'DOCUMENT_REQUEST'] },
-      reviewer: { role: { in: ['UNDERWRITER', 'ADMIN'] } },
-      application: { companyId: user.companyId, status: { not: 'ARCHIVED' } },
-    },
-    include: { application: { select: { id: true, applicationNo: true } } },
-    orderBy: { reviewedAt: 'desc' },
-    take: 6,
-  });
+  if (!user?.companyId) redirect('/login');
 
   const facilities = await prisma.facility.findMany({
-    where: {
-      application: {
-        companyId: user.companyId!,
-      },
-    },
+    where: { application: { companyId: user.companyId } },
     include: {
       application: true,
-      payments: {
-        where: { status: 'SCHEDULED' },
-        orderBy: { dueDate: 'asc' },
-        take: 1,
-      },
+      payments: { orderBy: { dueDate: 'asc' } },
     },
   });
 
-  const stats = {
-    totalApplications: user.applications.length,
-    activeApplications: user.applications.filter((a) => a.status === 'UNDER_REVIEW' || a.status === 'SUBMITTED').length,
-    activeFacilities: facilities.filter((f) => f.status === 'ACTIVE' || f.status === 'CURRENT').length,
-    totalFinanced: facilities.reduce((sum, f) => sum + Number(f.financeAmount), 0),
-  };
+  const fleetUnits = facilities.reduce((sum, facility) => sum + (facility.application.unitCount || 1), 0);
+  const outstanding = facilities
+    .filter((facility) => !['SETTLED', 'CLOSED'].includes(facility.status))
+    .reduce((sum, facility) => sum + Number(facility.financeAmount), 0);
+  const next = facilities
+    .flatMap((facility) => facility.payments)
+    .filter((payment) => payment.status === 'SCHEDULED' || payment.status === 'LATE')
+    .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())[0];
+  const allPayments = facilities.flatMap((facility) => facility.payments);
+  const paid = allPayments.filter((payment) => payment.status === 'PAID').length;
+  const progress = allPayments.length ? Math.round((paid / allPayments.length) * 100) : 0;
+  const image = fleetImage(getFleetVisualType(countsFromAssetTypes(facilities.map((facility) => facility.application.assetType))));
 
   return (
-    <DashboardLayout role={session.user.role}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Welcome, {user.name}</h1>
-          <p className="text-slate-600 mt-1">{user.company?.legalName}</p>
+    <DashboardLayout role="SME">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-semibold">{user.company?.legalName}</h1>
+            <p className="text-[#708078]">Your fleet, financing, and next payment.</p>
+          </div>
+          <Link href="/sme/applications/new" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">
+            Finance a vehicle
+          </Link>
         </div>
 
-        {notices.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Notifications</CardTitle>
-              <CardDescription>Same messages that appear inside each application ticket.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {notices.map((notice) => (
-                <Link key={notice.id} href={`/sme/applications/${notice.application.id}`} className="block rounded-xl border border-slate-200 px-4 py-3 hover:bg-slate-50">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium">{notice.application.applicationNo}</span>
-                    <span className="rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-900">
-                      {notice.decision === 'DOCUMENT_REQUEST' ? 'Upload files' : 'Reply needed'}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-600">{notice.comments}</p>
-                </Link>
-              ))}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Applications</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalApplications}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Active Applications</CardDescription>
-              <CardTitle className="text-3xl">{stats.activeApplications}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Active Facilities</CardDescription>
-              <CardTitle className="text-3xl">{stats.activeFacilities}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Total Financed</CardDescription>
-              <CardTitle className="text-2xl">{formatAED(stats.totalFinanced)}</CardTitle>
-            </CardHeader>
-          </Card>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            ['Fleet units', String(fleetUnits || user.applications.length)],
+            ['Outstanding finance', formatAED(outstanding)],
+            ['Next payment', next ? formatAED(next.amount) : '—'],
+            ['Lease progress', `${progress}%`],
+          ].map(([label, value]) => (
+            <article key={label} className="rounded-3xl bg-white p-5 shadow-sm">
+              <p className="text-sm text-[#708078]">{label}</p>
+              <p className="mt-2 text-2xl font-semibold">{value}</p>
+              {label === 'Next payment' && next && <p className="mt-1 text-xs text-[#708078]">Due {formatDate(next.dueDate)}</p>}
+            </article>
+          ))}
         </div>
 
-        {/* Recent Applications */}
-        <Card>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle>Recent Applications</CardTitle>
-                <CardDescription>Your latest financing applications</CardDescription>
-              </div>
-              <Link
-                href="/sme/applications/new"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
-              >
-                New Application
-              </Link>
+        <section className="overflow-hidden rounded-3xl bg-white shadow-sm">
+          <img src={image} alt="" className="h-44 w-full object-cover" />
+          <div className="flex items-center justify-between gap-3 p-5">
+            <div>
+              <h2 className="font-semibold">My fleet</h2>
+              <p className="text-sm text-[#708078]">{facilities.length} financed vehicles</p>
             </div>
-          </CardHeader>
-          <CardContent>
-            {user.applications.length === 0 ? (
-              <p className="text-slate-500 text-center py-8">
-                No applications yet. Start your first application!
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {user.applications.map((app) => (
-                  <Link
-                    key={app.id}
-                    href={`/sme/applications/${app.id}`}
-                    className="block p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-semibold text-slate-900">{app.applicationNo}</div>
-                        <div className="text-sm text-slate-600 mt-1">{app.assetDescription}</div>
-                        <div className="text-sm text-slate-500 mt-1">
-                          {formatAED(Number(app.assetValue))} • {formatDate(app.createdAt)}
-                        </div>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                          app.status
-                        )}`}
-                      >
-                        {app.status.replace(/_/g, ' ')}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+            <Link href="/sme/payments" className="rounded-full bg-[#EAF9F1] px-4 py-2 text-sm font-medium text-[#0A4934]">Payments</Link>
+          </div>
+        </section>
 
-        {/* Active Facilities */}
-        {facilities.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Active Facilities</CardTitle>
-              <CardDescription>Your financed assets</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {facilities.map((facility) => {
-                  const nextPayment = facility.payments[0];
-                  return (
-                    <Link
-                      key={facility.id}
-                      href={`/sme/facilities/${facility.id}`}
-                      className="block p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="font-semibold text-slate-900">{facility.facilityNo}</div>
-                          <div className="text-sm text-slate-600 mt-1">
-                            {facility.application.assetDescription}
-                          </div>
-                          <div className="text-sm text-slate-500 mt-1">
-                            Monthly Payment: {formatAED(Number(facility.monthlyPayment))}
-                            {nextPayment && ` • Next Due: ${formatDate(nextPayment.dueDate)}`}
-                          </div>
-                        </div>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                            facility.status
-                          )}`}
-                        >
-                          {facility.status}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <section className="rounded-3xl bg-white p-5 shadow-sm">
+          <h2 className="font-semibold">Applications</h2>
+          <div className="mt-4 space-y-3">
+            {user.applications.length === 0 && <p className="text-sm text-[#708078]">No applications yet.</p>}
+            {user.applications.map((app) => (
+              <Link key={app.id} href={`/sme/applications/${app.id}`} className="flex items-center justify-between rounded-2xl border border-[#E5ECE8] px-4 py-3">
+                <div>
+                  <p className="font-medium">{app.assetDescription}</p>
+                  <p className="text-sm text-[#708078]">{formatAED(Number(app.financeAmount))} · {app.unitCount} units</p>
+                </div>
+                <span className="rounded-full bg-[#EAF9F1] px-3 py-1 text-xs text-[#0A4934]">{app.status.replace(/_/g, ' ')}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
     </DashboardLayout>
   );

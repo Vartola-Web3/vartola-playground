@@ -43,21 +43,31 @@ export const INDUSTRY_SCORES: Record<string, number> = {
   'Other': 50,
 };
 
-export const ASSET_TYPE_SCORES: Record<AssetType, number> = {
-  TRUCK: 85,
-  DELIVERY_VAN: 80,
-  REFRIGERATED_VEHICLE: 75,
+export const ASSET_TYPE_SCORES: Record<string, number> = {
+  DELIVERY_MOTORCYCLE: 78,
+  CARGO_VAN: 84,
+  PICKUP: 80,
+  SMALL_TRUCK: 86,
+  MEDIUM_TRUCK: 82,
+  TRUCK: 86,
+  DELIVERY_VAN: 84,
+  REFRIGERATED_VEHICLE: 74,
   TRAILER: 70,
-  FORKLIFT: 80,
+  FORKLIFT: 60,
   OTHER: 50,
 };
 
-export const ASSET_LIQUIDITY_SCORES: Record<AssetType, number> = {
+export const ASSET_LIQUIDITY_SCORES: Record<string, number> = {
+  DELIVERY_MOTORCYCLE: 88,
+  CARGO_VAN: 86,
+  PICKUP: 84,
+  SMALL_TRUCK: 80,
+  MEDIUM_TRUCK: 76,
   TRUCK: 80,
-  DELIVERY_VAN: 85,
+  DELIVERY_VAN: 86,
   REFRIGERATED_VEHICLE: 70,
   TRAILER: 75,
-  FORKLIFT: 75,
+  FORKLIFT: 68,
   OTHER: 50,
 };
 

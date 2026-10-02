@@ -72,8 +72,8 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
             <Link href="/underwriter" className="text-sm text-[#475569]">
               Back to queue
             </Link>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#0B1F4D]">{application.applicationNo}</h1>
-            <p className="mt-1 text-sm text-[#475569]">{application.company.legalName}</p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#13251E]">{application.company.legalName}</h1>
+            <p className="mt-1 text-sm text-[#475569]">{application.applicationNo} · {application.assetDescription}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <StatusBadge tone="warning">{application.status.replace(/_/g, ' ')}</StatusBadge>
@@ -132,6 +132,7 @@ export default async function ApplicationReviewPage({ params }: { params: Promis
                   <InfoCard title="Asset details">
                     <div className="space-y-4">
                       <Field label="Type" value={application.assetType.replace(/_/g, ' ')} />
+                      <Field label="Units" value={String(application.unitCount ?? 1)} />
                       <Field label="Description" value={application.assetDescription} />
                       <Field label="Value" value={formatAED(Number(application.assetValue))} />
                     </div>

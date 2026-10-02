@@ -7,8 +7,11 @@ async function syncRaised(poolId: string) {
     where: { poolId },
     select: { financeAmount: true },
   });
-  const raisedAmount = linked.reduce((sum, item) => sum + item.financeAmount, 0);
-  await prisma.pool.update({ where: { id: poolId }, data: { raisedAmount } });
+  const amount = linked.reduce((sum, item) => sum + item.financeAmount, 0);
+  const pool = await prisma.pool.findUnique({ where: { id: poolId } });
+  if (pool && pool.raisedAmount === 0) {
+    await prisma.pool.update({ where: { id: poolId }, data: { targetAmount: amount } });
+  }
 }
 
 export async function POST(

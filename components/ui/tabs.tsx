@@ -12,14 +12,14 @@ export function Tabs({
 
   return (
     <div>
-      <div className="flex gap-1 overflow-x-auto rounded-xl border border-[#E2E8F0] bg-white p-1">
+      <div className="flex gap-1 overflow-x-auto rounded-xl border border-[rgba(112,255,184,0.16)] bg-[#091713] p-1">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActive(tab.id)}
             className={`rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              tab.id === current?.id ? 'bg-[#0B1F4D] text-white' : 'text-[#475569] hover:bg-[#F7F9FC]'
+              tab.id === current?.id ? 'bg-[#35F49A] text-[#07120F]' : 'text-[#9FB8AD] hover:bg-[#132D24]'
             }`}
           >
             {tab.label}

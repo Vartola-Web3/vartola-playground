@@ -44,7 +44,7 @@ export async function GET(
       });
 
       if (user?.companyId !== application.companyId) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        return NextResponse.json({ error: 'Access forbidden: You can only view your own company applications' }, { status: 403 });
       }
     }
 

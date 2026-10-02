@@ -1,7 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { use, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,7 +38,8 @@ interface Application {
   }>;
 }
 
-export default function ApplicationDetailPage({ params }: { params: { id: string } }) {
+export default function ApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { data: session } = useSession();
   if (!session) return <div>Loading...</div>;
   const [application, setApplication] = useState<Application | null>(null);
@@ -47,11 +48,11 @@ export default function ApplicationDetailPage({ params }: { params: { id: string
 
   useEffect(() => {
     loadApplication();
-  }, [params.id]);
+  }, [id]);
 
   const loadApplication = async () => {
     try {
-      const response = await fetch(`/api/sme/applications/${params.id}`);
+      const response = await fetch(`/api/sme/applications/${id}`);
       if (!response.ok) throw new Error('Failed to load application');
       const data = await response.json();
       setApplication(data.application);

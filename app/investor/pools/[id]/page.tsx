@@ -1,7 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
@@ -23,7 +23,8 @@ interface Pool {
   stellarPoolId: string | null;
 }
 
-export default function PoolDetailPage({ params }: { params: { id: string } }) {
+export default function PoolDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const { data: session } = useSession();
   if (!session) return <div>Loading...</div>;
@@ -35,11 +36,11 @@ export default function PoolDetailPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     loadPool();
-  }, [params.id]);
+  }, [id]);
 
   const loadPool = async () => {
     try {
-      const response = await fetch(`/api/investor/pools/${params.id}`);
+      const response = await fetch(`/api/investor/pools/${id}`);
       if (response.ok) {
         const data = await response.json();
         setPool(data.pool);

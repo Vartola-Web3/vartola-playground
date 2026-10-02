@@ -19,6 +19,10 @@ interface Pool {
   targetReturn: number;
   status: string;
   assetFocus: string;
+  facilities?: Array<{
+    facilityNo: string;
+    application: { applicationNo: string; assetDescription: string };
+  }>;
 }
 
 export default function PoolsBrowsePage() {
@@ -119,9 +123,18 @@ export default function PoolsBrowsePage() {
                 <div className="mb-4">
                   <p className="text-sm text-gray-600 mb-1">Asset Focus</p>
                   <p className="text-gray-900">{pool.assetFocus}</p>
+                  {pool.facilities && pool.facilities.length > 0 && (
+                    <ul className="mt-2 text-sm text-gray-700">
+                      {pool.facilities.map((facility) => (
+                        <li key={facility.facilityNo}>
+                          {facility.application.applicationNo} — {facility.application.assetDescription}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
-                {pool.status === 'OPEN' && (
+                {['OPEN', 'FUNDING', 'ACTIVE'].includes(pool.status) && (
                   <Link href={`/investor/pools/${pool.id}`}>
                     <Button className="w-full">View Details & Subscribe</Button>
                   </Link>

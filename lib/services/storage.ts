@@ -23,7 +23,8 @@ export async function uploadDocument(
     }
 
     const hash = crypto.createHash('sha256').update(file).digest('hex');
-    const safeName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    const base = fileName.split(/[/\\]/).pop() || 'upload.bin';
+    const safeName = `${Date.now()}-${base.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     const filePath = join(UPLOAD_DIR, safeName);
 
     writeFileSync(filePath, file);

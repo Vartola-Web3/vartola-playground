@@ -20,12 +20,20 @@ interface Pool {
   status: string;
   assetFocus: string;
   createdAt: string;
+  facilities?: Array<{
+    id: string;
+    facilityNo: string;
+    financeAmount: number;
+    application: { applicationNo: string; assetDescription: string; status: string };
+  }>;
 }
 
 export default function PoolsManagementPage() {
   const { data: session } = useSession();
   if (!session) return <div>Loading...</div>;
   const [pools, setPools] = useState<Pool[]>([]);
+  const [available, setAvailable] = useState<Array<{ id: string; facilityNo: string; financeAmount: number; application: { applicationNo: string; assetDescription: string } }>>([]);
+  const [picked, setPicked] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -46,6 +54,7 @@ export default function PoolsManagementPage() {
       if (response.ok) {
         const data = await response.json();
         setPools(data.pools);
+        setAvailable(data.availableFacilities || []);
       }
     } catch (error) {
       console.error('Failed to load pools:', error);
@@ -207,6 +216,62 @@ export default function PoolsManagementPage() {
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">Asset Focus</p>
                   <p className="text-gray-900">{pool.assetFocus}</p>
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600">Linked projects</p>
+                  {pool.facilities && pool.facilities.length > 0 ? (
+                    <ul className="mt-1 space-y-1 text-sm">
+                      {pool.facilities.map((facility) => (
+                        <li key={facility.id}>
+                          {facility.facilityNo} · {facility.application.applicationNo} · {facility.application.assetDescription} · {formatCurrency(facility.financeAmount)}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-500">No financed project is linked yet.</p>
+                  )}
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <select
+                      className="rounded-xl border border-[#E2E8F0] px-3 py-2 text-sm"
+                      value={picked[pool.id] || ''}
+                      onChange={(e) => setPicked({ ...picked, [pool.id]: e.target.value })}
+                    >
+                      <option value="">Add an asset</option>
+                      {available.map((facility) => (
+                        <option key={facility.id} value={facility.id}>
+                          {facility.facilityNo} · {facility.application.assetDescription} · {formatCurrency(facility.financeAmount)}
+                        </option>
+                      ))}
+                    </select>
+                    <Button
+                      type="button"
+                      disabled={!picked[pool.id]}
+                      onClick={async () => {
+                        const res = await fetch(`/api/admin/pools/${pool.id}`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ facilityId: picked[pool.id] }),
+                        });
+                        if (res.ok) {
+                          setPicked({ ...picked, [pool.id]: '' });
+                          loadPools();
+                        }
+                      }}
+                    >
+                      Add asset
+                    </Button>
+                  </div>
+                  <button
+                    type="button"
+                    className="mt-3 text-sm text-rose-700"
+                    onClick={async () => {
+                      if (!confirm('Delete this pool? Linked projects stay, but they are no longer in this pool.')) return;
+                      const res = await fetch(`/api/admin/pools/${pool.id}`, { method: 'DELETE' });
+                      if (res.ok) loadPools();
+                    }}
+                  >
+                    Delete pool
+                  </button>
                 </div>
               </Card>
             ))}

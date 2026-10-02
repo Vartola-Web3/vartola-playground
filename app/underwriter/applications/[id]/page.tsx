@@ -2,19 +2,18 @@ import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  formatAED,
-  formatDate,
-  formatPercentage,
-  getRiskTierColor,
-  getRiskScoreColor,
-} from '@/lib/formatters';
+import { formatAED, formatDate, formatPercentage, getRiskTierColor } from '@/lib/formatters';
 import { calculateRisk } from '@/lib/risk-engine';
 import { AssetType } from '@/lib/types';
 import { ApprovalForm } from './approval-form';
+import { Field, InfoCard, StatCard, StatusBadge } from '@/components/ui/design';
+import { Tabs } from '@/components/ui/tabs';
+import { TicketThread } from '@/components/applications/ticket-thread';
+import { ArchiveButton } from '@/components/applications/archive-button';
+import Link from 'next/link';
 
-export default async function ApplicationReviewPage({ params }: { params: { id: string } }) {
+export default async function ApplicationReviewPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await auth();
 
   if (!session?.user || session.user.role !== 'UNDERWRITER') {
@@ -22,16 +21,14 @@ export default async function ApplicationReviewPage({ params }: { params: { id: 
   }
 
   const application = await prisma.application.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       company: true,
       submitter: true,
       documents: true,
       reviews: {
-        orderBy: { reviewedAt: 'desc' },
-        include: {
-          reviewer: true,
-        },
+        orderBy: { reviewedAt: 'asc' },
+        include: { reviewer: true },
       },
     },
   });
@@ -40,14 +37,11 @@ export default async function ApplicationReviewPage({ params }: { params: { id: 
     redirect('/underwriter');
   }
 
-  // Calculate risk scores
   const riskResult = calculateRisk({
     company: {
       establishedDate: application.company.establishedDate,
       monthlyRevenue: application.company.monthlyRevenue ? Number(application.company.monthlyRevenue) : null,
-      monthlyExpenses: application.company.monthlyExpenses
-        ? Number(application.company.monthlyExpenses)
-        : null,
+      monthlyExpenses: application.company.monthlyExpenses ? Number(application.company.monthlyExpenses) : null,
       liabilities: application.company.liabilities ? Number(application.company.liabilities) : null,
       industry: application.company.industry,
     },
@@ -61,211 +55,194 @@ export default async function ApplicationReviewPage({ params }: { params: { id: 
       assetValue: Number(application.assetValue),
       requestedTerm: application.requestedTerm,
     },
-    application: {
-      documents: application.documents,
-    },
+    application: { documents: application.documents },
   });
 
   const ltv = (Number(application.financeAmount) / Number(application.assetValue)) * 100;
+  const latestReview = application.reviews[0];
+  const showDocumentsReceivedBanner =
+    application.status === 'UNDER_REVIEW' && latestReview?.decision === 'DOCUMENTS_RECEIVED';
+  const canDecide = application.status === 'SUBMITTED' || application.status === 'UNDER_REVIEW';
 
   return (
     <DashboardLayout role={session.user.role}>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">{application.applicationNo}</h1>
-          <p className="text-slate-600 mt-1">Application Review</p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <Link href="/underwriter" className="text-sm text-[#475569]">
+              Back to queue
+            </Link>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#0B1F4D]">{application.applicationNo}</h1>
+            <p className="mt-1 text-sm text-[#475569]">{application.company.legalName}</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <StatusBadge tone="warning">{application.status.replace(/_/g, ' ')}</StatusBadge>
+            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${getRiskTierColor(riskResult.riskTier)}`}>
+              {riskResult.riskTier.replace('_', ' ')}
+            </span>
+            <StatusBadge tone="demo">Testnet</StatusBadge>
+            {!['APPROVED', 'FUNDED', 'ARCHIVED'].includes(application.status) && (
+              <ArchiveButton applicationId={application.id} />
+            )}
+          </div>
         </div>
 
-        {/* Risk Assessment Summary */}
-        <Card className="border-2 border-blue-200 bg-blue-50/30">
-          <CardHeader>
-            <CardTitle>Risk Assessment</CardTitle>
-            <CardDescription>Automated risk scoring results</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <div className="text-center p-4 bg-white rounded-lg border border-slate-200">
-                <div className="text-sm text-slate-600 mb-1">Company Risk</div>
-                <div className={`text-3xl font-bold ${getRiskScoreColor(riskResult.companyRiskScore)}`}>
-                  {riskResult.companyRiskScore}
-                </div>
-                <div className="text-xs text-slate-500">/100</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-slate-200">
-                <div className="text-sm text-slate-600 mb-1">Asset Risk</div>
-                <div className={`text-3xl font-bold ${getRiskScoreColor(riskResult.assetRiskScore)}`}>
-                  {riskResult.assetRiskScore}
-                </div>
-                <div className="text-xs text-slate-500">/100</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-slate-200">
-                <div className="text-sm text-slate-600 mb-1">Deal Risk</div>
-                <div className={`text-3xl font-bold ${getRiskScoreColor(riskResult.dealRiskScore)}`}>
-                  {riskResult.dealRiskScore}
-                </div>
-                <div className="text-xs text-slate-500">/100</div>
-              </div>
-              <div className="text-center p-4 bg-white rounded-lg border border-slate-200">
-                <div className="text-sm text-slate-600 mb-1">Risk Tier</div>
-                <div className="text-2xl font-bold">
-                  <span className={`px-4 py-2 rounded border ${getRiskTierColor(riskResult.riskTier)}`}>
-                    {riskResult.riskTier.replace('_', ' ')}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Recommendations */}
-            <div className="bg-white p-4 rounded-lg border border-slate-200">
-              <div className="font-semibold mb-2">Recommendations:</div>
-              <ul className="space-y-1">
-                {riskResult.recommendations.map((rec, i) => (
-                  <li key={i} className="text-sm text-slate-700">
-                    {rec}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Tier Parameters */}
-            <div className="mt-4 bg-white p-4 rounded-lg border border-slate-200">
-              <div className="font-semibold mb-2">Tier {riskResult.riskTier.replace('TIER_', '')} Parameters:</div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <div className="text-slate-600">Max LTV</div>
-                  <div className="font-semibold">{formatPercentage(riskResult.tierParameters.maxLTV * 100, 0)}</div>
-                </div>
-                <div>
-                  <div className="text-slate-600">Min Contribution</div>
-                  <div className="font-semibold">
-                    {formatPercentage(riskResult.tierParameters.minContribution * 100, 0)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-slate-600">Max Term</div>
-                  <div className="font-semibold">{riskResult.tierParameters.maxTerm} months</div>
-                </div>
-                <div>
-                  <div className="text-slate-600">Rate Range</div>
-                  <div className="font-semibold">
-                    {riskResult.tierParameters.indicativeRate.min}-{riskResult.tierParameters.indicativeRate.max}%
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Company Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Company Information</CardTitle>
-            <CardDescription>{application.company.legalName}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <div className="text-slate-600">Trade License</div>
-                <div className="font-semibold">{application.company.tradeLicenseNo}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Emirate</div>
-                <div className="font-semibold">{application.company.emirate}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Industry</div>
-                <div className="font-semibold">{application.company.industry}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Established</div>
-                <div className="font-semibold">{formatDate(application.company.establishedDate)}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Monthly Revenue</div>
-                <div className="font-semibold">
-                  {application.company.monthlyRevenue ? formatAED(Number(application.company.monthlyRevenue)) : 'N/A'}
-                </div>
-              </div>
-              <div>
-                <div className="text-slate-600">Liabilities</div>
-                <div className="font-semibold">
-                  {application.company.liabilities ? formatAED(Number(application.company.liabilities)) : 'N/A'}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Asset & Deal Structure */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Asset Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div>
-                <div className="text-slate-600">Asset Type</div>
-                <div className="font-semibold">{application.assetType.replace(/_/g, ' ')}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Description</div>
-                <div className="font-semibold">{application.assetDescription}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Asset Value</div>
-                <div className="font-semibold text-lg">{formatAED(Number(application.assetValue))}</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Deal Structure</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div>
-                <div className="text-slate-600">SME Contribution</div>
-                <div className="font-semibold">{formatAED(Number(application.smeContribution))}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Finance Amount</div>
-                <div className="font-semibold text-lg">{formatAED(Number(application.financeAmount))}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">LTV Ratio</div>
-                <div className="font-semibold">{formatPercentage(ltv)}</div>
-              </div>
-              <div>
-                <div className="text-slate-600">Requested Term</div>
-                <div className="font-semibold">{application.requestedTerm} months</div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid gap-4 md:grid-cols-4">
+          <StatCard label="Company risk" value={String(riskResult.companyRiskScore)} helper="Operating profile / 100" />
+          <StatCard label="Asset risk" value={String(riskResult.assetRiskScore)} helper="Collateral quality / 100" />
+          <StatCard label="Deal risk" value={String(riskResult.dealRiskScore)} helper="Structure / 100" />
+          <StatCard label="Recommended tier" value={riskResult.riskTier.replace('TIER_', 'Tier ')} helper="Policy band" />
         </div>
 
-        {/* Documents */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Documents</CardTitle>
-            <CardDescription>{application.documents.length} documents uploaded</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {application.documents.map((doc) => (
-                <div key={doc.id} className="flex items-center justify-between p-3 border border-slate-200 rounded">
-                  <div>
-                    <div className="font-medium text-sm">{doc.documentType.replace(/_/g, ' ')}</div>
-                    <div className="text-xs text-slate-500">{doc.fileName}</div>
-                  </div>
-                  <div className="text-xs text-slate-500">{formatDate(doc.uploadedAt)}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <InfoCard title="Decision summary" description="Guidance from the current risk policy. The credit decision remains with the underwriter.">
+          <ul className="space-y-2 text-sm text-[#0F172A]">
+            {riskResult.recommendations.map((rec) => (
+              <li key={rec}>{rec}</li>
+            ))}
+          </ul>
+          <div className="mt-5 grid gap-4 text-sm md:grid-cols-4">
+            <Field label="Max LTV" value={formatPercentage(riskResult.tierParameters.maxLTV * 100, 0)} />
+            <Field label="Min contribution" value={formatPercentage(riskResult.tierParameters.minContribution * 100, 0)} />
+            <Field label="Max term" value={`${riskResult.tierParameters.maxTerm} months`} />
+            <Field
+              label="Rate range"
+              value={`${riskResult.tierParameters.indicativeRate.min}–${riskResult.tierParameters.indicativeRate.max}%`}
+            />
+          </div>
+          {application.documents.length === 0 && (
+            <p className="mt-4 text-sm text-amber-800">Documentation gap: no files are attached to this application.</p>
+          )}
+        </InfoCard>
 
-        {/* Approval Form */}
-        {application.status === 'SUBMITTED' || application.status === 'UNDER_REVIEW' ? (
+        <Tabs
+          tabs={[
+            {
+              id: 'overview',
+              label: 'Overview',
+              content: (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <InfoCard title="Company information">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Trade license" value={application.company.tradeLicenseNo} />
+                      <Field label="Emirate" value={application.company.emirate} />
+                      <Field label="Industry" value={application.company.industry} />
+                      <Field label="Established" value={formatDate(application.company.establishedDate)} />
+                    </div>
+                  </InfoCard>
+                  <InfoCard title="Asset details">
+                    <div className="space-y-4">
+                      <Field label="Type" value={application.assetType.replace(/_/g, ' ')} />
+                      <Field label="Description" value={application.assetDescription} />
+                      <Field label="Value" value={formatAED(Number(application.assetValue))} />
+                    </div>
+                  </InfoCard>
+                </div>
+              ),
+            },
+            {
+              id: 'financials',
+              label: 'Financials',
+              content: (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <InfoCard title="Financial snapshot">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field
+                        label="Monthly revenue"
+                        value={application.company.monthlyRevenue ? formatAED(Number(application.company.monthlyRevenue)) : 'N/A'}
+                      />
+                      <Field
+                        label="Monthly expenses"
+                        value={application.company.monthlyExpenses ? formatAED(Number(application.company.monthlyExpenses)) : 'N/A'}
+                      />
+                      <Field
+                        label="Liabilities"
+                        value={application.company.liabilities ? formatAED(Number(application.company.liabilities)) : 'N/A'}
+                      />
+                    </div>
+                  </InfoCard>
+                  <InfoCard title="Deal structure">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="SME contribution" value={formatAED(Number(application.smeContribution))} />
+                      <Field label="Finance amount" value={formatAED(Number(application.financeAmount))} />
+                      <Field label="LTV" value={formatPercentage(ltv)} />
+                      <Field label="Term" value={`${application.requestedTerm} months`} />
+                    </div>
+                  </InfoCard>
+                </div>
+              ),
+            },
+            {
+              id: 'documents',
+              label: 'Documents',
+              content: (
+                <InfoCard title="Documents" description={`${application.documents.length} files on file`}>
+                  {showDocumentsReceivedBanner && (
+                    <p className="mb-4 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                      New documents were uploaded and the file is ready for another review.
+                    </p>
+                  )}
+                  {application.documents.length === 0 ? (
+                    <p className="text-sm text-[#475569]">No documents uploaded.</p>
+                  ) : (
+                    <div className="divide-y divide-[#E2E8F0]">
+                      {application.documents.map((doc) => (
+                        <div key={doc.id} className="flex items-center justify-between gap-3 py-3">
+                          <div>
+                            <p className="text-sm font-medium">{doc.documentType.replace(/_/g, ' ')}</p>
+                            <p className="text-xs text-[#475569]">{doc.fileName}</p>
+                          </div>
+                          <div className="flex items-center gap-3 text-sm">
+                            <span className="text-xs text-[#475569]">{formatDate(doc.uploadedAt)}</span>
+                            <a href={`/api/documents/${doc.id}`} target="_blank" rel="noreferrer" className="text-[#1D4ED8]">
+                              Preview
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </InfoCard>
+              ),
+            },
+            {
+              id: 'blockchain',
+              label: 'Blockchain',
+              content: (
+                <InfoCard title="Stellar settlement" description="Testnet recording happens after approval and funding.">
+                  <p className="text-sm leading-6 text-[#475569]">
+                    This application has no on-ledger facility yet. Approval creates the financing record used by the simulated Stellar settlement layer.
+                  </p>
+                  <div className="mt-4">
+                    <StatusBadge tone="demo">Unfunded · Testnet</StatusBadge>
+                  </div>
+                </InfoCard>
+              ),
+            },
+            {
+              id: 'notes',
+              label: 'Notes',
+              content: (
+                <InfoCard title="Ticket">
+                  <p className="text-sm text-[#475569]">The same conversation is open below, with its action status.</p>
+                </InfoCard>
+              ),
+            },
+          ]}
+        />
+
+        <TicketThread
+          applicationId={application.id}
+          canRequestFiles
+          messages={application.reviews.map((review) => ({
+            decision: review.decision,
+            comments: review.comments,
+            conditions: review.conditions,
+            reviewedAt: review.reviewedAt.toISOString(),
+            reviewer: { name: review.reviewer.name, role: review.reviewer.role },
+          }))}
+        />
+
+        {canDecide ? (
           <ApprovalForm
             applicationId={application.id}
             underwriterId={session.user.id}
@@ -277,49 +254,9 @@ export default async function ApplicationReviewPage({ params }: { params: { id: 
             }}
           />
         ) : (
-          <Card className="bg-slate-50">
-            <CardContent className="pt-6">
-              <p className="text-center text-slate-600">
-                This application has already been reviewed.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Review History */}
-        {application.reviews.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Review History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {application.reviews.map((review) => (
-                  <div key={review.id} className="p-4 border border-slate-200 rounded-lg bg-slate-50">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <div className="font-semibold">{review.reviewer.name}</div>
-                        <div className="text-sm text-slate-600">{formatDate(review.reviewedAt)}</div>
-                      </div>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium border bg-white">
-                        {review.decision.replace(/_/g, ' ')}
-                      </span>
-                    </div>
-                    {review.comments && (
-                      <div className="text-sm text-slate-700 mt-2">
-                        <strong>Comments:</strong> {review.comments}
-                      </div>
-                    )}
-                    {review.conditions && (
-                      <div className="text-sm text-slate-700 mt-1">
-                        <strong>Conditions:</strong> {review.conditions}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <InfoCard title="Decision closed">
+            <p className="text-sm text-[#475569]">This application has already been reviewed.</p>
+          </InfoCard>
         )}
       </div>
     </DashboardLayout>

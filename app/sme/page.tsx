@@ -18,15 +18,27 @@ export default async function SMEDashboard() {
     include: {
       company: true,
       applications: {
+        where: { status: { not: 'ARCHIVED' } },
         orderBy: { createdAt: 'desc' },
         take: 5,
       },
     },
   });
 
-  if (!user) {
+  if (!user || !user.companyId) {
     redirect('/login');
   }
+
+  const notices = await prisma.underwritingReview.findMany({
+    where: {
+      decision: { in: ['MESSAGE', 'DOCUMENT_REQUEST'] },
+      reviewer: { role: { in: ['UNDERWRITER', 'ADMIN'] } },
+      application: { companyId: user.companyId, status: { not: 'ARCHIVED' } },
+    },
+    include: { application: { select: { id: true, applicationNo: true } } },
+    orderBy: { reviewedAt: 'desc' },
+    take: 6,
+  });
 
   const facilities = await prisma.facility.findMany({
     where: {
@@ -58,6 +70,28 @@ export default async function SMEDashboard() {
           <h1 className="text-3xl font-bold text-slate-900">Welcome, {user.name}</h1>
           <p className="text-slate-600 mt-1">{user.company?.legalName}</p>
         </div>
+
+        {notices.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Notifications</CardTitle>
+              <CardDescription>Same messages that appear inside each application ticket.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {notices.map((notice) => (
+                <Link key={notice.id} href={`/sme/applications/${notice.application.id}`} className="block rounded-xl border border-slate-200 px-4 py-3 hover:bg-slate-50">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium">{notice.application.applicationNo}</span>
+                    <span className="rounded-full bg-amber-50 px-2 py-1 text-xs text-amber-900">
+                      {notice.decision === 'DOCUMENT_REQUEST' ? 'Upload files' : 'Reply needed'}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-600">{notice.comments}</p>
+                </Link>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -13,9 +13,30 @@ export async function GET() {
 
     const pools = await prisma.pool.findMany({
       orderBy: { createdAt: 'desc' },
+      include: {
+        facilities: {
+          include: { application: { select: { applicationNo: true, assetDescription: true, status: true } } },
+        },
+      },
     });
 
-    return NextResponse.json({ pools });
+    const withTotals = await Promise.all(
+      pools.map(async (pool) => {
+        const raisedAmount = pool.facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
+        if (raisedAmount !== pool.raisedAmount) {
+          await prisma.pool.update({ where: { id: pool.id }, data: { raisedAmount } });
+        }
+        return { ...pool, raisedAmount };
+      })
+    );
+
+    const availableFacilities = await prisma.facility.findMany({
+      where: { poolId: null },
+      include: { application: { select: { applicationNo: true, assetDescription: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return NextResponse.json({ pools: withTotals, availableFacilities });
   } catch (error) {
     console.error('Pools fetch error:', error);
     return NextResponse.json({ error: 'Failed to fetch pools' }, { status: 500 });

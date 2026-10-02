@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       where: { id: poolId },
     });
 
-    if (!pool || pool.status !== 'OPEN') {
+    if (!pool || !['OPEN', 'FUNDING', 'ACTIVE'].includes(pool.status)) {
       return NextResponse.json({ error: 'Pool not available' }, { status: 400 });
     }
 
@@ -67,15 +67,6 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // Update pool raised amount
-        await prisma.pool.update({
-          where: { id: poolId },
-          data: {
-            raisedAmount: {
-              increment: amount,
-            },
-          },
-        });
       }
     }).catch(error => {
       console.error('Failed to process subscription job:', error);

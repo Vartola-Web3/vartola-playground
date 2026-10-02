@@ -3,7 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { StatusBadge } from '@/components/ui/design';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -15,63 +15,48 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
   const navigation = getNavigationForRole(role);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="bg-yellow-500 text-yellow-900 px-4 py-2 text-center text-sm font-semibold">
-        ⚠️ TESTNET DEMO ONLY - NO REAL VALUE - SIMULATED TRANSACTIONS
+    <div className="min-h-screen bg-[#F7F9FC] text-[#0F172A]">
+      <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs font-medium text-amber-900">
+        Testnet demo only. No real value. Transactions are simulated.
       </div>
 
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-8">
-              <Link href="/dashboard" className="text-xl font-bold text-blue-600">
-                AssetFi UAE
-              </Link>
-              <nav className="hidden md:flex space-x-4">
-                {navigation.map((item) => {
-                  const isActive = pathname.startsWith(item.href);
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                        isActive ? 'bg-blue-100 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-right">
-                <div className="text-xs text-slate-500">{role}</div>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/login' })}>
-                Sign Out
-              </Button>
-            </div>
+      <header className="border-b border-[#E2E8F0] bg-white">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-8">
+            <Link href="/dashboard" className="text-sm font-semibold tracking-tight text-[#0B1F4D]">
+              AssetFi UAE
+            </Link>
+            <nav className="hidden items-center gap-1 md:flex">
+              {navigation.map((item) => {
+                const isActive = pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`rounded-lg px-3 py-2 text-sm ${
+                      isActive ? 'bg-[#F7F9FC] font-medium text-[#0B1F4D]' : 'text-[#475569] hover:bg-[#F7F9FC]'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+          <div className="flex items-center gap-3">
+            <StatusBadge tone="demo">{role}</StatusBadge>
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              className="rounded-xl border border-[#E2E8F0] px-3 py-1.5 text-sm text-[#0F172A]"
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
-
-      <footer className="border-t border-slate-200 mt-12 py-6 text-center text-sm text-slate-500">
-        <div className="mb-2">
-          <Link href="/how-it-works" className="text-blue-600 hover:text-blue-800 underline mr-4">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-blue-600 hover:text-blue-800 underline mr-4">
-            About
-          </Link>
-          <Link href="/whitepaper" className="text-blue-600 hover:text-blue-800 underline">
-            Whitepaper
-          </Link>
-        </div>
-        AssetFi UAE - Institutional Asset Finance Platform | Testnet Demo
-      </footer>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">{children}</main>
     </div>
   );
 }

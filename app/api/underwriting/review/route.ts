@@ -14,14 +14,22 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { applicationId, decision, comments, conditions } = body;
+    const allowedDecisions = ['APPROVED', 'CONDITIONALLY_APPROVED', 'REJECTED'];
+    if (!allowedDecisions.includes(decision)) {
+      return NextResponse.json({ error: 'Invalid decision' }, { status: 400 });
+    }
 
     const application = await prisma.application.findUnique({
       where: { id: applicationId },
-      include: { company: true },
+      include: { company: true, documents: true, facility: true },
     });
 
     if (!application) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+
+    if (['APPROVED', 'FUNDED'].includes(application.status) || application.facility) {
+      return NextResponse.json({ error: 'Application already decided' }, { status: 400 });
     }
 
     const riskInput = {
@@ -43,7 +51,7 @@ export async function POST(request: NextRequest) {
         requestedTerm: application.requestedTerm,
       },
       application: {
-        documents: [],
+        documents: application.documents,
       },
     };
 
@@ -133,13 +141,13 @@ export async function POST(request: NextRequest) {
       }
 
       if (openPool) {
+        const linked = await prisma.facility.findMany({
+          where: { poolId: openPool.id },
+          select: { financeAmount: true },
+        });
         await prisma.pool.update({
           where: { id: openPool.id },
-          data: {
-            raisedAmount: {
-              increment: application.financeAmount,
-            },
-          },
+          data: { raisedAmount: linked.reduce((sum, item) => sum + item.financeAmount, 0) },
         });
       }
     }

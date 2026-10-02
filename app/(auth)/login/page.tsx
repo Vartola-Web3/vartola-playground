@@ -54,26 +54,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#F7F9FC] p-4">
       <div className="w-full max-w-md">
-        {/* Testnet Banner */}
-        <div className="mb-6 p-3 bg-yellow-500/20 border border-yellow-500/50 rounded-lg text-center">
-          <span className="text-yellow-300 font-semibold text-sm">
-            ⚠️ TESTNET DEMO - NO REAL VALUE
-          </span>
+        <div className="mb-4 rounded-full bg-amber-50 px-3 py-2 text-center text-xs font-medium text-amber-900">
+          Testnet demo only. No real value.
         </div>
 
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">AssetFi UAE</CardTitle>
-            <CardDescription className="text-center">
-              Sign in to your account
-            </CardDescription>
+            <CardTitle className="text-center text-2xl font-semibold text-[#0B1F4D]">AssetFi UAE</CardTitle>
+            <CardDescription className="text-center">Sign in to your account</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
+                <label htmlFor="email" className="text-sm font-medium text-[#0F172A]">
                   Email
                 </label>
                 <Input
@@ -86,7 +81,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-medium">
+                <label htmlFor="password" className="text-sm font-medium text-[#0F172A]">
                   Password
                 </label>
                 <Input
@@ -100,28 +95,28 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
                   {error}
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full bg-[#1D4ED8] hover:bg-[#1e40af]" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 pt-6 border-t">
-              <p className="text-sm text-slate-600 mb-3 text-center">Demo Credentials</p>
+            <div className="mt-6 border-t border-[#E2E8F0] pt-6">
+              <p className="mb-3 text-center text-sm text-[#475569]">Demo accounts</p>
               <div className="grid grid-cols-2 gap-2">
                 {demoCredentials.map((cred) => (
                   <button
                     key={cred.role}
+                    type="button"
                     onClick={() => quickLogin(cred.email, cred.password)}
-                    className="text-xs p-2 bg-slate-50 hover:bg-slate-100 rounded border border-slate-200 transition-colors"
+                    className="rounded-xl border border-[#E2E8F0] bg-[#F7F9FC] p-3 text-left text-xs transition-colors hover:border-[#1D4ED8]"
                   >
-                    <div className="font-semibold">{cred.role}</div>
-                    <div className="text-slate-500 truncate">{cred.email}</div>
+                    <div className="font-semibold text-[#0F172A]">{cred.role}</div>
+                    <div className="truncate text-[#475569]">{cred.email}</div>
                   </button>
                 ))}
               </div>
@@ -129,21 +124,13 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
-        <div className="mt-4 text-center space-y-2">
+        <div className="mt-6 space-y-2 text-center">
           <div className="flex justify-center gap-4 text-xs">
-            <a href="/how-it-works" className="text-blue-300 hover:text-blue-100 underline">
-              How It Works
-            </a>
-            <a href="/about" className="text-blue-300 hover:text-blue-100 underline">
-              About
-            </a>
-            <a href="/whitepaper" className="text-blue-300 hover:text-blue-100 underline">
-              Whitepaper
-            </a>
+            <a href="/how-it-works" className="text-[#1D4ED8]">How It Works</a>
+            <a href="/about" className="text-[#1D4ED8]">About</a>
+            <a href="/whitepaper" className="text-[#1D4ED8]">Whitepaper</a>
           </div>
-          <p className="text-xs text-blue-200">
-            AssetFi UAE - Institutional Asset Finance Platform
-          </p>
+          <p className="text-xs text-[#475569]">AssetFi UAE — institutional asset finance</p>
         </div>
       </div>
     </div>

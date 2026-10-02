@@ -54,7 +54,7 @@ export const authConfig = {
           include: { company: true },
         });
 
-        if (!user) return null;
+        if (!user || !user.isActive) return null;
 
         const passwordMatch = await bcrypt.compare(password, user.passwordHash);
         if (!passwordMatch) return null;

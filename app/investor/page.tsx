@@ -24,7 +24,7 @@ export default async function InvestorDashboard() {
   const availablePools = await prisma.pool.findMany({
     where: {
       status: {
-        in: ['OPEN', 'FUNDING'],
+        in: ['OPEN', 'FUNDING', 'ACTIVE'],
       },
     },
     orderBy: { createdAt: 'desc' },

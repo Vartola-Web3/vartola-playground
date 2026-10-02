@@ -12,10 +12,20 @@ export async function GET() {
 
     const pools = await prisma.pool.findMany({
       where: {
-        status: 'OPEN',
+        status: { in: ['OPEN', 'FUNDING', 'ACTIVE'] },
+      },
+      include: {
+        facilities: {
+          include: { application: { select: { applicationNo: true, assetDescription: true } } },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    for (const pool of pools) {
+      const raisedAmount = pool.facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
+      pool.raisedAmount = raisedAmount;
+    }
 
     return NextResponse.json({ pools });
   } catch (error) {

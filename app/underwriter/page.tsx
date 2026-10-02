@@ -2,8 +2,8 @@ import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatAED, formatDate, getStatusColor, getRiskTierColor } from '@/lib/formatters';
+import { SectionHeader, StatCard, StatusBadge } from '@/components/ui/design';
 import Link from 'next/link';
 
 export default async function UnderwriterDashboard() {
@@ -16,7 +16,7 @@ export default async function UnderwriterDashboard() {
   const pendingApplications = await prisma.application.findMany({
     where: {
       status: {
-        in: ['SUBMITTED', 'UNDER_REVIEW'],
+        in: ['SUBMITTED', 'UNDER_REVIEW', 'CONDITIONALLY_APPROVED', 'DELETION_REQUESTED'],
       },
     },
     include: {
@@ -24,6 +24,22 @@ export default async function UnderwriterDashboard() {
       submitter: true,
     },
     orderBy: { createdAt: 'asc' },
+  });
+
+  const notices = await prisma.underwritingReview.findMany({
+    where: {
+      OR: [
+        { decision: 'MESSAGE', reviewer: { role: 'SME' } },
+        { decision: 'DOCUMENTS_RECEIVED' },
+      ],
+      application: { status: { not: 'ARCHIVED' } },
+    },
+    include: {
+      application: { select: { id: true, applicationNo: true, status: true } },
+      reviewer: { select: { name: true } },
+    },
+    orderBy: { reviewedAt: 'desc' },
+    take: 6,
   });
 
   const recentReviews = await prisma.underwritingReview.findMany({
@@ -41,141 +57,111 @@ export default async function UnderwriterDashboard() {
     take: 5,
   });
 
+  const scored = pendingApplications.filter((a) => a.dealRiskScore);
   const stats = {
     pending: pendingApplications.length,
     totalReviewed: recentReviews.length,
     avgScore:
-      pendingApplications.filter((a) => a.dealRiskScore).length > 0
-        ? Math.round(
-            pendingApplications
-              .filter((a) => a.dealRiskScore)
-              .reduce((sum, a) => sum + (a.dealRiskScore || 0), 0) /
-              pendingApplications.filter((a) => a.dealRiskScore).length
-          )
+      scored.length > 0
+        ? Math.round(scored.reduce((sum, a) => sum + (a.dealRiskScore || 0), 0) / scored.length)
         : 0,
   };
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Underwriting Dashboard</h1>
-          <p className="text-slate-600 mt-1">Review and approve financing applications</p>
+      <div className="space-y-8">
+        <SectionHeader
+          eyebrow="Underwriting"
+          title="Review queue"
+          description="Applications waiting for an institutional credit decision."
+        />
+
+        {notices.length > 0 && (
+          <section className="rounded-2xl border border-[#E2E8F0] bg-white">
+            <header className="border-b border-[#E2E8F0] px-6 py-4">
+              <h2 className="text-base font-semibold">Notifications</h2>
+              <p className="text-sm text-[#475569]">Applicant replies and uploaded files. Open the application to answer in the same ticket.</p>
+            </header>
+            <div className="divide-y divide-[#E2E8F0]">
+              {notices.map((notice) => (
+                <Link key={notice.id} href={`/underwriter/applications/${notice.application.id}`} className="block px-6 py-4 hover:bg-[#F7F9FC]">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium">{notice.application.applicationNo}</span>
+                    <StatusBadge tone="warning">
+                      {notice.decision === 'DOCUMENTS_RECEIVED' ? 'Files uploaded' : 'Reply received'}
+                    </StatusBadge>
+                  </div>
+                  <p className="mt-1 text-sm text-[#475569]">{notice.comments}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <StatCard label="Pending review" value={String(stats.pending)} helper="Submitted or in review" />
+          <StatCard label="Your reviews" value={String(stats.totalReviewed)} helper="Latest five shown below" />
+          <StatCard label="Average deal score" value={stats.avgScore ? String(stats.avgScore) : '—'} helper="Pending book" />
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Pending Review</CardDescription>
-              <CardTitle className="text-3xl">{stats.pending}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Your Reviews</CardDescription>
-              <CardTitle className="text-3xl">{stats.totalReviewed}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardDescription>Avg Risk Score</CardDescription>
-              <CardTitle className="text-3xl">{stats.avgScore || 'N/A'}</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
-
-        {/* Pending Queue */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Pending Applications</CardTitle>
-            <CardDescription>Applications awaiting your review</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {pendingApplications.length === 0 ? (
-              <p className="text-slate-500 text-center py-8">No pending applications</p>
-            ) : (
-              <div className="space-y-3">
-                {pendingApplications.map((app) => (
-                  <Link
-                    key={app.id}
-                    href={`/underwriter/applications/${app.id}`}
-                    className="block p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <div className="font-semibold text-slate-900">{app.applicationNo}</div>
-                          {app.riskTier && (
-                            <span
-                              className={`px-2 py-1 rounded text-xs font-medium border ${getRiskTierColor(
-                                app.riskTier
-                              )}`}
-                            >
-                              {app.riskTier.replace('_', ' ')}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-sm text-slate-600 mt-1">{app.company.legalName}</div>
-                        <div className="text-sm text-slate-600">{app.assetDescription}</div>
-                        <div className="text-sm text-slate-500 mt-1">
-                          {formatAED(Number(app.financeAmount))} • {app.requestedTerm} months
-                          {app.dealRiskScore && ` • Score: ${app.dealRiskScore}/100`}
-                        </div>
+        <section className="overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white">
+          <header className="border-b border-[#E2E8F0] px-6 py-4">
+            <h2 className="text-base font-semibold">Pending applications</h2>
+          </header>
+          {pendingApplications.length === 0 ? (
+            <p className="px-6 py-12 text-center text-sm text-[#475569]">No applications are waiting for review.</p>
+          ) : (
+            <div className="divide-y divide-[#E2E8F0]">
+              {pendingApplications.map((app) => (
+                <Link key={app.id} href={`/underwriter/applications/${app.id}`} className="block px-6 py-4 hover:bg-[#F7F9FC]">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold">{app.applicationNo}</span>
+                        {app.riskTier && (
+                          <span className={`rounded-full border px-2 py-0.5 text-xs ${getRiskTierColor(app.riskTier)}`}>
+                            {app.riskTier.replace('_', ' ')}
+                          </span>
+                        )}
                       </div>
-                      <div className="text-right">
-                        <div className="text-xs text-slate-500">{formatDate(app.createdAt)}</div>
-                        <span
-                          className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                            app.status
-                          )}`}
-                        >
-                          {app.status.replace(/_/g, ' ')}
-                        </span>
-                      </div>
+                      <p className="mt-1 text-sm text-[#475569]">{app.company.legalName}</p>
+                      <p className="text-sm text-[#475569]">{app.assetDescription}</p>
+                      <p className="mt-1 text-sm text-[#0F172A]">
+                        {formatAED(Number(app.financeAmount))} · {app.requestedTerm} months
+                        {app.dealRiskScore ? ` · Score ${app.dealRiskScore}` : ''}
+                      </p>
                     </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Recent Reviews */}
-        {recentReviews.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Recent Reviews</CardTitle>
-              <CardDescription>Recently completed reviews</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {recentReviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className="p-4 border border-slate-200 rounded-lg"
-                  >
-                    <div className="flex justify-between">
-                      <div>
-                        <div className="font-semibold">{review.application.applicationNo}</div>
-                        <div className="text-sm text-slate-600">{review.application.company.legalName}</div>
-                        <div className="text-sm text-slate-500 mt-1">
-                          {formatDate(review.reviewedAt)}
-                        </div>
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium border h-fit ${getStatusColor(
-                          review.decision
-                        )}`}
-                      >
-                        {review.decision.replace(/_/g, ' ')}
+                    <div className="text-right">
+                      <p className="text-xs text-[#475569]">{formatDate(app.createdAt)}</p>
+                      <span className={`mt-2 inline-block rounded-full border px-2.5 py-1 text-xs ${getStatusColor(app.status)}`}>
+                        {app.status.replace(/_/g, ' ')}
                       </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {recentReviews.length > 0 && (
+          <section className="rounded-2xl border border-[#E2E8F0] bg-white">
+            <header className="border-b border-[#E2E8F0] px-6 py-4">
+              <h2 className="text-base font-semibold">Recent decisions</h2>
+            </header>
+            <div className="divide-y divide-[#E2E8F0]">
+              {recentReviews.map((review) => (
+                <div key={review.id} className="flex items-center justify-between gap-4 px-6 py-4">
+                  <div>
+                    <p className="font-medium">{review.application.applicationNo}</p>
+                    <p className="text-sm text-[#475569]">{review.application.company.legalName}</p>
+                    <p className="text-xs text-[#475569]">{formatDate(review.reviewedAt)}</p>
+                  </div>
+                  <StatusBadge tone="primary">{review.decision.replace(/_/g, ' ')}</StatusBadge>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </DashboardLayout>

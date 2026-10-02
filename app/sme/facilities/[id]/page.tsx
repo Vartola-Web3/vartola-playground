@@ -1,11 +1,12 @@
-import { auth } from '@/lib/auth/auth';
+﻿import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatAED, formatDate, getStatusColor } from '@/lib/formatters';
 
-export default async function FacilityDetailPage({ params }: { params: { id: string } }) {
+export default async function FacilityDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await auth();
 
   if (!session?.user || session.user.role !== 'SME') {
@@ -14,7 +15,7 @@ export default async function FacilityDetailPage({ params }: { params: { id: str
 
   const facility = await prisma.facility.findFirst({
     where: {
-      id: params.id,
+      id: id,
       application: {
         company: {
           users: {
@@ -29,6 +30,7 @@ export default async function FacilityDetailPage({ params }: { params: { id: str
           company: true,
         },
       },
+      pool: true,
       payments: {
         orderBy: { paymentNo: 'asc' },
       },
@@ -50,6 +52,11 @@ export default async function FacilityDetailPage({ params }: { params: { id: str
         <div>
           <h1 className="text-3xl font-bold text-slate-900">{facility.facilityNo}</h1>
           <p className="text-slate-600 mt-1">{facility.application.assetDescription}</p>
+          {facility.pool && (
+            <p className="mt-2 text-sm text-slate-700">
+              Pool {facility.pool.poolNo} · {facility.pool.poolName}
+            </p>
+          )}
         </div>
 
         {/* Facility Summary */}
@@ -79,7 +86,7 @@ export default async function FacilityDetailPage({ params }: { params: { id: str
           <CardHeader>
             <CardTitle>Payment Progress</CardTitle>
             <CardDescription>
-              {paidCount} of {facility.term} payments completed • {formatAED(totalPaid)} paid
+              {paidCount} of {facility.term} payments completed â€¢ {formatAED(totalPaid)} paid
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -157,7 +164,7 @@ export default async function FacilityDetailPage({ params }: { params: { id: str
                   rel="noopener noreferrer"
                   className="inline-block mt-2 text-blue-600 hover:underline text-sm"
                 >
-                  View on Stellar Explorer →
+                  View on Stellar Explorer â†’
                 </a>
               </div>
             </CardContent>

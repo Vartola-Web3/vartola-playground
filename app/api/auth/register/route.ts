@@ -23,6 +23,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (role !== 'SME' && role !== 'INVESTOR') {
+      return NextResponse.json(
+        { error: 'Role must be SME or INVESTOR' },
+        { status: 400 }
+      );
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });

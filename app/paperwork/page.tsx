@@ -17,9 +17,9 @@ const packs = [
 ];
 
 export default function PaperworkPage() {
-  return <div className="min-h-screen bg-[#07120F] text-[#F6FFF9]">
+  return <div className="vartola-grid min-h-screen text-[#F6FFF9]">
     <SiteNav />
-    <main className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+    <main className="vartola-frame py-14">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">Public document room</p>
       <div className="mt-3 grid gap-8 lg:grid-cols-[1fr_300px]">
         <div><h1 className="max-w-3xl text-5xl font-semibold leading-[1.04] tracking-tight">The paperwork behind a finance platform people can trust.</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-[#A9BDB5]">Public product documents and the controlled paperwork path required before Vartola can move from a no-value prototype to a regulated real-money pilot.</p></div>

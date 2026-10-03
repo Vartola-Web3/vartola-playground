@@ -42,10 +42,10 @@ export default function OpportunityPage() {
     return () => { active = false; };
   }, [params.poolId]);
 
-  if (loading) return <main className="min-h-screen bg-[#F7FAF8] p-8 text-[#62736C]">Loading opportunity…</main>;
+  if (loading) return <main className="vartola-grid-light min-h-screen text-[#62736C]"><div className="vartola-frame py-8">Loading opportunity…</div></main>;
   if (error || !item) {
     return (
-      <main className="min-h-screen bg-[#F7FAF8] p-8 text-[#13251E]">
+      <main className="vartola-grid-light min-h-screen text-[#13251E]"><div className="vartola-frame py-8">
         <div className="mx-auto max-w-xl rounded-2xl border border-[#E4ECE8] bg-white p-6 shadow-sm">
           <h1 className="text-xl font-semibold">Opportunity unavailable</h1>
           <p className="mt-2 text-sm text-[#62736C]">{error || 'This opportunity could not be found.'}</p>
@@ -62,7 +62,7 @@ export default function OpportunityPage() {
   const vehicles = ((item.vehicles as unknown) as { type?: string }[]) || [];
   const image = fleetImage(getFleetVisualType(countsFromAssetTypes(vehicles.map((vehicle) => vehicle.type || ''))));
   const content = (
-      <div className="mx-auto max-w-7xl">
+      <div className="w-full">
         <Link href="/marketplace" className="inline-flex items-center gap-1 text-sm font-medium text-[#0D4D35]">← All opportunities</Link>
         <div className="mt-4 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="min-w-0">
@@ -188,5 +188,5 @@ export default function OpportunityPage() {
   if (session?.user?.role === 'INVESTOR' || session?.user?.role === 'ADMIN') {
     return <DashboardLayout role={session.user.role}>{content}</DashboardLayout>;
   }
-  return <main className="min-h-screen bg-[#F7FAF8] px-4 py-8 text-[#13251E] sm:px-6">{content}</main>;
+  return <main className="vartola-grid-light min-h-screen text-[#13251E]"><div className="vartola-frame py-8">{content}</div></main>;
 }

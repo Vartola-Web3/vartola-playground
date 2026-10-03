@@ -52,7 +52,7 @@ export default function SmePaymentsPage() {
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="mx-auto max-w-3xl space-y-5">
+      <div className="w-full space-y-5">
         <h1 className="text-3xl font-semibold">Payments</h1>
         <section className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-4">

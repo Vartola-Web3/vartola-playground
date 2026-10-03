@@ -45,7 +45,7 @@ export default function FacilityLifecyclePage() {
   const ready = facility.status === 'READY_FOR_RELEASE';
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 bg-[#F7FAF8] p-6 text-[#10231C]">
+    <main className="vartola-grid-light w-full space-y-6 p-6 text-[#10231C] lg:px-10">
       <h1 className="text-3xl font-semibold">{facility.facilityNo}</h1>
       <p>Status {facility.status}. Funded {facility.fundedAmount} of {facility.financeAmount}. Beneficiary {facility.beneficiary?.legalName || 'none'}.</p>
       <section className="rounded-2xl bg-white p-4">

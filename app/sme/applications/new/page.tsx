@@ -75,7 +75,7 @@ export default function NewApplicationPage() {
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="max-w-3xl mx-auto">
+      <div className="w-full">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">New Financing Application</h1>
         <p className="text-gray-600 mb-6">Submit a new asset financing request</p>
 

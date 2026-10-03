@@ -25,9 +25,9 @@ const fiveYearPlan = [
 
 export default function PitchPage() {
   return (
-    <div className="min-h-screen bg-[#07120F] text-[#F6FFF9]">
+    <div className="vartola-grid min-h-screen text-[#F6FFF9]">
       <SiteNav />
-      <main className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <main className="vartola-frame py-14">
         <p className="text-xs uppercase tracking-[0.18em] text-[#70FFB8]">Web3 · Real-world assets</p>
         <h1 className="mt-3 max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight">
           Productive asset finance for growing UAE SMEs.

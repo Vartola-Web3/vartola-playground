@@ -21,3 +21,26 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif;
 }
+
+.vartola-grid {
+  background-color: #07120f;
+  background-image:
+    linear-gradient(rgba(53, 244, 154, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(53, 244, 154, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.vartola-grid-light {
+  background-color: #f7faf8;
+  background-image:
+    linear-gradient(rgba(21, 199, 122, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 199, 122, 0.09) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.vartola-frame {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1.25rem;
+}

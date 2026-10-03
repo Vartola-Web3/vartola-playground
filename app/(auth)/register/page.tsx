@@ -60,9 +60,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+    <div className="vartola-grid flex min-h-screen items-center justify-center px-6 py-12 text-[#F6FFF9] lg:px-10">
       <Card className="w-full max-w-2xl p-8">
         <div className="text-center mb-8">
+          <img src="/brand/vartola-logo.png" alt="Vartola" className="mx-auto mb-3 h-14 w-14 rounded-2xl" />
           <h1 className="text-3xl font-bold text-gray-900">Vartola</h1>
           <p className="text-gray-600 mt-2">Create your account</p>
         </div>

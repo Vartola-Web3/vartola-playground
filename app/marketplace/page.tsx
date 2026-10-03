@@ -90,7 +90,7 @@ function MarketplaceContent() {
   };
 
   const content = (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="w-full space-y-8">
       <div>
         <h1 className="text-3xl font-semibold">Invest in real fleets</h1>
         <p className="mt-1 text-[#708078]">Choose a fleet, then decide how much to invest.</p>
@@ -185,12 +185,12 @@ function MarketplaceContent() {
   if (session?.user?.role === 'INVESTOR' || session?.user?.role === 'ADMIN') {
     return <DashboardLayout role={session.user.role}>{content}</DashboardLayout>;
   }
-  return <main className="min-h-screen bg-[#F7FAF8] px-4 py-8 text-[#13251E] sm:px-6">{content}</main>;
+  return <main className="vartola-grid-light min-h-screen text-[#13251E]"><div className="vartola-frame py-8">{content}</div></main>;
 }
 
 export default function MarketplacePage() {
   return (
-    <Suspense fallback={<main className="min-h-screen bg-[#F7FAF8] px-6 py-10 text-[#708078]">Loading opportunities…</main>}>
+    <Suspense fallback={<main className="vartola-grid-light min-h-screen text-[#708078]"><div className="vartola-frame py-10">Loading opportunities…</div></main>}>
       <MarketplaceContent />
     </Suspense>
   );

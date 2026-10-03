@@ -31,7 +31,7 @@ export default function SimulationTreasuryPage() {
   };
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6 bg-[#F7FAF8] p-6 text-[#10231C]">
+    <main className="vartola-grid-light min-h-screen text-[#10231C]"><div className="vartola-frame space-y-6 py-6">
       <p className="inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-900">SIMULATION MODE · Virtual tAED — No Real Value</p>
       <h1 className="text-3xl font-semibold">Simulation treasury</h1>
       <p className="text-sm text-[#62736C]">Clock: {date ? new Date(date).toDateString() : 'today'}</p>
@@ -81,6 +81,7 @@ export default function SimulationTreasuryPage() {
         ))}
       </section>
       {message && <p className="text-sm">{message}</p>}
+      </div>
     </main>
   );
 }

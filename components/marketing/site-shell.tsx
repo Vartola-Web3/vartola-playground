@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandMark } from '@/components/brand/brand-mark';
 
 const links = [
   { href: '/', label: 'Home' },
@@ -12,10 +13,8 @@ const links = [
 export function SiteNav() {
   return (
     <header className="sticky top-0 z-20 border-b border-[rgba(112,255,184,0.14)] bg-[#07120F]/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="text-sm font-semibold tracking-tight text-[#70FFB8]">
-          Vartola
-        </Link>
+      <div className="vartola-frame flex h-16 items-center justify-between">
+        <BrandMark />
         <nav className="hidden items-center gap-6 text-sm text-[#9FB8AD] lg:flex">
           {links.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-[#F6FFF9]">
@@ -37,7 +36,7 @@ export function SiteNav() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-[rgba(112,255,184,0.14)] bg-[#091713]">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-14 sm:px-6 md:flex-row md:items-end md:justify-between">
+      <div className="vartola-frame flex flex-col gap-8 py-14 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#70FFB8]">Productive asset finance</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#F6FFF9]">Financing the assets that move UAE businesses forward.</h2>

@@ -39,7 +39,7 @@ export default async function InvestorDashboard() {
 
   return (
     <DashboardLayout role="INVESTOR">
-      <div className="mx-auto max-w-6xl space-y-8">
+      <div className="w-full space-y-8">
         <div>
           <h1 className="text-3xl font-semibold">Welcome back, {firstName}</h1>
           <p className="mt-1 text-[#708078]">Build wealth through real fleet investments in the UAE.</p>

@@ -92,7 +92,7 @@ export default function PoolDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full">
         <Button variant="outline" onClick={() => router.back()} className="mb-6">
           ← Back to Pools
         </Button>

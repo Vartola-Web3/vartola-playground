@@ -42,7 +42,7 @@ export default function AIAssistPage() {
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="max-w-5xl mx-auto">
+      <div className="w-full">
         <div className="mb-6">
           <h1 className="text-3xl font-bold">AI Underwriting Assistant</h1>
           <p className="text-gray-600 mt-2">

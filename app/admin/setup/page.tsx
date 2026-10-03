@@ -119,7 +119,7 @@ export default function AdminSetupPage() {
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full">
         <h1 className="text-3xl font-bold mb-2">Platform Configuration</h1>
         <p className="text-gray-600 mb-6">
           Configure system settings and integration keys. All secrets are encrypted at rest using AES-256-GCM.

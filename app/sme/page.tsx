@@ -46,7 +46,7 @@ export default async function SMEDashboard() {
 
   return (
     <DashboardLayout role="SME">
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className="w-full space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="text-3xl font-semibold">{user.company?.legalName}</h1>

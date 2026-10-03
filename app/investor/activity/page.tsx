@@ -34,7 +34,7 @@ export default async function InvestorActivityPage() {
 
   return (
     <DashboardLayout role="INVESTOR">
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="w-full space-y-4">
         <h1 className="text-3xl font-semibold">Activity</h1>
         <p className="text-[#708078]">Investments and income.</p>
         <div className="space-y-2">

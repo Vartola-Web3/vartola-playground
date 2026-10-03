@@ -39,7 +39,7 @@ export default async function AdminDashboard() {
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="mx-auto max-w-5xl space-y-6">
+      <div className="w-full space-y-6">
         <div className="flex items-end justify-between">
           <div>
             <h1 className="text-3xl font-semibold">Operations</h1>

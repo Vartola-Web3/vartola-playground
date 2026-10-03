@@ -195,7 +195,7 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ id
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="max-w-5xl mx-auto">
+      <div className="w-full">
         <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">

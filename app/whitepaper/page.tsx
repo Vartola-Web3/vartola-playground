@@ -34,11 +34,11 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
 
 export default function WhitepaperPage() {
   return (
-    <div className="min-h-screen bg-[#07120F] text-[#F6FFF9]">
+    <div className="vartola-grid min-h-screen text-[#F6FFF9]">
       <SiteNav />
       <main>
         <section className="border-b border-white/10">
-          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_320px] lg:py-24">
+          <div className="vartola-frame grid gap-10 py-16 lg:grid-cols-[1fr_320px] lg:py-20">
             <div>
               <SectionLabel>Vartola product paper · v1.0 · October 2026</SectionLabel>
               <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">Infrastructure for transparent productive-asset finance.</h1>
@@ -58,7 +58,7 @@ export default function WhitepaperPage() {
           </div>
         </section>
 
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <div className="vartola-frame grid gap-10 py-12 lg:grid-cols-[220px_minmax(0,1fr)]">
           <nav className="hidden self-start lg:sticky lg:top-24 lg:block">
             <p className="text-xs uppercase tracking-[0.16em] text-[#70867D]">Contents</p>
             <ol className="mt-4 space-y-3 text-sm text-[#A9BDB5]">

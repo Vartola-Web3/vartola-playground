@@ -64,7 +64,7 @@ export default function WalletFaucetPage() {
 
   return (
     <DashboardLayout role={session.user.role}>
-      <div className="max-w-3xl mx-auto">
+      <div className="w-full">
         <h1 className="text-3xl font-semibold">Wallet</h1>
         <p className="mt-1 text-[#708078]">Add demo funds, reserve them in an opportunity, and track capital after deployment.</p>
 

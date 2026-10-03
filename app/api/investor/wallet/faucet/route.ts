@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 
 import { prisma } from '@/lib/db';
+import { creditWallet } from '@/lib/simulation/ledger';
+import { recordTopUp } from '@/lib/stellar/record';
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
     const session = await auth();
     if (!session || session.user.role !== 'INVESTOR') {
@@ -14,12 +16,23 @@ export async function POST() {
       where: { id: session.user.id },
     });
 
-    if (!user?.stellarPublicKey) {
-      return NextResponse.json({ error: 'No wallet found' }, { status: 400 });
+    const body = await request.json().catch(() => ({}));
+    const faucetAmount = Number(body.amount || 10000);
+    if (!Number.isFinite(faucetAmount) || faucetAmount <= 0 || faucetAmount > 5000000) {
+      return NextResponse.json({ error: 'Enter an amount between AED 1 and AED 5,000,000' }, { status: 400 });
     }
-
-    const faucetAmount = 10000;
-    const newBalance = 50000 + faucetAmount;
+    const idempotencyKey = `investor-topup:${session.user.id}:${Date.now()}`;
+    const wallet = await creditWallet({
+      ownerType: 'INVESTOR',
+      ownerId: session.user.id,
+      amount: faucetAmount,
+      type: 'DEMO_TOP_UP',
+      idempotencyKey,
+      actorId: session.user.id,
+      description: `Top-up${body.reference ? ` · ${String(body.reference).slice(0, 80)}` : ''}`,
+      label: user?.name || 'Investor',
+    });
+    const recorded = await recordTopUp(idempotencyKey, { ownerType: 'INVESTOR', amount: faucetAmount, reference: body.reference || '' });
 
     await prisma.auditLog.create({
       data: {
@@ -34,7 +47,8 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       amount: faucetAmount,
-      newBalance,
+      newBalance: wallet?.available || faucetAmount,
+      reviewUrl: recorded?.reviewUrl || null,
     });
   } catch (error) {
     console.error('Faucet request error:', error);

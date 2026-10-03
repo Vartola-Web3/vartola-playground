@@ -63,7 +63,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
       <Card className="w-full max-w-2xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">AssetFi UAE</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Vartola</h1>
           <p className="text-gray-600 mt-2">Create your account</p>
         </div>
 

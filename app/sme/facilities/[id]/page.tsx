@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatAED, formatDate, getStatusColor } from '@/lib/formatters';
+import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
 export default async function FacilityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -118,6 +119,9 @@ export default async function FacilityDetailPage({ params }: { params: Promise<{
                     {payment.paidAt && (
                       <div className="text-sm text-green-600">Paid: {formatDate(payment.paidAt)}</div>
                     )}
+                    {stellarReviewUrl(payment.stellarTxHash) && (
+                      <a className="text-sm text-[#0A4934] underline" href={stellarReviewUrl(payment.stellarTxHash)!} target="_blank" rel="noreferrer">Review on Stellar</a>
+                    )}
                   </div>
                   <div className="text-right">
                     <div className="font-semibold">{formatAED(Number(payment.amount))}</div>
@@ -158,14 +162,16 @@ export default async function FacilityDetailPage({ params }: { params: Promise<{
                     </div>
                   </div>
                 )}
-                <a
-                  href={`https://stellar.expert/explorer/testnet/tx/${facility.stellarTxHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-2 text-blue-600 hover:underline text-sm"
-                >
-                  View on Stellar Explorer â†’
-                </a>
+                {stellarReviewUrl(facility.stellarTxHash) && (
+                  <a
+                    href={stellarReviewUrl(facility.stellarTxHash)!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-2 text-[#0A4934] underline text-sm"
+                  >
+                    Review on Stellar
+                  </a>
+                )}
               </div>
             </CardContent>
           </Card>

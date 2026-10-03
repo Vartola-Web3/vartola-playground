@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AssetFi UAE",
-  description: "Tokenized Asset Finance on Stellar Testnet",
+  title: "Vartola | Productive asset finance for UAE SMEs",
+  description:
+    "Vartola helps UAE SMEs access the productive assets they need to grow, starting with logistics fleets and expanding into business equipment.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

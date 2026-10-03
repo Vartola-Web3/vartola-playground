@@ -8,10 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const demoCredentials = [
-  { role: 'Admin', email: 'admin@assetfi.ae', password: 'admin123' },
-  { role: 'Underwriter', email: 'underwriter@assetfi.ae', password: 'underwriter123' },
-  { role: 'SME', email: 'ahmed@gulflogistics.ae', password: 'sme123' },
-  { role: 'Investor', email: 'khalid@investor.ae', password: 'investor123' },
+  { role: 'Investor', name: 'Khalid Al Fahim', email: 'khalid@investor.ae', password: 'demo123' },
+  { role: 'Investor', name: 'Fatima Al Zahra', email: 'fatima@investor.ae', password: 'demo123' },
+  { role: 'Investor', name: 'Mohammed Al Rashid', email: 'mohammed@investor.ae', password: 'demo123' },
+  { role: 'Investor', name: 'Sara Al Hashimi', email: 'sara@investor.demo', password: 'demo123' },
+  { role: 'SME', name: 'Falcon Route · Dubai', email: 'layla@falconroute.demo', password: 'demo123' },
+  { role: 'SME', name: 'Desert Mile · Abu Dhabi', email: 'omar@desertmile.demo', password: 'demo123' },
+  { role: 'SME', name: 'Harbour Cold Chain · Sharjah', email: 'noor@harbourcoldchain.demo', password: 'demo123' },
+  { role: 'Underwriter', name: 'Mariam', email: 'underwriter@assetfi.ae', password: 'demo123' },
+  { role: 'Admin', name: 'Vartola Admin', email: 'admin@assetfi.ae', password: 'demo123' },
+  { role: 'Operations Admin', name: 'Operations Admin', email: 'operations@vartola.demo', password: 'demo123' },
 ];
 
 export default function LoginPage() {
@@ -48,21 +54,31 @@ export default function LoginPage() {
     }
   };
 
-  const quickLogin = (email: string, password: string) => {
+  const quickLogin = async (email: string, password: string) => {
     setEmail(email);
     setPassword(password);
+    setError('');
+    setLoading(true);
+    const result = await signIn('credentials', { email, password, redirect: false });
+    if (result?.error) {
+      setError('This demo account is not seeded yet. Run the demo data seed.');
+      setLoading(false);
+      return;
+    }
+    router.push('/dashboard');
+    router.refresh();
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#07120F] p-4 text-[#F6FFF9]">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="mb-4 rounded-full bg-amber-50 px-3 py-2 text-center text-xs font-medium text-amber-900">
           Testnet demo only. No real value.
         </div>
 
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-center text-2xl font-semibold text-[#F6FFF9]">AssetFi UAE</CardTitle>
+            <CardTitle className="text-center text-2xl font-semibold text-[#13251E]">Vartola</CardTitle>
             <CardDescription className="text-center">Sign in to your account</CardDescription>
           </CardHeader>
           <CardContent>
@@ -107,15 +123,16 @@ export default function LoginPage() {
 
             <div className="mt-6 border-t border-[#E2E8F0] pt-6">
               <p className="mb-3 text-center text-sm text-[#475569]">Demo accounts</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {demoCredentials.map((cred) => (
                   <button
-                    key={cred.role}
+                    key={cred.email}
                     type="button"
                     onClick={() => quickLogin(cred.email, cred.password)}
-                    className="rounded-xl border border-[rgba(112,255,184,0.16)] bg-[#091713] p-3 text-left text-xs text-[#F6FFF9] transition-colors hover:border-[#35F49A]"
+                    className="rounded-xl border border-[#DCE6E1] bg-[#F8FBF9] p-3 text-left text-xs text-[#13251E] transition-colors hover:border-[#15C77A]"
                   >
-                    <div className="font-semibold text-[#0F172A]">{cred.role}</div>
+                    <div className="font-semibold text-[#0F172A]">{cred.name}</div>
+                    <div className="text-[11px] font-medium uppercase tracking-wide text-[#0D7A52]">{cred.role}</div>
                     <div className="truncate text-[#475569]">{cred.email}</div>
                   </button>
                 ))}
@@ -130,7 +147,7 @@ export default function LoginPage() {
             <a href="/about" className="text-[#1D4ED8]">About</a>
             <a href="/whitepaper" className="text-[#1D4ED8]">Whitepaper</a>
           </div>
-          <p className="text-xs text-[#475569]">AssetFi UAE — institutional asset finance</p>
+          <p className="text-xs text-[#475569]">Vartola — productive asset finance for UAE SMEs</p>
         </div>
       </div>
     </div>

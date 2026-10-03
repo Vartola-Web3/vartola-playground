@@ -4,11 +4,12 @@ import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDateTime } from '@/lib/formatters';
+import { isAdminOperator } from '@/lib/auth/roles';
 
 export default async function UsersListPage() {
   const session = await auth();
 
-  if (!session?.user || session.user.role !== 'ADMIN') {
+  if (!session?.user || !isAdminOperator(session.user.role)) {
     redirect('/login');
   }
 
@@ -20,7 +21,7 @@ export default async function UsersListPage() {
   });
 
   const usersByRole = {
-    ADMIN: users.filter((u) => u.role === 'ADMIN').length,
+    ADMIN: users.filter((u) => ['ADMIN', 'ADMIN_REVIEWER'].includes(u.role)).length,
     UNDERWRITER: users.filter((u) => u.role === 'UNDERWRITER').length,
     SME: users.filter((u) => u.role === 'SME').length,
     INVESTOR: users.filter((u) => u.role === 'INVESTOR').length,

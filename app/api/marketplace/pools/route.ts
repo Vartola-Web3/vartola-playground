@@ -3,12 +3,16 @@ import { prisma } from '@/lib/db';
 import { auth } from '@/lib/auth/auth';
 import { poolAvailable } from '@/lib/marketplace/allocate';
 import { poolRiskScore } from '@/lib/marketplace/risk';
+import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
 export async function GET() {
   const session = await auth();
   const investorId = session?.user?.role === 'INVESTOR' ? session.user.id : '';
   const pools = await prisma.pool.findMany({
-    where: { status: { in: ['OPEN', 'PARTIALLY_FUNDED', 'FULLY_FUNDED', 'ACTIVE', 'FUNDING'] } },
+    where: {
+      status: { in: ['OPEN', 'PARTIALLY_FUNDED', 'FUNDING'] },
+      facilities: { some: {} },
+    },
     include: {
       facilities: {
         include: {
@@ -37,6 +41,7 @@ export async function GET() {
       return {
         id: pool.id,
         poolNo: pool.poolNo,
+        reviewUrl: stellarReviewUrl(pool.stellarTxHash),
         poolName: pool.poolName,
         description: pool.description,
         fleetType: pool.fleetType,
@@ -87,6 +92,6 @@ export async function GET() {
             }
           : null,
       };
-    }),
+    }).filter((pool) => pool.available > 0 && pool.assets > 0),
   });
 }

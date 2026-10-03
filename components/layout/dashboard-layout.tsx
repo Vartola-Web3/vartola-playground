@@ -3,6 +3,7 @@
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 interface DashboardLayoutProps {
   children: React.ReactNode;
   role: string;
@@ -10,18 +11,24 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, role }: DashboardLayoutProps) {
   const pathname = usePathname();
+  const [financialMode, setFinancialMode] = useState<'SIMULATION' | 'STELLAR_TESTNET'>('SIMULATION');
+  useEffect(() => {
+    fetch('/api/financial-mode').then((response) => response.json()).then((data) => {
+      if (data.mode === 'STELLAR_TESTNET') setFinancialMode('STELLAR_TESTNET');
+    }).catch(() => undefined);
+  }, [pathname]);
   const navigation = getNavigationForRole(role);
 
   const home = navigation[0]?.href ?? '/';
 
   return (
     <div className="min-h-screen bg-[#F7FAF8] text-[#13251E]">
-      <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs text-amber-900">
-        Demo only. Virtual tAED. No real value.
+      <div className={`border-b px-4 py-2 text-center text-xs ${financialMode === 'STELLAR_TESTNET' ? 'border-sky-200 bg-sky-50 text-sky-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
+        {financialMode === 'STELLAR_TESTNET' ? 'Stellar Testnet mode · Real blockchain transactions · No real monetary value.' : 'Simulation mode · Virtual tAED · No blockchain transactions.'}
       </div>
       <div className="lg:grid lg:grid-cols-[220px_1fr]">
         <aside className="border-b border-[#E5ECE8] bg-white px-4 py-5 lg:min-h-screen lg:border-b-0 lg:border-r">
-          <Link href={home} className="text-sm font-semibold text-[#0A4934]">AssetFi UAE</Link>
+          <Link href={home} className="text-sm font-semibold text-[#0A4934]">Vartola</Link>
           <nav className="mt-6 flex gap-2 overflow-auto text-sm lg:block lg:space-y-1">
             {navigation.map((item) => {
               const isActive = pathname === item.href || (item.href !== home && pathname.startsWith(item.href));
@@ -89,14 +96,18 @@ function getNavigationForRole(role: string) {
         { label: 'Reviews', href: '/underwriter' },
       ];
     case 'ADMIN':
-      return [
+    case 'ADMIN_REVIEWER': {
+      const items = [
         { label: 'Overview', href: '/admin' },
         { label: 'Applications', href: '/admin/users' },
         { label: 'Opportunities', href: '/admin/pools' },
         { label: 'Users', href: '/admin/users' },
         { label: 'Simulation', href: '/admin/simulation' },
+        { label: 'Blockchain', href: '/admin/blockchain' },
         { label: 'Settings', href: '/admin/setup' },
       ];
+      return role === 'ADMIN' ? items : items.filter((item) => item.label !== 'Settings');
+    }
     default:
       return [];
   }

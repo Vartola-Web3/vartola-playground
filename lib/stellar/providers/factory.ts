@@ -33,15 +33,20 @@ export async function createStellarProvider(): Promise<StellarProvider> {
   
   if (alchemyApiKey && alchemyApiKey !== 'your_alchemy_api_key_here' && alchemyApiKey.trim() !== '') {
     try {
-      // Override URLs if using Alchemy
+      const alchemyConfig = { ...config };
+      // Override URLs only for the Alchemy candidate.
       const alchemyRpcUrl = liveConfig.stellarRpcUrl;
       if (alchemyRpcUrl && alchemyRpcUrl.includes('alchemy.com')) {
-        config.horizonUrl = alchemyRpcUrl;
-        config.sorobanUrl = alchemyRpcUrl;
+        alchemyConfig.horizonUrl = alchemyRpcUrl;
+        alchemyConfig.sorobanUrl = alchemyRpcUrl;
       }
 
-      console.log('✅ Using Alchemy Stellar RPC (from LIVE config)');
-      return new AlchemyStellarProvider(alchemyApiKey, config);
+      const alchemy = new AlchemyStellarProvider(alchemyApiKey, alchemyConfig);
+      if (await alchemy.isHealthy()) {
+        console.log('✅ Using Alchemy Stellar RPC (from LIVE config)');
+        return alchemy;
+      }
+      console.warn('⚠️ Alchemy health check failed, falling back to public Stellar endpoints');
     } catch (error: any) {
       console.warn('⚠️ Failed to initialize Alchemy provider:', error.message);
       console.warn('⚠️ Falling back to public RPC');

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
 import DashboardLayout from '@/components/layout/dashboard-layout';
+import { isAdminOperator } from '@/lib/auth/roles';
 
 interface AuditLog {
   id: string;
@@ -46,7 +47,7 @@ export default function AuditLogPage() {
     }
   };
 
-  if (!session || session.user.role !== 'ADMIN') {
+  if (!session || !isAdminOperator(session.user.role)) {
     return <div>Access denied</div>;
   }
 

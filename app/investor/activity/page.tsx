@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { formatAED, formatDate } from '@/lib/formatters';
+import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
 export default async function InvestorActivityPage() {
   const session = await auth();
@@ -20,12 +21,14 @@ export default async function InvestorActivityPage() {
       label: `Invested in ${item.pool.poolName.replace(/ Pool/g, '')}`,
       amount: item.amount,
       at: item.subscribedAt,
+      review: stellarReviewUrl(item.stellarTxHash),
     })),
     ...investments.flatMap((item) => item.distributions.map((row) => ({
       id: row.id,
       label: `Income from ${item.pool.poolName.replace(/ Pool/g, '')}`,
       amount: row.amount,
       at: row.distributedAt,
+      review: stellarReviewUrl(row.stellarTxHash),
     }))),
   ].sort((a, b) => b.at.getTime() - a.at.getTime());
 
@@ -40,6 +43,7 @@ export default async function InvestorActivityPage() {
               <div>
                 <p className="font-medium">{row.label}</p>
                 <p className="text-sm text-[#708078]">{formatDate(row.at)}</p>
+                {row.review ? <a className="text-sm text-[#0A4934] underline" href={row.review} target="_blank" rel="noreferrer">Stellar reference</a> : <p className="text-sm text-[#708078]">Stellar reference pending</p>}
               </div>
               <p className="font-semibold">{formatAED(row.amount)}</p>
             </article>

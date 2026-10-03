@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/db';
 import { calculateRisk } from '@/lib/risk-engine';
 import { AssetType } from '@/lib/types';
-import { createFacilityOnStellar } from '@/lib/stellar/facility-operations';
+import { tryRecordChainEvent } from '@/lib/stellar/record';
 
 export async function POST(request: NextRequest) {
   try {
@@ -100,33 +100,29 @@ export async function POST(request: NextRequest) {
         riskResult.tierParameters.indicativeRate.min / 100
       );
 
-      const stellarResult = await createFacilityOnStellar({
-        facilityNo,
-        assetValue: application.assetValue,
-        financeAmount: application.financeAmount,
-        term: application.requestedTerm,
-        companyId: application.companyId,
-      });
-
-      const openPool = await prisma.pool.findFirst({
-        where: { status: 'OPEN' },
-        orderBy: { createdAt: 'desc' },
-      });
-
       const facility = await prisma.facility.create({
         data: {
           facilityNo,
           applicationId: application.id,
-          poolId: openPool?.id,
+          // Approval creates an eligible asset. An admin explicitly decides
+          // which opportunity it belongs to; never attach it to an arbitrary pool.
+          poolId: null,
           financeAmount: application.financeAmount,
           term: application.requestedTerm,
           monthlyPayment,
-          status: 'ACTIVE',
-          stellarTxHash: stellarResult.txHash,
-          stellarAssetId: stellarResult.assetId,
-          activatedAt: new Date(),
+          status: 'PENDING_FUNDING',
+          stellarTxHash: null,
+          stellarAssetId: null,
+          activatedAt: null,
           maturityDate: new Date(Date.now() + application.requestedTerm * 30 * 24 * 60 * 60 * 1000),
         },
+      });
+
+      await tryRecordChainEvent({
+        type: 'CREATE_FACILITY',
+        entityType: 'Facility',
+        entityId: facility.id,
+        payload: { facilityNo, assetValue: application.assetValue, financeAmount: application.financeAmount, term: application.requestedTerm },
       });
 
       for (let i = 1; i <= application.requestedTerm; i++) {
@@ -141,19 +137,6 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      if (openPool) {
-        const linked = await prisma.facility.findMany({
-          where: { poolId: openPool.id },
-          select: { financeAmount: true },
-        });
-        await prisma.pool.update({
-          where: { id: openPool.id },
-          data: {
-            raisedAmount: linked.reduce((sum, item) => sum + item.financeAmount, 0),
-            targetAmount: linked.reduce((sum, item) => sum + item.financeAmount, 0),
-          },
-        });
-      }
     }
 
     await prisma.auditLog.create({

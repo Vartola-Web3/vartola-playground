@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/db';
 import { ACTIVATION_CHECKS, RELEASE_CONDITIONS, allocateShares, isReady, splitPayment } from '@/lib/lifecycle/rules';
 import { sendEmail } from '@/lib/services/email';
-import { moveReservedToDeployed, payInvestor, debitWallet, creditWallet } from '@/lib/simulation/ledger';
+import { moveReservedToDeployed, payInvestor, debitWallet, creditWallet, simulationDate } from '@/lib/simulation/ledger';
+import { tryRecordChainEvent } from '@/lib/stellar/record';
 
 async function audit(userId: string, action: string, entityId: string, changes: object) {
   await prisma.auditLog.create({
@@ -83,7 +84,13 @@ export async function releaseFacilityFunds(facilityId: string, actorId: string) 
     });
   }
   await prisma.walletLedger.create({
-    data: { userId: actorId, type: 'DEPLOY', amount: facility.financeAmount, refId: facilityId, note: 'Release recorded. Chain settlement pending.' },
+    data: { userId: actorId, type: 'DEPLOY', amount: facility.financeAmount, refId: facilityId, note: 'Release recorded on Stellar Testnet when the network confirms it.' },
+  });
+  await tryRecordChainEvent({
+    type: 'RELEASE_FUNDS',
+    entityType: 'FacilityRelease',
+    entityId: release.id,
+    payload: { facilityId, facilityNo: facility.facilityNo, amount: facility.financeAmount },
   });
   await audit(actorId, 'FUNDS_RELEASED', facilityId, { amount: facility.financeAmount, beneficiary: facility.beneficiary.legalName });
   return release;
@@ -129,6 +136,81 @@ export async function activateFacility(facilityId: string, actorId: string) {
   for (const allocation of facility.allocations) {
     await moveReservedToDeployed(allocation.investorId, allocation.reservedAmount, `deploy:${facilityId}:${allocation.id}`);
   }
+  await tryRecordChainEvent({
+    type: 'ACTIVATE_FACILITY',
+    entityType: 'Facility',
+    entityId: facilityId,
+    payload: { facilityNo: facility.facilityNo, amount: facility.financeAmount },
+  });
+}
+
+export async function activateFundedSimulationPool(poolId: string, actorId: string) {
+  const pool = await prisma.pool.findUnique({
+    where: { id: poolId },
+    include: {
+      facilities: {
+        include: {
+          allocations: true,
+          payments: true,
+          application: { include: { company: { include: { users: { where: { role: 'SME' } } } } } },
+        },
+      },
+    },
+  });
+  if (!pool || pool.raisedAmount + 0.001 < pool.targetAmount) return;
+  const start = await simulationDate();
+
+  for (const facility of pool.facilities) {
+    if (facility.fundedAmount + 0.001 < facility.financeAmount || ['ACTIVE', 'COMPLETED'].includes(facility.status)) continue;
+    const sme = facility.application.company.users[0];
+    if (!sme) throw new Error('The financed company needs an SME wallet owner');
+
+    await creditWallet({
+      ownerType: 'SME', ownerId: sme.id, amount: facility.financeAmount, type: 'FACILITY_DISBURSEMENT',
+      idempotencyKey: `facility-disbursement:${facility.id}`, actorId,
+      description: `Simulation funding released for ${facility.facilityNo}`, label: facility.application.company.tradingName || facility.application.company.legalName,
+    });
+
+    await prisma.$transaction(async (tx) => {
+      for (const allocation of facility.allocations) {
+        if (allocation.reservedAmount <= 0) continue;
+        await tx.facilityAllocation.update({
+          where: { id: allocation.id },
+          data: { deployedAmount: { increment: allocation.reservedAmount }, reservedAmount: 0, status: 'DEPLOYED' },
+        });
+        await tx.investment.update({
+          where: { id: allocation.investmentId },
+          data: { reservedAmount: { decrement: allocation.reservedAmount }, deployedAmount: { increment: allocation.reservedAmount }, activatedAt: start },
+        });
+      }
+      await tx.facility.update({
+        where: { id: facility.id },
+        data: { status: 'ACTIVE', activatedAt: start, incomeStartDate: start },
+      });
+      await tx.application.update({ where: { id: facility.applicationId }, data: { status: 'FUNDED' } });
+      if (facility.payments.length === 0) {
+        for (let index = 1; index <= facility.term; index++) {
+          const dueDate = new Date(start);
+          dueDate.setMonth(dueDate.getMonth() + index);
+          await tx.payment.create({
+            data: { facilityId: facility.id, paymentNo: index, dueDate, amount: facility.monthlyPayment, status: 'SCHEDULED' },
+          });
+        }
+      }
+    });
+
+    for (const allocation of facility.allocations) {
+      await moveReservedToDeployed(allocation.investorId, allocation.reservedAmount, `deploy:${facility.id}:${allocation.id}`);
+    }
+    await tryRecordChainEvent({
+      type: 'ACTIVATE_FACILITY',
+      entityType: 'Facility',
+      entityId: facility.id,
+      payload: { facilityNo: facility.facilityNo, amount: facility.financeAmount },
+    });
+    await audit(actorId, 'SIMULATION_FACILITY_ACTIVATED', facility.id, { amount: facility.financeAmount, smeId: sme.id });
+  }
+  await prisma.pool.update({ where: { id: pool.id }, data: { status: 'ACTIVE' } });
 }
 
 export async function recordRepayment(facilityId: string, actorId: string, gross: number, key: string) {
@@ -141,20 +223,17 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
   const payer = await prisma.user.findFirst({ where: { companyId: facility.application?.companyId, role: 'SME' } });
   if (payer) await debitWallet('SME', payer.id, gross, `sme-pay:${key}`, facility.facilityNo);
   const parts = splitPayment(gross, facility.serviceFeeRate, facility.reserveRate);
-  const payment = await prisma.payment.create({
+  const scheduled = facility.payments
+    .filter((row) => row.status !== 'PAID')
+    .sort((a, b) => a.paymentNo - b.paymentNo)[0];
+  if (!scheduled) throw new Error('No unpaid installment is available');
+  if (Math.abs(gross - scheduled.amount) > 0.01) throw new Error(`Payment amount must equal the installment amount ${scheduled.amount}`);
+  const payment = await prisma.payment.update({
+    where: { id: scheduled.id },
     data: {
-      facilityId,
-      paymentNo: facility.payments.length + 1,
-      dueDate: new Date(),
-      amount: gross,
-      paidAmount: gross,
-      paidAt: new Date(),
-      status: 'PAID',
-      principalComponent: parts.principal,
-      leaseIncomeComponent: parts.leaseIncome,
-      serviceFee: parts.serviceFee,
-      reserveComponent: parts.reserve,
-      idempotencyKey: key,
+      paidAmount: gross, paidAt: new Date(), status: 'PAID',
+      principalComponent: parts.principal, leaseIncomeComponent: parts.leaseIncome,
+      serviceFee: parts.serviceFee, reserveComponent: parts.reserve, idempotencyKey: key,
     },
   });
   const shares = allocateShares(
@@ -165,7 +244,7 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
   for (const share of shares) {
     if (share.principal + share.leaseIncome <= 0) continue;
     const allocation = facility.allocations.find((row) => row.id === share.id)!;
-    await prisma.distribution.create({
+    const distribution = await prisma.distribution.create({
       data: {
         investmentId: allocation.investmentId,
         paymentId: payment.id,
@@ -174,6 +253,18 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
         principalAmount: share.principal,
         leaseIncomeAmount: share.leaseIncome,
         status: 'CONFIRMED',
+      },
+    });
+    await tryRecordChainEvent({
+      type: 'DISTRIBUTE_PAYMENT',
+      entityType: 'Distribution',
+      entityId: distribution.id,
+      payload: {
+        facilityId,
+        paymentId: payment.id,
+        amount: share.principal + share.leaseIncome,
+        principal: share.principal,
+        income: share.leaseIncome,
       },
     });
     await prisma.facilityAllocation.update({
@@ -196,12 +287,18 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
         type: 'LEASE_INCOME',
         amount: share.principal + share.leaseIncome,
         refId: payment.id,
-        note: `${facility.facilityNo}. Settlement: Simulation Ledger`,
+        note: `${facility.facilityNo}. Profit distribution`,
       },
     });
     await payInvestor(allocation.investorId, share.principal, share.leaseIncome, `dist:${payment.id}:${allocation.id}`);
   }
   await audit(actorId, 'REPAYMENT_RECEIVED', facilityId, parts);
+  await tryRecordChainEvent({
+    type: 'RECORD_PAYMENT',
+    entityType: 'Payment',
+    entityId: payment.id,
+    payload: { facilityId, facilityNo: facility.facilityNo, paymentNo: payment.paymentNo, gross, ...parts },
+  });
   const investors = await prisma.user.findMany({
     where: { id: { in: facility.allocations.map((row) => row.investorId) } },
     select: { email: true },
@@ -233,7 +330,13 @@ export async function markStatus(facilityId: string, actorId: string, status: st
 export async function recordRecovery(facilityId: string, actorId: string, netProceeds: number) {
   const facility = await prisma.facility.findUnique({ where: { id: facilityId }, include: { allocations: true } });
   if (!facility) throw new Error('Facility not found');
-  await prisma.facilityRecovery.create({ data: { facilityId, netProceeds, note: 'Recovery proceeds' } });
+  const recovery = await prisma.facilityRecovery.create({ data: { facilityId, netProceeds, note: 'Recovery proceeds' } });
+  await tryRecordChainEvent({
+    type: 'RECORD_RECOVERY',
+    entityType: 'FacilityRecovery',
+    entityId: recovery.id,
+    payload: { facilityId, facilityNo: facility.facilityNo, netProceeds },
+  });
   const shares = allocateShares(
     facility.allocations.map((row) => ({ id: row.id, deployedAmount: Math.max(row.deployedAmount - row.principalReturned, 0) })),
     netProceeds,

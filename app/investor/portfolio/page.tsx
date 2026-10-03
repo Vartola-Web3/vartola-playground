@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import Link from 'next/link';
+import { InvestorPerformanceChart } from '@/components/analytics/finance-charts';
+import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
 export default async function PortfolioPage() {
   const session = await auth();
@@ -18,6 +20,25 @@ export default async function PortfolioPage() {
   const deployed = investments.reduce((sum, item) => sum + item.deployedAmount, 0);
   const income = investments.reduce((sum, item) => sum + item.leaseIncomeReceived, 0);
   const wallet = await prisma.simWallet.findUnique({ where: { ownerType_ownerId: { ownerType: 'INVESTOR', ownerId: session.user.id } } });
+  const distributions = await prisma.distribution.findMany({
+    where: { investment: { investorId: session.user.id }, status: 'CONFIRMED' },
+    select: { id: true, distributedAt: true, amount: true, principalAmount: true, leaseIncomeAmount: true, stellarTxHash: true },
+    orderBy: { distributedAt: 'asc' },
+  });
+  const principalReturned = investments.reduce((sum, item) => sum + item.principalReturned, 0);
+  let cumulativePrincipal = 0;
+  let cumulativeIncome = 0;
+  const monthly = new Map<string, { primary: number; secondary: number }>();
+  for (const distribution of distributions) {
+    const key = distribution.distributedAt.toLocaleDateString('en-AE', { month: 'short', year: '2-digit' });
+    const row = monthly.get(key) || { primary: 0, secondary: 0 };
+    cumulativePrincipal += distribution.principalAmount;
+    cumulativeIncome += distribution.leaseIncomeAmount;
+    row.primary = cumulativePrincipal;
+    row.secondary = cumulativeIncome;
+    monthly.set(key, row);
+  }
+  const chartData = Array.from(monthly, ([label, values]) => ({ label, ...values }));
 
   return (
     <DashboardLayout role={session.user.role}>
@@ -29,11 +50,29 @@ export default async function PortfolioPage() {
         </div>
         <Link href="/marketplace" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">Invest</Link>
       </div>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-4">
         <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="text-sm text-[#708078]">Reserved</p><p className="mt-2 text-2xl font-semibold">{reserved.toLocaleString()} AED</p></div>
         <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="text-sm text-[#708078]">Deployed</p><p className="mt-2 text-2xl font-semibold">{deployed.toLocaleString()} AED</p></div>
         <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="text-sm text-[#708078]">Income received</p><p className="mt-2 text-2xl font-semibold">{income.toLocaleString()} AED</p></div>
+        <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="text-sm text-[#708078]">Principal returned</p><p className="mt-2 text-2xl font-semibold">{principalReturned.toLocaleString()} AED</p></div>
       </div>
+      <section className="rounded-3xl bg-white p-5 shadow-sm">
+        <h2 className="font-semibold">Returns over time</h2>
+        <p className="mt-1 text-sm text-[#708078]">Cumulative principal and lease income confirmed by the distribution ledger.</p>
+        <div className="mt-4"><InvestorPerformanceChart data={chartData}/></div>
+      </section>
+      <section className="rounded-3xl bg-white p-5 shadow-sm">
+        <h2 className="font-semibold">Profit distributions</h2>
+        <div className="mt-3 space-y-2 text-sm">
+          {[...distributions].reverse().map((distribution) => (
+            <div key={distribution.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#E5ECE8] px-3 py-2">
+              <span>{distribution.distributedAt.toLocaleDateString()} · {distribution.amount.toLocaleString()} AED · income {distribution.leaseIncomeAmount.toLocaleString()}</span>
+              {stellarReviewUrl(distribution.stellarTxHash) ? <a className="font-medium text-[#0A4934] underline" href={stellarReviewUrl(distribution.stellarTxHash)!} target="_blank" rel="noreferrer">Stellar reference</a> : <span className="text-[#708078]">Stellar reference pending</span>}
+            </div>
+          ))}
+          {distributions.length === 0 && <p className="text-[#708078]">Distributions appear after an installment is paid.</p>}
+        </div>
+      </section>
       <div className="mt-6 space-y-3">
         {investments.map((investment) => (
           <article key={investment.id} className="rounded-3xl bg-white p-5 shadow-sm">

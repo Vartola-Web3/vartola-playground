@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 
 import { prisma } from '@/lib/db';
-import { generateSimulatedPoolId, generateSimulatedTxHash } from '@/lib/stellar/config';
+import { isAdminOperator } from '@/lib/auth/roles';
+import { publishPoolSnapshot } from '@/lib/stellar/sync';
 
 export async function GET() {
   try {
     const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !isAdminOperator(session.user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -27,7 +28,11 @@ export async function GET() {
         if (targetAmount !== pool.targetAmount) {
           await prisma.pool.update({ where: { id: pool.id }, data: { targetAmount } });
         }
-        return { ...pool, targetAmount };
+        return {
+          ...pool,
+          targetAmount,
+          status: pool.facilities.length === 0 ? 'DRAFT' : pool.status,
+        };
       })
     );
 
@@ -61,7 +66,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !isAdminOperator(session.user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -77,6 +82,10 @@ export async function POST(request: NextRequest) {
       : [];
     const amount = facilities.reduce((sum, facility) => sum + facility.financeAmount, 0);
 
+    if (!poolName || !assetFocus || !Number.isFinite(minInvestment) || !Number.isFinite(targetReturn)) {
+      return NextResponse.json({ error: 'Complete all required opportunity fields' }, { status: 400 });
+    }
+
     const pool = await prisma.pool.create({
       data: {
         poolNo,
@@ -85,11 +94,11 @@ export async function POST(request: NextRequest) {
         minInvestment,
         targetReturn,
         assetFocus,
-        status: 'OPEN',
-        raisedAmount: amount,
-        stellarPoolId: generateSimulatedPoolId(),
-        stellarTxHash: generateSimulatedTxHash(),
-        openedAt: new Date(),
+        status: facilities.length ? 'OPEN' : 'DRAFT',
+        raisedAmount: 0,
+        stellarPoolId: null,
+        stellarTxHash: null,
+        openedAt: facilities.length ? new Date() : null,
         facilities: facilities.length
           ? { connect: facilities.map((facility) => ({ id: facility.id })) }
           : undefined,
@@ -106,7 +115,15 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, pool });
+    let chainError = '';
+    try {
+      const txHash = await publishPoolSnapshot(pool.id);
+      if (txHash) await prisma.pool.update({ where: { id: pool.id }, data: { stellarTxHash: txHash } });
+    } catch (error) {
+      chainError = error instanceof Error ? error.message : 'Could not record this opportunity on Stellar';
+    }
+
+    return NextResponse.json({ success: true, pool, chainError });
   } catch (error) {
     console.error('Pool creation error:', error);
     return NextResponse.json({ error: 'Failed to create pool' }, { status: 500 });

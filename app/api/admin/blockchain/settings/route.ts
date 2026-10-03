@@ -8,6 +8,7 @@ import {
 } from '@/lib/config/blockchain-config';
 import { resetStellarProvider } from '@/lib/stellar/providers/factory';
 import { prisma } from '@/lib/db';
+import { isAdminOperator } from '@/lib/auth/roles';
 
 /**
  * GET /api/admin/blockchain/settings
@@ -16,7 +17,7 @@ import { prisma } from '@/lib/db';
 export async function GET(request: NextRequest) {
   try {
     const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !isAdminOperator(session.user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -24,8 +25,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      canConfigure: session.user.role === 'ADMIN',
       config: {
-        alchemyApiKey: config.alchemyApiKey,
+        alchemyApiKey: session.user.role === 'ADMIN' ? config.alchemyApiKey : '',
         stellarRpcUrl: config.stellarRpcUrl,
         stellarHorizonUrl: config.stellarHorizonUrl,
         stellarSorobanRpcUrl: config.stellarSorobanRpcUrl,

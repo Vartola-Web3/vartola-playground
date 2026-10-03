@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -22,6 +22,8 @@ type Opportunity = {
   unitCount?: number;
   vehicles?: { type: string; units?: number }[];
   riskRating: string;
+  status: string;
+  reviewUrl?: string | null;
 };
 
 const money = (value: number) =>
@@ -33,7 +35,7 @@ function imageFor(item: Opportunity) {
   return fleetImage(getFleetVisualType(countsFromAssetTypes(types)), 'card');
 }
 
-export default function MarketplacePage() {
+function MarketplaceContent() {
   const { data: session } = useSession();
   const search = useSearchParams();
   const [items, setItems] = useState<Opportunity[]>([]);
@@ -41,6 +43,7 @@ export default function MarketplacePage() {
   const [open, setOpen] = useState<Opportunity | null>(null);
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
+  const [walletAvailable, setWalletAvailable] = useState(0);
 
   useEffect(() => {
     fetch('/api/marketplace/pools')
@@ -58,6 +61,12 @@ export default function MarketplacePage() {
       .catch(() => setItems([]));
   }, [search]);
 
+  useEffect(() => {
+    if (session?.user?.role === 'INVESTOR') {
+      fetch('/api/investor/wallet').then((response) => response.json()).then((data) => setWalletAvailable(data.balance || 0));
+    }
+  }, [session]);
+
   const visible = useMemo(
     () => items.filter((item) => fleet === 'ALL' || item.fleetType === fleet),
     [items, fleet],
@@ -71,8 +80,13 @@ export default function MarketplacePage() {
       body: JSON.stringify({ poolId: open.id, amount: Number(amount || open.minInvestment) }),
     });
     const data = await response.json();
-    setNote(data.error || 'Investment reserved until the vehicles are deployed.');
-    if (!data.error) setOpen(null);
+    setNote(data.error || data.message || 'Investment confirmed.');
+    if (!data.error) {
+      setWalletAvailable((current) => Math.max(0, current - Number(amount || open.minInvestment)));
+      setItems((current) => current.map((item) => item.id === open.id
+        ? { ...item, raisedAmount: item.raisedAmount + Number(amount || open.minInvestment), available: item.available - Number(amount || open.minInvestment) }
+        : item));
+    }
   };
 
   const content = (
@@ -98,6 +112,7 @@ export default function MarketplacePage() {
         {visible.map((item) => {
           const units = item.unitCount || item.vehicles?.reduce((sum, vehicle) => sum + (vehicle.units || 1), 0) || item.assets;
           const progress = item.targetAmount ? Math.min(100, Math.round((item.raisedAmount / item.targetAmount) * 100)) : 0;
+          const canInvest = item.assets > 0 && item.available >= item.minInvestment && ['OPEN', 'PARTIALLY_FUNDED', 'FUNDING'].includes(item.status);
           return (
             <article key={item.id} className="overflow-hidden rounded-2xl border border-[#E5ECE8] bg-white shadow-sm">
               <img src={imageFor(item)} alt="" className="h-52 w-full object-cover" />
@@ -121,10 +136,17 @@ export default function MarketplacePage() {
                     <div className="h-full bg-[#15C77A]" style={{ width: `${progress}%` }} />
                   </div>
                 </div>
+                {item.reviewUrl && (
+                  <a className="inline-flex text-sm font-medium text-[#0A4934] underline" href={item.reviewUrl} target="_blank" rel="noreferrer">Stellar reference</a>
+                )}
                 <div className="flex gap-2">
-                  <button type="button" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white" onClick={() => { setOpen(item); setAmount(String(item.minInvestment)); setNote(''); }}>
-                    Invest now
-                  </button>
+                  {canInvest ? (
+                    <button type="button" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white" onClick={() => { setOpen(item); setAmount(String(item.minInvestment)); setNote(''); }}>
+                      Invest now
+                    </button>
+                  ) : (
+                    <span className="rounded-full bg-[#EDF2EF] px-4 py-2 text-sm font-semibold text-[#708078]">Fully funded</span>
+                  )}
                   <Link href={`/marketplace/pools/${item.id}`} className="rounded-full border border-[#E5ECE8] px-4 py-2 text-sm">View details</Link>
                 </div>
               </div>
@@ -138,6 +160,10 @@ export default function MarketplacePage() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <h2 className="text-xl font-semibold">{open.poolName.replace(/ Pool/g, '')}</h2>
             <p className="mt-1 text-sm text-[#708078]">Minimum {money(open.minInvestment)} · {money(open.available)} available</p>
+            <div className="mt-4 rounded-2xl border border-[#DCE6E1] bg-[#F8FBF9] p-4">
+              <p className="text-xs uppercase tracking-wide text-[#708078]">Your available wallet balance</p>
+              <p className="mt-1 text-2xl font-semibold">{money(walletAvailable)}</p>
+            </div>
             <input className="mt-4 w-full rounded-xl border border-[#E5ECE8] px-3 py-2" value={amount} onChange={(event) => setAmount(event.target.value)} />
             <div className="mt-3 flex flex-wrap gap-2">
               {[open.minInvestment, 25000, 50000].filter((value, index, list) => value <= open.available && list.indexOf(value) === index).map((value) => (
@@ -146,7 +172,8 @@ export default function MarketplacePage() {
             </div>
             {note && <p className="mt-3 text-sm text-[#0A4934]">{note}</p>}
             <div className="mt-5 flex gap-2">
-              <button type="button" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white" onClick={invest}>Confirm</button>
+              <button type="button" disabled={Number(amount) > walletAvailable || Number(amount) <= 0} className="rounded-full bg-[#0D7A52] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" onClick={invest}>Confirm investment</button>
+              <Link href="/investor/wallet" className="rounded-full border border-[#E5ECE8] px-4 py-2 text-sm">Add funds</Link>
               <button type="button" className="rounded-full border border-[#E5ECE8] px-4 py-2 text-sm" onClick={() => setOpen(null)}>Cancel</button>
             </div>
           </div>
@@ -159,4 +186,12 @@ export default function MarketplacePage() {
     return <DashboardLayout role={session.user.role}>{content}</DashboardLayout>;
   }
   return <main className="min-h-screen bg-[#F7FAF8] px-4 py-8 text-[#13251E] sm:px-6">{content}</main>;
+}
+
+export default function MarketplacePage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#F7FAF8] px-6 py-10 text-[#708078]">Loading opportunities…</main>}>
+      <MarketplaceContent />
+    </Suspense>
+  );
 }

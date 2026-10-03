@@ -10,14 +10,21 @@
 
 import { prisma } from '@/lib/db';
 import { getStellarProvider } from '@/lib/stellar/providers/factory';
+import { createHash } from 'crypto';
+import { BASE_FEE, Networks, Operation, TransactionBuilder } from '@stellar/stellar-sdk';
+import { getTestnetOperator } from '@/lib/stellar/operator';
 
 export type JobType =
+  | 'SYNC_SNAPSHOT'
   | 'CREATE_FACILITY'
   | 'RECORD_PAYMENT'
   | 'DISTRIBUTE_PAYMENT'
   | 'SUBSCRIBE_POOL'
   | 'CREATE_WALLET'
-  | 'FUND_WALLET';
+  | 'FUND_WALLET'
+  | 'RELEASE_FUNDS'
+  | 'ACTIVATE_FACILITY'
+  | 'RECORD_RECOVERY';
 
 export type JobStatus = 'PENDING' | 'SUBMITTED' | 'CONFIRMED' | 'FAILED' | 'CANCELLED';
 
@@ -196,19 +203,34 @@ export async function processJob(jobId: string): Promise<string | null> {
     // Get Stellar provider
     const provider = await getStellarProvider();
 
-    // TODO: Implement actual blockchain operations based on job type
-    // For now, simulate success
-    const simulatedTxHash = `SIM_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`.toUpperCase();
+    if ((process.env.STELLAR_NETWORK || 'testnet') !== 'testnet') throw new Error('This worker is restricted to Stellar Testnet');
+    const operator = getTestnetOperator();
+    const server = provider.getHorizonServer();
+    const account = await server.loadAccount(operator.publicKey());
+    const digest = createHash('sha256').update(JSON.stringify({
+      jobId: job.id, type: job.type, entityType: job.entityType, entityId: job.entityId, payload: job.payload,
+    })).digest('hex');
+    const transaction = new TransactionBuilder(account, {
+      fee: BASE_FEE,
+      networkPassphrase: Networks.TESTNET,
+    })
+      .addOperation(Operation.manageData({ name: `vartola:${job.type.toLowerCase()}`.slice(0, 64), value: digest }))
+      .setTimeout(90)
+      .build();
+    transaction.sign(operator);
+    const submitted = await server.submitTransaction(transaction);
+    if (!submitted.successful || !submitted.hash) throw new Error('Stellar rejected the transaction');
+    const txHash = submitted.hash;
 
     // Mark as submitted
-    await updateJobStatus(jobId, 'SUBMITTED', { txHash: simulatedTxHash });
+    await updateJobStatus(jobId, 'SUBMITTED', { txHash });
 
     // Simulate confirmation (in production, poll for actual confirmation)
     await updateJobStatus(jobId, 'CONFIRMED');
 
-    console.log(`✅ Job ${jobId} processed successfully: ${simulatedTxHash}`);
+    console.log(`✅ Job ${jobId} processed successfully: ${txHash}`);
 
-    return simulatedTxHash;
+    return txHash;
   } catch (error: any) {
     console.error(`❌ Job ${jobId} failed:`, error);
 

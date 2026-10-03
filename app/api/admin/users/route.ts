@@ -3,11 +3,12 @@ import { auth } from '@/lib/auth/auth';
 
 import { prisma } from '@/lib/db';
 import * as bcrypt from 'bcryptjs';
+import { isAdminOperator } from '@/lib/auth/roles';
 
 export async function GET() {
   try {
     const session = await auth();
-    if (!session || session.user.role !== 'ADMIN') {
+    if (!session || !isAdminOperator(session.user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

@@ -1,607 +1,145 @@
 import Link from 'next/link';
+import { SiteFooter, SiteNav } from '@/components/marketing/site-shell';
+
+const lifecycle = [
+  ['01', 'Originate', 'The SME completes KYB, identifies the productive asset, and submits financial and operating evidence.'],
+  ['02', 'Underwrite', 'Vartola reviews the business, asset, affordability, contribution, security, and proposed term.'],
+  ['03', 'Fund', 'Verified investors reserve wallet capital against a clearly disclosed opportunity.'],
+  ['04', 'Deploy', 'At full funding, the facility activates, the asset is procured, and capital becomes deployed.'],
+  ['05', 'Service', 'Each SME installment is split into fees, principal, income, and any disclosed reserve.'],
+  ['06', 'Distribute', 'Net principal and income are allocated pro rata to the investors in that facility.'],
+];
+
+const risks = [
+  ['Credit & default', 'An SME may pay late or default. Asset security may not cover the full outstanding amount.'],
+  ['Liquidity', 'Positions may be locked for the stated term; a secondary market is not promised.'],
+  ['Asset', 'Vehicles can be damaged, stolen, depreciate faster than expected, or become hard to recover.'],
+  ['Stablecoin & FX', 'A settlement token can depeg and AED conversion can add provider, spread, and counterparty risk.'],
+  ['Technology', 'Wallet, smart-contract, key-management, integration, and network failures can cause loss or delay.'],
+  ['Regulatory', 'The permitted structure, disclosures, investor eligibility, and distribution model may change.'],
+];
+
+const controls = [
+  'KYC/KYB, sanctions, PEP, adverse-media, UBO, and source-of-funds checks before money movement.',
+  'Segregated client-money records with daily provider, bank, wallet, and blockchain reconciliation.',
+  'Facility-level ledger, immutable event history, idempotent payments, and four-eyes approval for sensitive actions.',
+  'Asset invoice, title or registration, valuation, inspection, insurance, and security evidence linked to each facility.',
+  'Privacy by design: personal and commercial documents remain off-chain; only references and proofs are recorded.',
+  'Incident response, business continuity, vendor due diligence, access reviews, and independent security assurance.',
+];
+
+const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">{children}</p>
+);
 
 export default function WhitepaperPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Navigation */}
-      <nav className="border-b border-white/10 bg-black/20 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-white">
-              AssetFi UAE 🇦🇪
-            </Link>
-            <div className="flex gap-6 text-sm">
-              <Link href="/" className="text-blue-200 hover:text-white transition-colors">
-                Home
-              </Link>
-              <Link href="/whitepaper" className="text-white font-semibold">
-                Whitepaper
-              </Link>
-              <Link href="/pitch" className="text-blue-200 hover:text-white transition-colors">
-                Pitch Deck
-              </Link>
-              <Link href="/documents" className="text-blue-200 hover:text-white transition-colors">
-                Documents
-              </Link>
-              <Link href="/about" className="text-blue-200 hover:text-white transition-colors">
-                About
-              </Link>
-              <Link href="/login" className="text-blue-200 hover:text-white transition-colors">
-                Login
-              </Link>
+    <div className="min-h-screen bg-[#07120F] text-[#F6FFF9]">
+      <SiteNav />
+      <main>
+        <section className="border-b border-white/10">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_320px] lg:py-24">
+            <div>
+              <SectionLabel>Vartola product paper · v1.0 · October 2026</SectionLabel>
+              <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">Infrastructure for transparent productive-asset finance.</h1>
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-[#A9BDB5]">Vartola connects eligible investors with UAE SMEs financing revenue-producing vehicles and equipment. This paper defines the commercial model, money flow, risks, controls, and route from a deterministic ledger to regulated on-chain settlement.</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/login" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">Open working demo</Link>
+                <Link href="/pitch" className="rounded-full border border-white/20 px-5 py-3 text-sm font-medium">Executive pitch</Link>
+              </div>
             </div>
+            <aside className="rounded-[28px] border border-[#70FFB8]/20 bg-[#0D211A] p-6">
+              <SectionLabel>Document status</SectionLabel>
+              <dl className="mt-6 space-y-5 text-sm">
+                {[['Stage', 'Functional testnet prototype'], ['Initial market', 'UAE logistics SMEs'], ['Settlement', 'Simulation + Stellar Testnet']].map(([term, value]) => <div key={term}><dt className="text-[#81988E]">{term}</dt><dd className="mt-1 font-medium">{value}</dd></div>)}
+                <div><dt className="text-[#81988E]">Real-money status</dt><dd className="mt-1 font-medium text-amber-300">Not enabled</dd></div>
+              </dl>
+            </aside>
           </div>
+        </section>
+
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+          <nav className="hidden self-start lg:sticky lg:top-24 lg:block">
+            <p className="text-xs uppercase tracking-[0.16em] text-[#70867D]">Contents</p>
+            <ol className="mt-4 space-y-3 text-sm text-[#A9BDB5]">
+              {['Thesis', 'Market & product', 'Lifecycle', 'Economics', 'Ledger & blockchain', 'Risk', 'Compliance', 'Roadmap', 'References'].map((item, index) => <li key={item}><a className="transition hover:text-[#70FFB8]" href={`#section-${index + 1}`}>{String(index + 1).padStart(2, '0')} · {item}</a></li>)}
+            </ol>
+          </nav>
+
+          <article className="min-w-0 space-y-6 text-[#C3D1CB]">
+            <section id="section-1" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-7 text-[#102019] sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087A50]">01 · Investment thesis</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">Finance the asset that produces the cash flow.</h2>
+              <p className="mt-5 leading-8 text-[#52635C]">Many growing SMEs need vehicles and equipment before they can earn the revenue that repays them. Vartola structures each approved requirement as a ring-fenced facility with an identified business, specified assets, fixed economics, documented underwriting, and traceable servicing.</p>
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                {[['Asset-backed', 'A named productive asset and evidence pack sit behind every opportunity.'], ['Facility-level', 'Funding, repayments, fees, and investor allocations never mix across facilities.'], ['Evidence-led', 'The blockchain proves events; it does not replace legal ownership or underwriting.']].map(([title, body]) => <div key={title} className="rounded-2xl border border-[#DDE7E1] bg-white p-5"><h3 className="font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-[#64756E]">{body}</p></div>)}
+              </div>
+            </section>
+
+            <section id="section-2" className="scroll-mt-24 rounded-[28px] border border-white/10 bg-[#0D211A] p-7 sm:p-10">
+              <SectionLabel>02 · Market & product</SectionLabel>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">Start narrow: UAE last-mile and light logistics.</h2>
+              <p className="mt-5 leading-8 text-[#A9BDB5]">The initial product covers motorcycles, vans, pickups, and light trucks used by operating SMEs. Every opportunity exposes the obligor, use of funds, assets, term, minimum ticket, target return, funding progress, risk grade, payment model, evidence, and material risks before commitment.</p>
+              <div className="mt-7 overflow-hidden rounded-2xl border border-white/10"><table className="w-full text-left text-sm"><tbody className="divide-y divide-white/10">
+                {[['Target facility', 'AED 100,000–500,000 initially'], ['Typical term', '12–60 months, subject to asset life and risk'], ['Investor exposure', 'Facility participation; no guaranteed return or liquidity'], ['SME obligation', 'Installments plus clearly disclosed platform fees'], ['Legal form', 'To be confirmed by licensed UAE counsel before production']].map(([label, value]) => <tr key={label}><th className="w-2/5 bg-white/[0.03] px-5 py-4 font-medium text-[#81988E]">{label}</th><td className="px-5 py-4 text-white">{value}</td></tr>)}
+              </tbody></table></div>
+            </section>
+
+            <section id="section-3" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-7 text-[#102019] sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087A50]">03 · End-to-end lifecycle</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">One traceable path from application to return.</h2>
+              <ol className="mt-8 grid gap-4 sm:grid-cols-2">{lifecycle.map(([number, title, body]) => <li key={number} className="rounded-2xl border border-[#DDE7E1] bg-white p-5"><span className="text-xs font-semibold text-[#087A50]">{number}</span><h3 className="mt-2 font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-[#64756E]">{body}</p></li>)}</ol>
+            </section>
+
+            <section id="section-4" className="scroll-mt-24 rounded-[28px] border border-white/10 bg-[#0D211A] p-7 sm:p-10">
+              <SectionLabel>04 · Economics & waterfall</SectionLabel>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">Transparent fees. No investor platform fee at launch.</h2>
+              <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                {[['3.00%', 'Origination fee', 'Paid by the SME when funding succeeds.'], ['0.75% p.a.', 'Servicing fee', 'Charged monthly to the SME on outstanding principal.'], ['0.00%', 'Investor platform fee', 'The displayed investor return is net of Vartola fees.'], ['0.50%', 'Future transfer fee', 'Only if a regulated secondary-transfer feature is introduced.']].map(([value, title, body]) => <div key={title} className="rounded-2xl border border-white/10 bg-black/10 p-5"><p className="text-2xl font-semibold text-[#70FFB8]">{value}</p><h3 className="mt-2 font-medium text-white">{title}</h3><p className="mt-1 text-sm leading-6 text-[#91A79D]">{body}</p></div>)}
+              </div>
+              <div className="mt-6 rounded-2xl border border-[#70FFB8]/20 bg-[#70FFB8]/[0.06] p-5 text-sm leading-7 text-[#B8CCC3]">Each installment follows the disclosed order: payment-provider and network cost, platform servicing fee, required reserve, investor principal, then investor income. Reporting shows gross payment, every deduction, net distribution, paid-to-date, and remaining amounts.</div>
+            </section>
+
+            <section id="section-5" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-7 text-[#102019] sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087A50]">05 · Ledger & blockchain</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">A switchable architecture, not two different products.</h2>
+              <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-[#DDE7E1] bg-white p-6"><p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#087A50]">Simulation</p><h3 className="mt-2 text-lg font-semibold">Deterministic product ledger</h3><p className="mt-2 text-sm leading-6 text-[#64756E]">Virtual AED validates top-ups, reservations, deployment, installments, fees, distributions, reversals, and reporting without real value.</p></div>
+                <div className="rounded-2xl border border-[#B9E8D2] bg-[#EBFBF3] p-6"><p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#087A50]">Stellar Testnet</p><h3 className="mt-2 text-lg font-semibold">Real network evidence</h3><p className="mt-2 text-sm leading-6 text-[#52635C]">The same business event queues a signed Testnet transaction and stores its returned hash. Testnet tokens still have no monetary value.</p></div>
+              </div>
+              <p className="mt-6 text-sm leading-7 text-[#64756E]">Production requires a regulated fiat ramp, custody or wallet design, approved stablecoin route, key controls, reconciliation, monitoring, independent security review, and regulatory permission. Sumsub is the preferred verification adapter; Transak is the initial ramp adapter; Circle is evaluated for treasury.</p>
+            </section>
+
+            <section id="section-6" className="scroll-mt-24 rounded-[28px] border border-white/10 bg-[#0D211A] p-7 sm:p-10">
+              <SectionLabel>06 · Material risks</SectionLabel>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">Capital and returns are not guaranteed.</h2>
+              <div className="mt-7 grid gap-4 sm:grid-cols-2">{risks.map(([title, body]) => <div key={title} className="border-l-2 border-[#70FFB8]/50 pl-4"><h3 className="font-medium text-white">{title}</h3><p className="mt-1 text-sm leading-6 text-[#91A79D]">{body}</p></div>)}</div>
+            </section>
+
+            <section id="section-7" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-7 text-[#102019] sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087A50]">07 · Compliance & controls</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">Licensing and legal rights come before mainnet.</h2>
+              <ul className="mt-7 space-y-4">{controls.map((control) => <li key={control} className="flex gap-3 text-sm leading-7 text-[#52635C]"><span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#0ABF7C]" />{control}</li>)}</ul>
+              <div className="mt-7 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950"><strong>Important:</strong> this product paper is not an offer, prospectus, legal opinion, or confirmation of regulatory approval. Final structure and customer documents require qualified UAE legal and regulatory review before accepting real money.</div>
+            </section>
+
+            <section id="section-8" className="scroll-mt-24 rounded-[28px] border border-white/10 bg-[#0D211A] p-7 sm:p-10">
+              <SectionLabel>08 · Delivery roadmap</SectionLabel>
+              <div className="mt-7 space-y-5">{[['Complete', 'Simulation lifecycle', 'Funding, activation, installments, fees, and pro-rata distributions.'], ['Active', 'Stellar Testnet evidence', 'Admin mode switch, funded operator, real transaction hashes, and reconciliation.'], ['Next', 'Partner sandboxes', 'Sumsub verification and Transak ramp credentials, webhooks, and exception handling.'], ['Gate', 'Production readiness', 'Legal structure, permission, client-money controls, contracts, security, custody, and pilot approval.']].map(([status, title, body]) => <div key={title} className="grid gap-2 border-b border-white/10 pb-5 sm:grid-cols-[100px_180px_1fr]"><span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#70FFB8]">{status}</span><h3 className="font-medium text-white">{title}</h3><p className="text-sm leading-6 text-[#91A79D]">{body}</p></div>)}</div>
+            </section>
+
+            <section id="section-9" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-7 text-[#102019] sm:p-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#087A50]">09 · Regulatory references</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight">Primary sources guiding the production gate.</h2>
+              <ul className="mt-6 space-y-3 text-sm leading-6 text-[#52635C]">
+                {[['VARA activity rulebooks and risk oversight', 'https://www.vara.ae/en/news/vara-issues-updated-activity-rulebooks-to-strengthen-market-integrity-and-risk-oversight/'], ['VARA whitepaper and disclosure requirements', 'https://rulebooks.vara.ae/entiresection/11'], ['VARA real-world-asset token rules', 'https://rulebooks.vara.ae/entiresection/516'], ['DFSA crypto-token regulatory framework', 'https://www.dfsa.ae/crypto'], ['DFSA client-assets expectations', 'https://www.dfsa.ae/what-we-do/client-assets']].map(([label, href]) => <li key={href}><a className="font-medium text-[#087A50] underline underline-offset-4" href={href} target="_blank" rel="noreferrer">{label}</a></li>)}
+              </ul>
+              <p className="mt-6 text-xs leading-5 text-[#788981]">Applicable regulator and permissions depend on the final entity, jurisdiction, instrument, customer, custody, and distribution structure.</p>
+            </section>
+          </article>
         </div>
-      </nav>
-
-      {/* Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-block px-4 py-2 bg-yellow-500/20 rounded-lg border border-yellow-500/50 mb-6">
-              <span className="text-yellow-300 font-semibold">⚠️ Stellar Testnet Prototype - Technology Demonstration</span>
-            </div>
-            <h1 className="text-5xl font-bold text-white mb-4">
-              AssetFi UAE Whitepaper
-            </h1>
-            <p className="text-xl text-blue-200">
-              Tokenized Asset Finance for UAE SMEs on Stellar
-            </p>
-            <p className="text-sm text-blue-300 mt-2">
-              النسخة التجريبية على شبكة Stellar Testnet - عرض تقني
-            </p>
-          </div>
-
-          {/* Main Content */}
-          <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/20 space-y-12">
-            
-            {/* Executive Summary - Bilingual */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Executive Summary | الملخص التنفيذي
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <p className="leading-relaxed">
-                  <strong className="text-white">English:</strong> AssetFi UAE is an institutional fintech platform enabling UAE Small and Medium Enterprises (SMEs) to access productive assets through tokenized lease-to-own financing on the Stellar blockchain. By combining traditional asset finance with blockchain transparency and fractional investment, we unlock liquidity for underserved logistics, delivery, and transportation businesses while providing accredited investors with access to real-world asset returns.
-                </p>
-                <p className="leading-relaxed" dir="rtl" lang="ar">
-                  <strong className="text-white">العربية:</strong> AssetFi UAE هي منصة تقنية مالية مؤسسية تمكّن الشركات الصغيرة والمتوسطة في الإمارات من الحصول على الأصول الإنتاجية من خلال التمويل المرمز على سلسلة Stellar blockchain. من خلال الجمع بين تمويل الأصول التقليدي مع شفافية البلوكشين والاستثمار الجزئي، نفتح السيولة للشركات اللوجستية والتوصيل والنقل المحرومة من الخدمات، بينما نوفر للمستثمرين المعتمدين إمكانية الوصول إلى عوائد الأصول الحقيقية.
-                </p>
-              </div>
-            </section>
-
-            {/* Problem Statement */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                The Problem | المشكلة
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">For SMEs:</h3>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                    <li>High upfront capital requirements prevent asset acquisition</li>
-                    <li>Traditional bank financing has strict requirements and slow processes</li>
-                    <li>Logistics and delivery businesses struggle to scale without vehicles</li>
-                    <li>Lack of transparent, fair pricing for asset finance</li>
-                  </ul>
-                </div>
-                <div dir="rtl" lang="ar">
-                  <h3 className="text-xl font-semibold text-white mb-2">للشركات الصغيرة والمتوسطة:</h3>
-                  <ul className="list-disc list-inside space-y-2 mr-4">
-                    <li>متطلبات رأس مال أولية عالية تمنع الحصول على الأصول</li>
-                    <li>التمويل المصرفي التقليدي له متطلبات صارمة وعمليات بطيئة</li>
-                    <li>شركات الخدمات اللوجستية والتوصيل تواجه صعوبة في التوسع بدون مركبات</li>
-                    <li>نقص التسعير الشفاف والعادل لتمويل الأصول</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">For Investors:</h3>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                    <li>Limited access to real-world asset investment opportunities</li>
-                    <li>High minimum investment amounts exclude retail investors</li>
-                    <li>Opaque reporting and payment distribution</li>
-                    <li>Lack of liquidity in traditional asset finance</li>
-                  </ul>
-                </div>
-                <div dir="rtl" lang="ar">
-                  <h3 className="text-xl font-semibold text-white mb-2">للمستثمرين:</h3>
-                  <ul className="list-disc list-inside space-y-2 mr-4">
-                    <li>وصول محدود لفرص الاستثمار في الأصول الحقيقية</li>
-                    <li>حدود استثمار دنيا مرتفعة تستبعد صغار المستثمرين</li>
-                    <li>التقارير الغامضة وتوزيع المدفوعات</li>
-                    <li>نقص السيولة في تمويل الأصول التقليدي</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            {/* Solution */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                The Solution | الحل
-              </h2>
-              <div className="space-y-6 text-blue-100">
-                <p className="leading-relaxed">
-                  AssetFi UAE leverages Stellar's blockchain infrastructure to create a transparent, efficient, and accessible asset finance platform:
-                </p>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-3">🏢 SME Portal</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li>• Online application process</li>
-                      <li>• Automated risk assessment</li>
-                      <li>• Quick approval decisions</li>
-                      <li>• Transparent payment tracking</li>
-                    </ul>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-3">💰 Investor Portal</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li>• Browse curated asset pools</li>
-                      <li>• Fractional investment (from AED 25,000)</li>
-                      <li>• Real-time return tracking</li>
-                      <li>• Automated monthly distributions</li>
-                    </ul>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-3">⚖️ Underwriting Engine</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li>• 3D risk scoring (Company, Asset, Deal)</li>
-                      <li>• Automated tier assignment (A/B/C/D)</li>
-                      <li>• Document verification workflow</li>
-                      <li>• Human-in-the-loop approval</li>
-                    </ul>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-3">⛓️ Stellar Blockchain</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li>• Asset registration on-chain</li>
-                      <li>• Payment distribution transparency</li>
-                      <li>• Smart contract automation</li>
-                      <li>• Immutable audit trail</li>
-                    </ul>
-                  </div>
-                </div>
-                <p className="leading-relaxed" dir="rtl" lang="ar">
-                  تستفيد AssetFi UAE من البنية التحتية لسلسلة Stellar blockchain لإنشاء منصة تمويل أصول شفافة وفعالة ويمكن الوصول إليها، تربط بين الشركات الصغيرة والمتوسطة التي تحتاج إلى أصول إنتاجية والمستثمرين الذين يبحثون عن عوائد مستقرة مدعومة بأصول حقيقية.
-                </p>
-              </div>
-            </section>
-
-            {/* Technology Architecture */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Technology Architecture | البنية التقنية
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <div className="bg-slate-800/50 rounded-lg p-6 border border-white/10">
-                  <h3 className="text-xl font-semibold text-white mb-3">System Components:</h3>
-                  <ul className="space-y-2">
-                    <li><strong>Frontend:</strong> Next.js 14 + TypeScript + Tailwind CSS</li>
-                    <li><strong>Database:</strong> PostgreSQL/SQLite with Prisma ORM</li>
-                    <li><strong>Authentication:</strong> NextAuth.js with role-based access</li>
-                    <li><strong>Risk Engine:</strong> Configurable rule-based scoring system</li>
-                    <li><strong>Blockchain:</strong> Stellar Testnet with Soroban smart contracts</li>
-                    <li><strong>Token:</strong> Simulated tAED (test AED - no real value)</li>
-                  </ul>
-                </div>
-                <div className="bg-slate-800/50 rounded-lg p-6 border border-white/10">
-                  <h3 className="text-xl font-semibold text-white mb-3">Soroban Smart Contracts:</h3>
-                  <ul className="space-y-2">
-                    <li><strong>1. InvestorWhitelist:</strong> Manage approved investor addresses</li>
-                    <li><strong>2. AssetRegistry:</strong> Register financed assets with metadata</li>
-                    <li><strong>3. FinancingFacility:</strong> Represent approved financing structures</li>
-                    <li><strong>4. FinancingPool:</strong> Manage investor subscriptions and pool funding</li>
-                    <li><strong>5. PaymentDistributor:</strong> Record payments and distribute to investors</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            {/* Risk Engine */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Risk Assessment Engine | محرك تقييم المخاطر
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <p className="leading-relaxed">
-                  AssetFi uses a three-dimensional risk scoring system to evaluate financing applications:
-                </p>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-green-500/10 rounded-lg p-4 border border-green-500/30">
-                    <h4 className="text-lg font-semibold text-white mb-2">Company Risk</h4>
-                    <p className="text-sm">Business age, revenue, cash flow, debt ratio, industry, documents (0-100)</p>
-                  </div>
-                  <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
-                    <h4 className="text-lg font-semibold text-white mb-2">Asset Risk</h4>
-                    <p className="text-sm">Asset type, age, condition, market value, resale liquidity (0-100)</p>
-                  </div>
-                  <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
-                    <h4 className="text-lg font-semibold text-white mb-2">Deal Risk</h4>
-                    <p className="text-sm">Combined score determining tier A/B/C/D, LTV, term, affordability (0-100)</p>
-                  </div>
-                </div>
-                <div className="bg-slate-800/50 rounded-lg p-6 border border-white/10 mt-4">
-                  <h3 className="text-xl font-semibold text-white mb-3">Risk Tiers:</h3>
-                  <ul className="space-y-2">
-                    <li><strong className="text-green-400">Tier A (81-100):</strong> Low risk - Max 80% LTV, 60 months, 6-8% rate</li>
-                    <li><strong className="text-yellow-400">Tier B (66-80):</strong> Medium-low risk - Max 75% LTV, 48 months, 8-10% rate</li>
-                    <li><strong className="text-orange-400">Tier C (51-65):</strong> Medium-high risk - Max 70% LTV, 36 months, 10-12% rate</li>
-                    <li><strong className="text-red-400">Tier D (0-50):</strong> High risk - Max 60% LTV, 24 months, 12-15% rate</li>
-                  </ul>
-                </div>
-                <p className="leading-relaxed" dir="rtl" lang="ar">
-                  يستخدم AssetFi نظام تسجيل مخاطر ثلاثي الأبعاد لتقييم طلبات التمويل، يجمع بين مخاطر الشركة ومخاطر الأصل ومخاطر الصفقة لتحديد الشريحة المناسبة (A/B/C/D) وشروط التمويل المقابلة.
-                </p>
-              </div>
-            </section>
-
-            {/* TIMELINE & ROADMAP - Key Section */}
-            <section className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-8 border border-blue-500/30">
-              <h2 className="text-3xl font-bold text-white mb-6 border-b border-white/20 pb-2">
-                📅 Development Timeline & Roadmap | الجدول الزمني وخارطة الطريق
-              </h2>
-              <div className="mb-4 bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/50">
-                <p className="text-yellow-200 text-sm leading-relaxed">
-                  <strong>⚠️ Important:</strong> This is a Stellar Testnet prototype roadmap for grant demonstration purposes. All phases occur on Testnet with no real value. Mainnet deployment requires regulatory licensing and compliance approval.
-                </p>
-                <p className="text-yellow-200 text-sm leading-relaxed mt-2" dir="rtl" lang="ar">
-                  <strong>⚠️ مهم:</strong> هذه خارطة طريق نموذج أولي على Stellar Testnet لأغراض توضيح المنحة. جميع المراحل تحدث على Testnet بدون قيمة حقيقية. يتطلب النشر على Mainnet ترخيصاً تنظيمياً وموافقة الامتثال.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                {/* Phase 1 */}
-                <div className="relative pl-8 border-l-4 border-green-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-green-500 rounded-full"></div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Phase 1: MVP Foundation</h3>
-                      <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-semibold">✅ COMPLETE</span>
-                    </div>
-                    <p className="text-blue-200 mb-4"><strong>Status:</strong> Completed - Full working prototype on Testnet</p>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-100">
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">✅ Delivered:</h4>
-                        <ul className="space-y-1 list-disc list-inside">
-                          <li>Complete database schema with Prisma ORM</li>
-                          <li>4 role-based portals (SME, Investor, Underwriter, Admin)</li>
-                          <li>NextAuth.js authentication system</li>
-                          <li>3D risk assessment engine with tier assignment</li>
-                          <li>Seeded demo data (Gulf Logistics scenario)</li>
-                          <li>Stellar integration stubs and transaction mocks</li>
-                          <li>Complete architecture documentation</li>
-                          <li>Working Next.js 14 application</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">🎯 Outcomes:</h4>
-                        <ul className="space-y-1 list-disc list-inside">
-                          <li>Functional web application demo</li>
-                          <li>End-to-end financing workflow</li>
-                          <li>Risk scoring demonstration</li>
-                          <li>UI/UX validation with stakeholders</li>
-                          <li>Technical feasibility confirmed</li>
-                          <li>Foundation for Soroban integration</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm text-blue-200" dir="rtl" lang="ar">
-                      المرحلة الأولى مكتملة: تطبيق ويب عامل بالكامل مع بوابات جميع الأدوار، محرك تقييم المخاطر، ونماذج Stellar جاهزة للتكامل.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Phase 2 */}
-                <div className="relative pl-8 border-l-4 border-green-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-green-500 rounded-full"></div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Phase 2: Soroban Contract Stubs</h3>
-                      <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-semibold">✅ COMPLETE</span>
-                    </div>
-                    <p className="text-blue-200 mb-4"><strong>Delivered:</strong> 5 Soroban smart contract stubs with simulated transactions</p>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-100">
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">✅ Delivered:</h4>
-                        <ul className="space-y-1 list-disc list-inside">
-                          <li>5 Soroban contract TypeScript stubs:
-                            <ul className="ml-6 mt-1 space-y-1">
-                              <li>- InvestorWhitelist</li>
-                              <li>- AssetRegistry</li>
-                              <li>- FinancingFacility</li>
-                              <li>- FinancingPool</li>
-                              <li>- PaymentDistributor</li>
-                            </ul>
-                          </li>
-                          <li>Simulated transaction generation</li>
-                          <li>Transaction delays for realism</li>
-                          <li>Contract interface definitions</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">📝 Note:</h4>
-                        <p className="text-sm">
-                          Contract stubs demonstrate Soroban integration architecture with simulated blockchain interactions. Real Rust contract deployment to Stellar Testnet planned for future enhancement.
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm text-blue-200" dir="rtl" lang="ar">
-                      المرحلة الثانية مكتملة: 5 عقود Soroban كنماذج TypeScript مع معاملات محاكاة. نشر Rust الحقيقي مخطط للمستقبل.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Phase 3 */}
-                <div className="relative pl-8 border-l-4 border-green-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-green-500 rounded-full"></div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Phase 3: AI Assist Framework</h3>
-                      <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-semibold">✅ COMPLETE</span>
-                    </div>
-                    <p className="text-blue-200 mb-4"><strong>Delivered:</strong> Rule-based risk engine and document management framework</p>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-100">
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">✅ Delivered:</h4>
-                        <ul className="space-y-1 list-disc list-inside">
-                          <li>3D risk scoring algorithm (Company/Asset/Deal)</li>
-                          <li>Automated tier assignment (A/B/C/D)</li>
-                          <li>Document upload & SHA-256 hash generation</li>
-                          <li>Human-in-the-loop approval workflow</li>
-                          <li>Complete audit trail logging</li>
-                          <li>Configurable risk parameters</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">📝 Note:</h4>
-                        <p className="text-sm">
-                          Current implementation uses rule-based scoring algorithms. Real ML models (OCR, fraud detection, predictive analytics) and trained models on UAE SME data planned for future enhancement.
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm text-blue-200" dir="rtl" lang="ar">
-                      المرحلة الثالثة مكتملة: محرك تقييم مخاطر قائم على القواعد مع سير عمل موافقة بشرية. نماذج ML الحقيقية مخططة للمستقبل.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Next Steps */}
-                <div className="relative pl-8 border-l-4 border-orange-500">
-                  <div className="absolute -left-3 top-0 w-5 h-5 bg-orange-500 rounded-full"></div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-2xl font-bold text-white">Next: Production Enhancements</h3>
-                      <span className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-sm font-semibold">🎯 FUTURE</span>
-                    </div>
-                    <div className="space-y-4 text-blue-100">
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">⛓️ Real Blockchain Deployment:</h4>
-                        <ul className="space-y-1 list-disc list-inside text-sm">
-                          <li>Write Rust Soroban smart contracts</li>
-                          <li>Deploy contracts to Stellar Testnet</li>
-                          <li>Generate TypeScript SDK from deployed contracts</li>
-                          <li>Replace simulation stubs with live transactions</li>
-                          <li>Real tAED test token integration</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">🤖 Real Machine Learning:</h4>
-                        <ul className="space-y-1 list-disc list-inside text-sm">
-                          <li>OCR pipeline for Arabic/English documents</li>
-                          <li>Train ML risk models on UAE SME data</li>
-                          <li>Fraud detection and anomaly detection</li>
-                          <li>Predictive default probability models</li>
-                          <li>Explainable AI framework</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">⚖️ Compliance & Regulatory:</h4>
-                        <ul className="space-y-1 list-disc list-inside text-sm">
-                          <li>Legal review of tokenized asset finance structure</li>
-                          <li>Engage with CBUAE on finance company licensing</li>
-                          <li>Consult ADGM/DFSA on tokenized securities</li>
-                          <li>Develop KYC/AML procedures for investors</li>
-                          <li>Draft investor qualification criteria</li>
-                          <li>Establish data privacy compliance (UAE DPA)</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-2">🚀 Mainnet Path (Long-term):</h4>
-                        <ul className="space-y-1 list-disc list-inside text-sm">
-                          <li><strong>Requires:</strong> Regulatory approval, licensed partner, full legal framework</li>
-                          <li>Mainnet deployment only after successful Testnet validation</li>
-                          <li>Real AED stablecoin integration (licensed issuer required)</li>
-                          <li>Production-grade security audits</li>
-                          <li>Insurance and risk management frameworks</li>
-                          <li>Customer support and operations infrastructure</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="mt-4 bg-red-500/20 rounded-lg p-4 border border-red-500/50">
-                      <p className="text-red-200 text-sm font-semibold">
-                        ⚠️ Mainnet Launch Disclaimer: AssetFi UAE will NOT launch on Stellar Mainnet or handle real funds without:
-                      </p>
-                      <ul className="text-red-200 text-sm mt-2 space-y-1 list-disc list-inside ml-4">
-                        <li>Valid finance company license from CBUAE</li>
-                        <li>Securities/investment framework approval (if applicable)</li>
-                        <li>Partnership with licensed financial institution</li>
-                        <li>Complete legal and compliance infrastructure</li>
-                        <li>Third-party security and legal audits</li>
-                      </ul>
-                    </div>
-                    <p className="mt-4 text-sm text-blue-200" dir="rtl" lang="ar">
-                      الخطوات القادمة: تطوير عقود Soroban، تكامل ML الحقيقي، والامتثال التنظيمي. إطلاق Mainnet يتطلب تراخيص كاملة وشريك مرخص ومراجعات قانونية.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
-                <p className="text-blue-200 text-sm">
-                  <strong>📊 Current Status:</strong> Phases 1-3 complete on Testnet. All portals operational, 5 Soroban contract stubs working with simulated transactions, rule-based risk engine deployed. Next: Real Rust Soroban deployment to Testnet, ML models, and regulatory compliance.
-                </p>
-              </div>
-            </section>
-
-            {/* Market Opportunity */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Market Opportunity | فرصة السوق
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <p className="leading-relaxed">
-                  The UAE SME sector represents a significant opportunity for tokenized asset finance:
-                </p>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                    <h4 className="text-2xl font-bold text-white mb-2">560,000+</h4>
-                    <p className="text-sm">SMEs in UAE (94% of businesses)</p>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                    <h4 className="text-2xl font-bold text-white mb-2">Logistics</h4>
-                    <p className="text-sm">Fast-growing sector with high vehicle financing needs</p>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                    <h4 className="text-2xl font-bold text-white mb-2">Alternative</h4>
-                    <p className="text-sm">Asset finance fills gap between bank loans and leasing</p>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Target Market - Phase 1 Focus:</h3>
-                  <ul className="list-disc list-inside space-y-2 ml-4">
-                    <li><strong>Logistics & Transportation:</strong> Delivery companies needing trucks and vans</li>
-                    <li><strong>E-commerce:</strong> Last-mile delivery vehicle financing</li>
-                    <li><strong>Asset Type:</strong> Commercial vehicles (AED 100K - 500K range)</li>
-                    <li><strong>Geography:</strong> Dubai, Abu Dhabi, and Northern Emirates</li>
-                  </ul>
-                </div>
-                <p className="text-sm italic text-blue-300">
-                  Note: Market sizing is for contextual understanding of the UAE SME landscape. AssetFi UAE is currently a Testnet prototype and does not claim existing market partnerships or customer commitments.
-                </p>
-              </div>
-            </section>
-
-            {/* Business Model */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Business Model | نموذج الأعمال
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-3">Revenue Streams (Proposed):</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li><strong>Interest Margin:</strong> Spread between SME rate and investor return (1-3%)</li>
-                      <li><strong>Origination Fee:</strong> 1-2% of finance amount (SME pays)</li>
-                      <li><strong>Platform Fee:</strong> 0.5-1% annual on invested capital (investors)</li>
-                      <li><strong>Underwriting Fee:</strong> For complex deals requiring manual review</li>
-                    </ul>
-                  </div>
-                  <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-3">Cost Structure:</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li>Technology development and maintenance</li>
-                      <li>Stellar transaction fees (minimal)</li>
-                      <li>Underwriting and credit assessment</li>
-                      <li>KYC/AML compliance</li>
-                      <li>Customer support</li>
-                      <li>Regulatory and legal</li>
-                    </ul>
-                  </div>
-                </div>
-                <p className="text-sm italic text-blue-300">
-                  Note: Business model is conceptual for prototype demonstration. Real revenue operations require regulatory approval and licensed entity.
-                </p>
-              </div>
-            </section>
-
-            {/* Privacy & Compliance */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Privacy & Compliance | الخصوصية والامتثال
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-3">✅ On-Chain (Public):</h3>
-                    <ul className="space-y-1 text-sm list-disc list-inside">
-                      <li>Asset type (e.g., "TRUCK")</li>
-                      <li>Asset value (numeric)</li>
-                      <li>Finance amounts</li>
-                      <li>Payment dates and amounts</li>
-                      <li>Document hashes (SHA-256)</li>
-                      <li>Pseudonymous addresses</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white mb-3">❌ Off-Chain Only (Private):</h3>
-                    <ul className="space-y-1 text-sm list-disc list-inside">
-                      <li>Company names</li>
-                      <li>Trade license numbers</li>
-                      <li>Emirates ID details</li>
-                      <li>Bank account information</li>
-                      <li>Contact information</li>
-                      <li>Raw documents</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/50 mt-4">
-                  <p className="text-yellow-200 text-sm">
-                    <strong>Privacy Rule:</strong> If it contains Personally Identifiable Information (PII), it NEVER goes on-chain. Only hashes and pseudonymous references are stored on Stellar.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-3 mt-6">Regulatory Considerations:</h3>
-                  <ul className="space-y-2 text-sm list-disc list-inside">
-                    <li><strong>CBUAE:</strong> Finance company licensing required for real operations</li>
-                    <li><strong>ADGM/DFSA:</strong> May apply if tokenized investments are securities</li>
-                    <li><strong>KYC/AML:</strong> Full customer verification for all participants</li>
-                    <li><strong>Data Privacy:</strong> UAE Data Protection Law compliance</li>
-                    <li><strong>Investor Protection:</strong> Disclosures, qualifications, suitability</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            {/* Team & Contact */}
-            <section>
-              <h2 className="text-3xl font-bold text-white mb-4 border-b border-white/20 pb-2">
-                Team & Contact | الفريق والتواصل
-              </h2>
-              <div className="space-y-4 text-blue-100">
-                <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                  <h3 className="text-lg font-semibold text-white mb-3">Project Information:</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li><strong>Project:</strong> AssetFi UAE</li>
-                    <li><strong>Purpose:</strong> Stellar Community Fund Build Award Application</li>
-                    <li><strong>Status:</strong> Phase 1 Complete - Testnet Prototype</li>
-                    <li><strong>Development:</strong> Built with Cursor AI assistance</li>
-                    <li><strong>Repository:</strong> ahmed-fouad/vartola-playground</li>
-                  </ul>
-                </div>
-                <p className="text-sm text-blue-300">
-                  This whitepaper describes a technology demonstration on Stellar Testnet. AssetFi UAE is not a licensed financial product and does not accept real investments or handle real money.
-                </p>
-                <p className="text-sm text-blue-300" dir="rtl" lang="ar">
-                  تصف هذه الورقة البيضاء عرضاً تقنياً على Stellar Testnet. AssetFi UAE ليس منتجاً مالياً مرخصاً ولا يقبل استثمارات حقيقية أو يتعامل مع أموال حقيقية.
-                </p>
-              </div>
-            </section>
-
-            {/* Footer */}
-            <div className="text-center pt-8 border-t border-white/20">
-              <p className="text-blue-300 text-sm">
-                AssetFi UAE Whitepaper v1.0 | October 2026
-              </p>
-              <p className="text-blue-400 text-xs mt-2">
-                ⚠️ Stellar Testnet Prototype - Technology Demonstration Only
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -5,7 +5,7 @@ const links = [
   { href: '/how-it-works', label: 'How It Works' },
   { href: '/whitepaper', label: 'Whitepaper' },
   { href: '/pitch', label: 'Pitch Deck' },
-  { href: '/documents', label: 'Documents' },
+  { href: '/paperwork', label: 'Paperwork' },
   { href: '/about', label: 'About' },
 ];
 
@@ -14,7 +14,7 @@ export function SiteNav() {
     <header className="sticky top-0 z-20 border-b border-[rgba(112,255,184,0.14)] bg-[#07120F]/90 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="text-sm font-semibold tracking-tight text-[#70FFB8]">
-          AssetFi UAE
+          Vartola
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-[#9FB8AD] lg:flex">
           {links.map((link) => (
@@ -39,10 +39,10 @@ export function SiteFooter() {
     <footer className="border-t border-[rgba(112,255,184,0.14)] bg-[#091713]">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-14 sm:px-6 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#70FFB8]">Fleet finance</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#F6FFF9]">Financing the movement of a stronger UAE.</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#70FFB8]">Productive asset finance</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#F6FFF9]">Financing the assets that move UAE businesses forward.</h2>
           <p className="mt-3 text-sm leading-6 text-[#9FB8AD]">
-            Tokenized lease-to-own finance for delivery and transport fleets, settled on Stellar testnet.
+            Built for growing SMEs—starting with logistics fleets and expanding into the equipment businesses need next.
           </p>
         </div>
         <div className="flex gap-3">

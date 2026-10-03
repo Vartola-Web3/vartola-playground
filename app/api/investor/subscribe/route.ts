@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/db';
-import { enqueueJob, processJob } from '@/lib/stellar/outbox';
+import { tryRecordChainEvent } from '@/lib/stellar/record';
 import { allocateWaterfall, assertCapacity, poolAvailable } from '@/lib/marketplace/allocate';
-import { financialMode, moveAvailableToReserved } from '@/lib/simulation/ledger';
+import { ensureWallet } from '@/lib/simulation/ledger';
+import { activateFundedSimulationPool } from '@/lib/lifecycle/service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +15,11 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { poolId, amount } = body;
+    const investmentAmount = Number(amount);
+    if (!Number.isFinite(investmentAmount) || investmentAmount <= 0) {
+      return NextResponse.json({ error: 'Enter a valid investment amount' }, { status: 400 });
+    }
+    await ensureWallet('INVESTOR', session.user.id, session.user.name || 'Investor');
 
     const result = await prisma.$transaction(async (tx) => {
       const pool = await tx.pool.findUnique({
@@ -24,8 +30,13 @@ export async function POST(request: NextRequest) {
         throw new Error('Pool is not open');
       }
       const available = poolAvailable(pool.targetAmount, pool.raisedAmount);
-      const problem = assertCapacity(Number(amount), available, pool.minInvestment);
+      const problem = assertCapacity(investmentAmount, available, pool.minInvestment);
       if (problem) throw new Error(problem);
+
+      {
+        const wallet = await tx.simWallet.findUnique({ where: { ownerType_ownerId: { ownerType: 'INVESTOR', ownerId: session.user.id } } });
+        if (!wallet || wallet.available + 0.001 < investmentAmount) throw new Error('Insufficient wallet balance. Add demo funds first.');
+      }
 
       const plan = allocateWaterfall(
         pool.facilities.map((facility) => ({
@@ -34,7 +45,7 @@ export async function POST(request: NextRequest) {
           funded: facility.fundedAmount,
           priority: facility.priorityOrder,
         })),
-        Number(amount)
+        investmentAmount
       );
       if (plan.unallocated > 0) {
         throw new Error(`Maximum available allocation is ${available}`);
@@ -54,10 +65,10 @@ export async function POST(request: NextRequest) {
         data: {
           investorId: session.user.id,
           poolId,
-          amount: Number(amount),
-          shares: Number(amount) / pool.targetAmount,
+          amount: investmentAmount,
+          shares: investmentAmount / pool.targetAmount,
           status: 'ACTIVE',
-          reservedAmount: Number(amount),
+          reservedAmount: investmentAmount,
           deployedAmount: 0,
           termsSnapshot: snapshot,
           stellarTxHash: null,
@@ -85,7 +96,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      const raisedAmount = pool.raisedAmount + Number(amount);
+      const raisedAmount = pool.raisedAmount + investmentAmount;
       await tx.pool.update({
         where: { id: pool.id },
         data: {
@@ -97,49 +108,37 @@ export async function POST(request: NextRequest) {
         data: {
           userId: session.user.id,
           type: 'RESERVE',
-          amount: Number(amount),
+          amount: investmentAmount,
           refId: investment.id,
           note: pool.poolName,
         },
       });
-      return investment;
+      {
+        const wallet = await tx.simWallet.findUnique({ where: { ownerType_ownerId: { ownerType: 'INVESTOR', ownerId: session.user.id } } });
+        if (!wallet) throw new Error('Investor wallet is missing');
+        await tx.simWallet.update({ where: { id: wallet.id }, data: { available: wallet.available - investmentAmount, reserved: wallet.reserved + investmentAmount } });
+        await tx.simLedgerEntry.create({
+          data: {
+            walletId: wallet.id, type: 'INVESTMENT_RESERVE', direction: 'OUT', amount: investmentAmount,
+            balanceBefore: wallet.available, balanceAfter: wallet.available - investmentAmount,
+            idempotencyKey: `reserve:${investment.id}`, referenceType: 'Investment', referenceId: investment.id,
+            description: `Investment reserved for ${pool.poolName}`, createdBy: session.user.id,
+          },
+        });
+      }
+      return { investment, poolFullyFunded: raisedAmount >= pool.targetAmount };
     });
 
-    const investment = result;
-    if ((await financialMode()) === 'SIMULATION') {
-      await moveAvailableToReserved(session.user.id, Number(amount), `reserve:${investment.id}`, session.user.id);
-    }
+    const { investment, poolFullyFunded } = result;
+    if (poolFullyFunded) await activateFundedSimulationPool(poolId, session.user.id);
 
-    // Enqueue blockchain job
-    const jobId = await enqueueJob({
+    const recorded = await tryRecordChainEvent({
       type: 'SUBSCRIBE_POOL',
       entityType: 'Investment',
       entityId: investment.id,
-      payload: {
-        investorId: session.user.id,
-        poolId,
-        amount,
-        shares: investment.shares,
-      },
+      payload: { investorId: session.user.id, poolId, amount: investmentAmount, shares: investment.shares },
     });
-
-    // Process job immediately (async)
-    processJob(jobId).then(async (txHash) => {
-      if (txHash) {
-        // Update investment with tx hash and mark as active
-        await prisma.investment.update({
-          where: { id: investment.id },
-          data: {
-            stellarTxHash: txHash,
-            status: 'ACTIVE',
-            activatedAt: new Date(),
-          },
-        });
-
-      }
-    }).catch(error => {
-      console.error('Failed to process subscription job:', error);
-    });
+    const jobId = recorded?.txHash || null;
 
     await prisma.auditLog.create({
       data: {
@@ -155,11 +154,14 @@ export async function POST(request: NextRequest) {
       success: true, 
       investment,
       jobId,
-      message: 'Subscription queued for blockchain processing'
+      reviewUrl: recorded?.reviewUrl || null,
+      message: poolFullyFunded
+        ? 'Investment confirmed. The opportunity is fully funded and its payment schedule is now active.'
+        : 'Investment confirmed and reserved until the opportunity is fully funded.'
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to subscribe to pool';
-    const status = /Minimum|Maximum|not open/.test(message) ? 400 : 500;
+    const status = /Minimum|Maximum|not open|Insufficient|valid investment/.test(message) ? 400 : 500;
     return NextResponse.json({ error: message }, { status });
   }
 }

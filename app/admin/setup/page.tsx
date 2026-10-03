@@ -14,6 +14,9 @@ interface PlatformConfig {
   firebaseProjectId: string;
   emailProvider: string;
   paymentProvider: string;
+  identityProvider: string;
+  rampProvider: string;
+  settlementProvider: string;
   aecbApiUrl: string;
   storageType: string;
 }
@@ -27,6 +30,9 @@ export default function AdminSetupPage() {
     firebaseProjectId: '',
     emailProvider: 'console',
     paymentProvider: 'console',
+    identityProvider: 'sumsub-sandbox',
+    rampProvider: 'transak-sandbox',
+    settlementProvider: 'circle-sandbox',
     aecbApiUrl: '',
     storageType: 'local',
   });
@@ -46,7 +52,7 @@ export default function AdminSetupPage() {
       if (response.ok) {
         const data = await response.json();
         if (data.config) {
-          setConfig(data.config);
+          setConfig((current) => ({ ...current, ...data.config }));
         }
       }
     } catch (error) {
@@ -166,7 +172,51 @@ export default function AdminSetupPage() {
                 </p>
               </div>
 
-              <h2 className="text-xl font-semibold mb-4 mt-6">Integration Services (Stubs)</h2>
+              <h2 className="text-xl font-semibold mb-4 mt-6">Integration architecture</h2>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  ['Identity & business verification', 'Sumsub Sandbox', 'KYC · KYB · AML · UBO'],
+                  ['Fiat on/off-ramp', 'Transak Sandbox', 'AED quote · card/bank · USDC'],
+                  ['Treasury settlement', 'Circle Sandbox', 'USDC on Stellar · payouts'],
+                  ['Blockchain', 'Stellar Testnet', 'Transactions · fees · explorer'],
+                ].map(([title, provider, detail]) => (
+                  <div key={title} className="rounded-2xl border border-[#DCE6E1] bg-[#F8FBF9] p-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold">{title}</p>
+                      <span className="rounded-full bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-900">Needs sandbox key</span>
+                    </div>
+                    <p className="mt-2 text-sm text-[#0D7A52]">{provider}</p>
+                    <p className="mt-1 text-xs text-gray-500">{detail}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1">KYC / KYB provider</label>
+                  <select className="w-full rounded-md border border-gray-300 px-3 py-2" value={config.identityProvider} onChange={(e) => setConfig({ ...config, identityProvider: e.target.value })}>
+                    <option value="simulation">Simulation</option>
+                    <option value="sumsub-sandbox">Sumsub Sandbox</option>
+                    <option value="veriff-sandbox">Veriff Sandbox</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">On/off-ramp provider</label>
+                  <select className="w-full rounded-md border border-gray-300 px-3 py-2" value={config.rampProvider} onChange={(e) => setConfig({ ...config, rampProvider: e.target.value })}>
+                    <option value="simulation">Simulation</option>
+                    <option value="transak-sandbox">Transak Sandbox</option>
+                    <option value="banxa-sandbox">Banxa Sandbox</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Settlement provider</label>
+                  <select className="w-full rounded-md border border-gray-300 px-3 py-2" value={config.settlementProvider} onChange={(e) => setConfig({ ...config, settlementProvider: e.target.value })}>
+                    <option value="simulation">Simulation</option>
+                    <option value="circle-sandbox">Circle Sandbox</option>
+                  </select>
+                </div>
+              </div>
               
               <div>
                 <label className="block text-sm font-medium mb-1">Email Provider</label>
@@ -190,6 +240,7 @@ export default function AdminSetupPage() {
                   <option value="console">Console (Dev - stub)</option>
                   <option value="stripe">Stripe (Requires API key)</option>
                   <option value="checkout">Checkout.com (Requires credentials)</option>
+                  <option value="transak-sandbox">Transak Sandbox (fiat ↔ USDC)</option>
                 </select>
               </div>
 
@@ -241,6 +292,17 @@ export default function AdminSetupPage() {
                 {creatingTest ? 'Creating...' : 'Create Test Admin (setup@assetfi.ae / setup123)'}
               </Button>
             )}
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">What you need for real sandbox tests</h2>
+            <div className="grid gap-4 text-sm sm:grid-cols-2">
+              <div className="rounded-2xl bg-[#F8FBF9] p-4"><p className="font-semibold">Sumsub</p><p className="mt-2 text-gray-600">Sandbox account, app token, secret key, applicant level name, and webhook secret.</p></div>
+              <div className="rounded-2xl bg-[#F8FBF9] p-4"><p className="font-semibold">Transak</p><p className="mt-2 text-gray-600">Partner sandbox account, API key, allowed domains, callback URL, and confirmation of the AED/USDC-Stellar pair.</p></div>
+              <div className="rounded-2xl bg-[#F8FBF9] p-4"><p className="font-semibold">Circle</p><p className="mt-2 text-gray-600">Developer sandbox account, API key, webhook public key, and Stellar wallet configuration.</p></div>
+              <div className="rounded-2xl bg-[#F8FBF9] p-4"><p className="font-semibold">Stellar</p><p className="mt-2 text-gray-600">Testnet keypairs funded with Friendbot. No real money or production account is needed.</p></div>
+            </div>
+            <p className="mt-4 text-xs text-gray-500">Secrets belong in server environment variables only. This screen stores provider selection, never API secrets.</p>
           </Card>
 
           <Card className="p-6">

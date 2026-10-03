@@ -12,6 +12,9 @@ interface PlatformConfig {
   firebaseProjectId: string;
   emailProvider: string;
   paymentProvider: string;
+  identityProvider: string;
+  rampProvider: string;
+  settlementProvider: string;
   aecbApiUrl: string;
   storageType: string;
 }
@@ -55,6 +58,9 @@ export async function getPlatformConfig(): Promise<PlatformConfig> {
         firebaseProjectId: '',
         emailProvider: 'console',
         paymentProvider: 'console',
+        identityProvider: 'sumsub-sandbox',
+        rampProvider: 'transak-sandbox',
+        settlementProvider: 'circle-sandbox',
         aecbApiUrl: '',
         storageType: 'local',
       };
@@ -71,6 +77,9 @@ export async function getPlatformConfig(): Promise<PlatformConfig> {
       firebaseProjectId: '',
       emailProvider: 'console',
       paymentProvider: 'console',
+      identityProvider: 'sumsub-sandbox',
+      rampProvider: 'transak-sandbox',
+      settlementProvider: 'circle-sandbox',
       aecbApiUrl: '',
       storageType: 'local',
     };

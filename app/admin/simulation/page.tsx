@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 
 type Wallet = { id: string; label: string; ownerType: string; ownerId: string; available: number; reserved: number; deployed: number };
-type UserRow = { id: string; name: string; role: string };
+type UserRow = { id: string; name: string; role: string; companyId?: string | null };
+type ComplianceRow = { id: string; subjectId: string; subjectType: string; provider: string; status: string };
 
 export default function SimulationTreasuryPage() {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [users, setUsers] = useState<UserRow[]>([]);
+  const [compliance, setCompliance] = useState<ComplianceRow[]>([]);
   const [ownerId, setOwnerId] = useState('');
   const [amount, setAmount] = useState('100000');
   const [date, setDate] = useState('');
@@ -16,6 +18,7 @@ export default function SimulationTreasuryPage() {
   const load = () => fetch('/api/admin/simulation').then((response) => response.json()).then((data) => {
     setWallets(data.wallets || []);
     setUsers(data.users || []);
+    setCompliance(data.compliance || []);
     setDate(data.simulationDate || '');
   });
   useEffect(() => { load(); }, []);
@@ -50,6 +53,24 @@ export default function SimulationTreasuryPage() {
           ))}
         </div>
         <button type="button" className="mt-3 rounded-full bg-[#17C978] px-4 py-2 text-sm font-semibold text-white" onClick={() => post({ action: 'credit', ownerId, ownerType: users.find((user) => user.id === ownerId)?.role || 'INVESTOR', amount: Number(amount), reason: 'Demo funding', label: users.find((user) => user.id === ownerId)?.name })}>Add virtual funds</button>
+      </section>
+      <section className="rounded-[20px] bg-white p-4">
+        <h2 className="font-semibold">KYC / KYB simulation</h2>
+        <p className="mt-1 text-sm text-[#62736C]">Approve or reject a demo identity before testing funding, investment, or withdrawal.</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {users.filter((user) => ['INVESTOR', 'SME'].includes(user.role)).map((user) => {
+            const record = compliance.find((item) => item.subjectId === (user.role === 'SME' ? user.companyId || user.id : user.id));
+            return (
+              <div key={user.id} className="flex items-center justify-between gap-3 rounded-xl border border-[#E4ECE8] p-3 text-sm">
+                <div><p className="font-medium">{user.name}</p><p className="text-xs text-[#62736C]">{user.role} · {record?.status || 'NOT STARTED'}</p></div>
+                <div className="flex gap-1">
+                  <button type="button" className="rounded-full bg-[#ECFBF3] px-3 py-1 text-xs text-[#0D4D35]" onClick={() => post({ action: 'compliance', ownerId: user.id, status: 'VERIFIED' })}>Verify</button>
+                  <button type="button" className="rounded-full bg-rose-50 px-3 py-1 text-xs text-rose-700" onClick={() => post({ action: 'compliance', ownerId: user.id, status: 'REJECTED' })}>Reject</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
       <section className="space-y-2">
         {wallets.map((wallet) => (

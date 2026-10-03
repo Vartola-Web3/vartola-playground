@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { authConfig } from '@/lib/auth/auth.config';
 import { prisma } from '@/lib/db';
+import { latestReviewUrls } from '@/lib/stellar/record';
 
 export async function GET() {
   try {
@@ -14,7 +15,6 @@ export async function GET() {
       where: { id: session.user.id },
     });
 
-    const balance = user?.stellarPublicKey ? 50000 : 0;
     const [sim, positions] = await Promise.all([
       prisma.simWallet.findUnique({
         where: { ownerType_ownerId: { ownerType: 'INVESTOR', ownerId: session.user.id } },
@@ -23,18 +23,23 @@ export async function GET() {
       prisma.investment.findMany({ where: { investorId: session.user.id } }),
     ]);
 
+    const entries = sim?.entries || [];
+    const topUpLinks = await latestReviewUrls('TopUp', entries.map((entry) => entry.id));
     return NextResponse.json({
       publicKey: user?.stellarPublicKey || null,
-      balance,
+      balance: sim?.available || 0,
+      reserved: sim?.reserved || 0,
+      deployed: sim?.deployed || 0,
       pending: sim?.reserved || 0,
       returned: positions.reduce((sum, item) => sum + item.principalReturned, 0),
       income: positions.reduce((sum, item) => sum + item.leaseIncomeReceived, 0),
-      reinvest: sim?.available || balance,
-      transactions: (sim?.entries || []).map((entry) => ({
+      reinvest: sim?.available || 0,
+      transactions: entries.map((entry) => ({
         id: entry.id,
         description: entry.description || entry.type,
         amount: entry.direction === 'OUT' ? -entry.amount : entry.amount,
         at: entry.createdAt,
+        reviewUrl: topUpLinks.get(entry.id) || null,
       })),
     });
   } catch (error) {

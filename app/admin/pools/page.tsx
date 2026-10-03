@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { formatCurrency } from '@/lib/formatters';
+import { isAdminOperator } from '@/lib/auth/roles';
+import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
 interface Pool {
   id: string;
@@ -18,12 +20,14 @@ interface Pool {
   minInvestment: number;
   targetReturn: number;
   status: string;
+  stellarTxHash?: string | null;
   assetFocus: string;
   createdAt: string;
   facilities?: Array<{
     id: string;
     facilityNo: string;
     financeAmount: number;
+    stellarTxHash?: string | null;
     application: { applicationNo: string; assetDescription: string; status: string };
   }>;
 }
@@ -34,6 +38,7 @@ export default function PoolsManagementPage() {
   const [available, setAvailable] = useState<Array<{ id: string; facilityNo: string; financeAmount: number; application: { applicationNo: string; assetDescription: string } }>>([]);
   const [picked, setPicked] = useState<Record<string, string>>({});
   const [loadError, setLoadError] = useState('');
+  const [saveError, setSaveError] = useState('');
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
@@ -69,6 +74,7 @@ export default function PoolsManagementPage() {
 
   const handleCreatePool = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaveError('');
     try {
       const response = await fetch('/api/admin/pools', {
         method: 'POST',
@@ -81,6 +87,7 @@ export default function PoolsManagementPage() {
         }),
       });
 
+      const data = await response.json().catch(() => ({}));
       if (response.ok) {
         setShowCreateForm(false);
         setSelectedAssets([]);
@@ -91,13 +98,15 @@ export default function PoolsManagementPage() {
           assetFocus: '',
         });
         loadPools();
+      } else {
+        setSaveError(data.error || 'Could not save the opportunity');
       }
     } catch (error) {
       console.error('Failed to create pool:', error);
     }
   };
 
-  if (!session || session.user.role !== 'ADMIN') {
+  if (!session || !isAdminOperator(session.user.role)) {
     return <div>Access denied</div>;
   }
 
@@ -194,7 +203,8 @@ export default function PoolsManagementPage() {
                   Investment size: {formatCurrency(available.filter((facility) => selectedAssets.includes(facility.id)).reduce((sum, facility) => sum + facility.financeAmount, 0))}
                 </p>
               </div>
-              <Button type="submit">Publish opportunity</Button>
+              {saveError && <p className="text-sm text-rose-700">{saveError}</p>}
+              <Button type="submit">{selectedAssets.length ? 'Publish opportunity' : 'Save draft'}</Button>
             </form>
           </Card>
         )}
@@ -252,25 +262,29 @@ export default function PoolsManagementPage() {
         {loading ? (
           <div>Loading pools...</div>
         ) : (
-          <div className="grid gap-4">
+          <div className="mt-4 grid gap-4">
             {pools.map((pool) => (
-              <Card key={pool.id} className="p-6">
+              <Card key={pool.id} className="p-5">
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-xl font-semibold">{pool.poolName}</h3>
                     <p className="text-gray-600">{pool.poolNo}</p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    pool.status === 'OPEN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    pool.status === 'OPEN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
                   }`}>
                     {pool.status}
                   </span>
                 </div>
-                <div className="grid grid-cols-3 gap-4 mt-4">
+                <div className="grid gap-4 mt-4 sm:grid-cols-4">
                   <div>
-                    <p className="text-sm text-gray-600">Investment size</p>
-                    <p className="font-semibold">{formatCurrency(pool.raisedAmount)}</p>
+                    <p className="text-sm text-gray-600">Opportunity size</p>
+                    <p className="font-semibold">{formatCurrency(pool.targetAmount)}</p>
                     <p className="text-xs text-gray-500">Sum of linked assets</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Raised</p>
+                    <p className="font-semibold">{formatCurrency(pool.raisedAmount)}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Target Return</p>
@@ -281,22 +295,29 @@ export default function PoolsManagementPage() {
                     <p className="font-semibold">{formatCurrency(pool.minInvestment)}</p>
                   </div>
                 </div>
-                <div className="mt-4">
+                <div className="mt-3">
                   <p className="text-sm text-gray-600">Asset Focus</p>
                   <p className="text-gray-900">{pool.assetFocus}</p>
                 </div>
-                <div className="mt-4">
+                <div className="mt-3">
                   <p className="text-sm text-gray-600">Linked projects</p>
                   {pool.facilities && pool.facilities.length > 0 ? (
                     <ul className="mt-1 space-y-1 text-sm">
                       {pool.facilities.map((facility) => (
-                        <li key={facility.id}>
-                          {facility.facilityNo} · {facility.application.applicationNo} · {facility.application.assetDescription} · {formatCurrency(facility.financeAmount)}
+                        <li key={facility.id} className="flex flex-wrap items-center gap-2">
+                          <span>{facility.facilityNo} · {facility.application.applicationNo} · {facility.application.assetDescription} · {formatCurrency(facility.financeAmount)}</span>
+                          {stellarReviewUrl(facility.stellarTxHash) ? (
+                            <a className="text-[#0A4934] underline" href={stellarReviewUrl(facility.stellarTxHash)!} target="_blank" rel="noreferrer">Review asset</a>
+                          ) : (
+                            <span className="text-gray-400">Asset not on chain</span>
+                          )}
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-sm text-gray-500">No financed project is linked yet.</p>
+                    <p className="mt-1 rounded-lg bg-[#F7F9F8] px-3 py-2 text-sm text-gray-600">
+                      Draft only — add an approved asset before investors can see it.
+                    </p>
                   )}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <select
@@ -328,6 +349,28 @@ export default function PoolsManagementPage() {
                     >
                       Add asset
                     </Button>
+                  </div>
+                  <div className="mt-3 text-sm">
+                    {stellarReviewUrl(pool.stellarTxHash) ? (
+                      <a className="font-medium text-[#0A4934] underline" href={stellarReviewUrl(pool.stellarTxHash)!} target="_blank" rel="noreferrer">Review opportunity on Stellar</a>
+                    ) : (
+                      <button
+                        type="button"
+                        className="text-[#0A4934] underline"
+                        onClick={async () => {
+                          const res = await fetch(`/api/admin/pools/${pool.id}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ recordOnChain: true }),
+                          });
+                          const data = await res.json().catch(() => ({}));
+                          if (!res.ok) setLoadError(data.error || 'Could not record this opportunity on Stellar');
+                          else loadPools();
+                        }}
+                      >
+                        Record opportunity on Stellar
+                      </button>
+                    )}
                   </div>
                   <button
                     type="button"

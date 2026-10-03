@@ -12,7 +12,7 @@ export default async function UnderwriterDashboard() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
 
-  const [pending, missingDocs, completedToday] = await Promise.all([
+  const [pending, missingDocs, completedToday, recentCompleted] = await Promise.all([
     prisma.application.findMany({
       where: { status: { in: ['SUBMITTED', 'UNDER_REVIEW', 'CONDITIONALLY_APPROVED'] } },
       include: { company: true },
@@ -21,6 +21,12 @@ export default async function UnderwriterDashboard() {
     prisma.application.count({ where: { status: 'DOCUMENT_REQUESTED' } }).catch(() => 0),
     prisma.underwritingReview.count({
       where: { reviewedBy: session.user.id, reviewedAt: { gte: start }, decision: { in: ['APPROVED', 'REJECTED', 'CONDITIONALLY_APPROVED'] } },
+    }),
+    prisma.underwritingReview.findMany({
+      where: { reviewedBy: session.user.id, decision: { in: ['APPROVED', 'REJECTED', 'CONDITIONALLY_APPROVED'] } },
+      include: { application: { include: { company: true, facility: true } } },
+      orderBy: { reviewedAt: 'desc' },
+      take: 8,
     }),
   ]);
 
@@ -63,6 +69,20 @@ export default async function UnderwriterDashboard() {
               </div>
             </Link>
           ))}
+        </section>
+        <section className="rounded-3xl bg-white p-5 shadow-sm">
+          <div className="flex items-end justify-between gap-3">
+            <div><h2 className="text-lg font-semibold">Recently completed</h2><p className="text-sm text-[#708078]">Decisions remain visible after they leave the review queue.</p></div>
+          </div>
+          <div className="mt-4 divide-y divide-[#E6ECE8]">
+            {recentCompleted.map((review) => (
+              <Link key={review.id} href={`/underwriter/applications/${review.applicationId}`} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                <div><p className="font-medium">{review.application.applicationNo} · {review.application.company.legalName}</p><p className="text-sm text-[#708078]">{review.application.assetDescription}{review.application.facility ? ` · ${review.application.facility.facilityNo}` : ''}</p></div>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${review.decision === 'APPROVED' ? 'bg-emerald-50 text-emerald-800' : review.decision === 'REJECTED' ? 'bg-rose-50 text-rose-800' : 'bg-amber-50 text-amber-800'}`}>{review.decision.replace(/_/g, ' ')}</span>
+              </Link>
+            ))}
+            {recentCompleted.length === 0 && <p className="text-sm text-[#708078]">No completed reviews yet.</p>}
+          </div>
         </section>
       </div>
     </DashboardLayout>

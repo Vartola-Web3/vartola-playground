@@ -53,6 +53,7 @@ export default function OpportunityPage() {
             Back to opportunities
           </Link>
         </div>
+      </div>
       </main>
     );
   }

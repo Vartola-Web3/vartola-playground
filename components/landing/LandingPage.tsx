@@ -9,6 +9,7 @@ const nav = [
   ['Home', '/'],
   ['How It Works', '/how-it-works'],
   ['Whitepaper', '/whitepaper'],
+  ['Pitch Deck', '/pitch'],
   ['Paperwork', '/paperwork'],
   ['About', '/about'],
 ];
@@ -65,7 +66,10 @@ export function LandingPage() {
         <section className="rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#0E211B] p-6 sm:p-8">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#70FFB8]">Delivery timeline</p><h2 className="mt-2 text-3xl font-semibold">Prove the lifecycle, then launch responsibly.</h2></div>
-            <Link href="/paperwork" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">View public paperwork</Link>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/pitch" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">Read the pitch deck</Link>
+              <Link href="/paperwork" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">View public paperwork</Link>
+            </div>
           </div>
           <ol className="relative mt-8 grid gap-4 md:grid-cols-4 before:absolute before:left-[12.5%] before:right-[12.5%] before:top-5 before:hidden before:h-px before:bg-[#295143] md:before:block">
             {[

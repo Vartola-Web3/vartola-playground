@@ -1,4 +1,7 @@
 import { auth } from '@/lib/auth/auth';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
@@ -16,7 +19,7 @@ export default async function UnderwriterDashboard() {
     prisma.application.findMany({
       where: { status: { in: ['SUBMITTED', 'UNDER_REVIEW', 'CONDITIONALLY_APPROVED'] } },
       include: { company: true },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
     }),
     prisma.application.count({ where: { status: 'DOCUMENT_REQUESTED' } }).catch(() => 0),
     prisma.underwritingReview.count({

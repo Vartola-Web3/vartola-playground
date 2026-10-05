@@ -49,7 +49,7 @@ export default async function AdminDashboard() {
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {[
-            ['Applications pending', String(pending), '/admin/users'],
+            ['Applications pending', String(pending), '/admin/applications'],
             ['Facilities awaiting release', String(awaiting), '/admin/pools'],
             ['Payments late', String(late), '/admin/simulation'],
             ['Active investments', String(active), '/admin/pools'],

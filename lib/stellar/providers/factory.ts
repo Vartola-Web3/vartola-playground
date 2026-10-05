@@ -3,6 +3,11 @@ import { AlchemyStellarProvider } from './alchemy';
 import { StellarPublicRpcProvider } from './public';
 import { loadBlockchainConfig } from '@/lib/config/blockchain-config';
 
+function testnetEndpoint(url: string | undefined, fallback: string) {
+  if (!url || /mainnet|horizon\.stellar\.org\/?$/i.test(url)) return fallback;
+  return url;
+}
+
 /**
  * Factory function to create the appropriate Stellar provider
  * 
@@ -22,10 +27,10 @@ export async function createStellarProvider(): Promise<StellarProvider> {
   const liveConfig = await loadBlockchainConfig();
 
   const config: StellarProviderConfig = {
-    network: (process.env.STELLAR_NETWORK as 'testnet' | 'mainnet') || 'testnet',
-    networkPassphrase: process.env.STELLAR_NETWORK_PASSPHRASE || 'Test SDF Network ; September 2015',
-    horizonUrl: liveConfig.stellarHorizonUrl || 'https://horizon-testnet.stellar.org',
-    sorobanUrl: liveConfig.stellarSorobanRpcUrl || 'https://soroban-testnet.stellar.org',
+    network: 'testnet',
+    networkPassphrase: 'Test SDF Network ; September 2015',
+    horizonUrl: testnetEndpoint(liveConfig.stellarHorizonUrl, 'https://horizon-testnet.stellar.org'),
+    sorobanUrl: testnetEndpoint(liveConfig.stellarSorobanRpcUrl, 'https://soroban-testnet.stellar.org'),
   };
 
   // Try to use Alchemy if API key is configured (from DB or env)
@@ -36,7 +41,7 @@ export async function createStellarProvider(): Promise<StellarProvider> {
       const alchemyConfig = { ...config };
       // Override URLs only for the Alchemy candidate.
       const alchemyRpcUrl = liveConfig.stellarRpcUrl;
-      if (alchemyRpcUrl && alchemyRpcUrl.includes('alchemy.com')) {
+      if (alchemyRpcUrl && alchemyRpcUrl.includes('alchemy.com') && alchemyRpcUrl.includes('testnet')) {
         alchemyConfig.horizonUrl = alchemyRpcUrl;
         alchemyConfig.sorobanUrl = alchemyRpcUrl;
       }

@@ -167,7 +167,7 @@ function getNavigationForRole(role: string) {
     case 'ADMIN_REVIEWER': {
       const items = [
         { label: 'Overview', href: '/admin' },
-        { label: 'Applications', href: '/admin/users' },
+        { label: 'Applications', href: '/admin/applications' },
         { label: 'Opportunities', href: '/admin/pools' },
         { label: 'Users', href: '/admin/users' },
         { label: 'Simulation', href: '/admin/simulation' },

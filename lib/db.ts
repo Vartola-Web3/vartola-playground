@@ -26,6 +26,8 @@ function findDemoDatabase(dir: string, depth = 0): string | undefined {
 }
 
 function vercelDatabaseUrl() {
+  const configured = process.env.DATABASE_URL || '';
+  if (configured.startsWith('postgres://') || configured.startsWith('postgresql://')) return undefined;
   if (process.env.VERCEL !== '1') return undefined;
   const preferred = path.join(process.cwd(), 'prisma', 'prisma', 'dev.db');
   const source = fs.existsSync(preferred) ? preferred : findDemoDatabase(process.cwd());

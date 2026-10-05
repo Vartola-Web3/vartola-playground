@@ -1,14 +1,8 @@
 import Link from 'next/link';
 import { BrandMark } from '@/components/brand/brand-mark';
+import { PUBLIC_NAV } from '@/lib/docs/product';
 
-const links = [
-  { href: '/', label: 'Home' },
-  { href: '/how-it-works', label: 'How It Works' },
-  { href: '/whitepaper', label: 'Whitepaper' },
-  { href: '/pitch', label: 'Pitch Deck' },
-  { href: '/paperwork', label: 'Paperwork' },
-  { href: '/about', label: 'About' },
-];
+const links = PUBLIC_NAV.map(([label, href]) => ({ href, label }));
 
 export function SiteNav() {
   return (
@@ -48,8 +42,8 @@ export function SiteFooter() {
           <Link href="/login" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">
             Launch Demo
           </Link>
-          <Link href="/about" className="rounded-full border border-[rgba(112,255,184,0.24)] px-5 py-3 text-sm font-medium text-[#F6FFF9]">
-            About
+          <Link href="/docs" className="rounded-full border border-[rgba(112,255,184,0.24)] px-5 py-3 text-sm font-medium text-[#F6FFF9]">
+            Documentation
           </Link>
         </div>
       </div>

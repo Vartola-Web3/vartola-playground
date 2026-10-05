@@ -48,7 +48,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       const beneficiary = await prisma.beneficiary.create({
         data: { type: body.type || 'SUPPLIER', legalName: body.legalName, walletAddress: body.walletAddress || null, verificationStatus: 'APPROVED' },
       });
-      await prisma.facility.update({ where: { id }, data: { beneficiaryId: beneficiary.id, serviceFeeRate: Number(body.serviceFeeRate || 0), reserveRate: Number(body.reserveRate || 0) } });
+      const supplier = body.walletAddress
+        ? await prisma.supplier.create({
+          data: { companyName: body.legalName, payoutPublicKey: body.walletAddress, kybStatus: 'APPROVED', status: 'APPROVED' },
+        })
+        : null;
+      await prisma.facility.update({
+        where: { id },
+        data: {
+          beneficiaryId: beneficiary.id,
+          supplierId: supplier?.id,
+          serviceFeeRate: Number(body.serviceFeeRate || 0),
+          reserveRate: Number(body.reserveRate || 0),
+        },
+      });
     } else if (body.action === 'verify') {
       await prisma.facilityReleaseCondition.update({ where: { id: body.conditionId }, data: { status: body.status, verifiedAt: new Date() } });
       await refreshFundingStatus(id);

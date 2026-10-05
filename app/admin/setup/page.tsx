@@ -335,7 +335,7 @@ export default function AdminSetupPage() {
               
               <div>
                 <h3 className="font-semibold">AECB Integration:</h3>
-                <p>• Stub implementation for MVP</p>
+                <p>• Integration in development, not a live production control</p>
                 <p>• Production requires AECB partnership and API access</p>
                 <p>• Used for company credit checks and KYB verification</p>
               </div>
@@ -355,7 +355,7 @@ export default function AdminSetupPage() {
               <li>• Never commit real credentials to git</li>
               <li>• Use environment variables for sensitive data</li>
               <li>• Production deployment requires additional security hardening</li>
-              <li>• This is a prototype - not production-ready for real funds</li>
+              <li>• Working Alpha only. Real funds stay behind the regulatory and Mainnet gates</li>
             </ul>
           </Card>
         </div>

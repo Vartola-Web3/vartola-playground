@@ -2,7 +2,7 @@
 
 **Version:** 1.0  
 **Date:** 3 October 2026  
-**Status:** Functional prototype; simulation and Stellar Testnet only
+**Status:** Superseded for public use by the website whitepaper at `/whitepaper` (October 2026). This file is a design note. It is not an offer and it does not describe live fees.
 
 > This document is a product and operating design, not an offer, prospectus, legal opinion, or statement of regulatory approval. Vartola must not accept real customer money until its legal structure, permissions, customer agreements, safeguarding, custody, security, and regulated partners are approved.
 
@@ -10,7 +10,7 @@
 
 Vartola finances productive assets used by UAE SMEs, starting with motorcycles, vans, pickups, and light trucks. An approved requirement becomes a ring-fenced investment opportunity. Eligible investors fund it, the SME uses the asset, and contractual installments return principal and income to the investors allocated to that facility.
 
-The product is built in layers. A deterministic internal ledger proves the complete business lifecycle. Stellar Testnet records signed network evidence for those events. Production mainnet settlement is a gated future phase requiring regulatory, legal, operational, partner, and security approval.
+The working Alpha already runs the facility lifecycle in the application ledger. Stellar Testnet holds the non-redeemable VTAED asset and can store event fingerprints. Soroban execution is implemented and not yet deployed. Mainnet settlement stays behind regulatory, legal, operational, and security gates. The fee table below is an illustration, not a current tariff.
 
 ## Commercial model
 
@@ -20,7 +20,7 @@ The product is built in layers. A deterministic internal ledger proves the compl
 | Servicing fee | 0.75% per annum on outstanding principal | SME | Accrued monthly and collected with installments |
 | Investor platform fee | 0.00% | Investor | None at launch |
 | Secondary-transfer fee | 0.50% | As disclosed | Only if a regulated transfer facility is launched |
-| Payment and network cost | Actual cost | As disclosed | Per applicable transaction; absorbed by Vartola in the prototype |
+| Payment and network cost | Actual cost | As disclosed | Per applicable transaction; absorbed by Vartola in the working Alpha |
 
 Rates are product assumptions, not final customer terms. The final pricing schedule must state annualised cost, taxes, late-payment treatment, early settlement, and third-party costs.
 

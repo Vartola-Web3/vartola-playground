@@ -72,9 +72,9 @@ export default function WalletFaucetPage() {
         <div className="mt-6 grid gap-4">
           <article className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
             <div className="grid gap-4 sm:grid-cols-3">
-              <div><p className="text-sm text-[#708078]">Available</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(balance)}</p></div>
+              <div><p className="text-sm text-[#708078]">Cash Balance</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(balance)}</p></div>
               <div><p className="text-sm text-[#708078]">Reserved</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(reserved)}</p></div>
-              <div><p className="text-sm text-[#708078]">Deployed</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(deployed)}</p></div>
+              <div><p className="text-sm text-[#708078]">Investments</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(deployed)}</p></div>
             </div>
           </article>
           <article className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
@@ -105,7 +105,7 @@ export default function WalletFaucetPage() {
           </article>
           {walletAddress && (
             <details className="rounded-3xl bg-white p-5 text-sm shadow-sm">
-              <summary className="cursor-pointer text-[#708078]">Advanced details</summary>
+              <summary className="cursor-pointer text-[#708078]">Advanced · Blockchain Details</summary>
               <p className="mt-3 break-all font-mono text-xs">{walletAddress}</p>
             </details>
           )}

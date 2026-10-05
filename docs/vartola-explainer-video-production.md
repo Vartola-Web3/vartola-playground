@@ -44,4 +44,4 @@ Use real captures from `/marketplace`, `/marketplace/pools/[poolId]`, `/investor
 
 **Vartola — Productive Asset Finance, Made Transparent**
 
-End card: “Explore the Testnet MVP” with the public website or demo URL supplied at delivery time.
+End card: “Explore the working Alpha on Testnet” with the public website or demo URL supplied at delivery time.

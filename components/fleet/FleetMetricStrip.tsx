@@ -1,9 +1,9 @@
 const metrics = [
-  { value: '245', label: 'Active Fleet Units' },
-  { value: 'AED 42.8M', label: 'Fleet Value' },
-  { value: 'A', label: 'Risk Tier' },
-  { value: 'AED 1.2M', label: 'Monthly Lease' },
-  { value: 'AED 38.5M', label: 'Tokenized Value' },
+  { value: 'Alpha', label: 'Working platform' },
+  { value: 'Fleets', label: 'First asset class' },
+  { value: 'Testnet', label: 'Stellar rail' },
+  { value: 'VTAED', label: 'No cash value' },
+  { value: 'Gated', label: 'Mainnet later' },
 ];
 
 export function FleetMetricStrip() {

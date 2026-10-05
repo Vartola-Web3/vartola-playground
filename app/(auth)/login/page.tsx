@@ -249,7 +249,7 @@ export default function LoginPage() {
           <div className="mx-auto mt-8 w-full max-w-md">
             <div className="mb-4 flex items-center gap-3 text-xs text-[#93A29B]">
               <span className="h-px flex-1 bg-[#E5ECE8]" />
-              Try a demo account
+              Demo / Test Data
               <span className="h-px flex-1 bg-[#E5ECE8]" />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">

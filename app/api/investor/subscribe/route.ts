@@ -5,6 +5,10 @@ import { tryRecordChainEvent } from '@/lib/stellar/record';
 import { allocateWaterfall, assertCapacity, poolAvailable } from '@/lib/marketplace/allocate';
 import { ensureWallet } from '@/lib/simulation/ledger';
 import { activateFundedSimulationPool } from '@/lib/lifecycle/service';
+import { isAlphaMode } from '@/lib/config/app-mode';
+import { subscribeAlpha } from '@/lib/alpha/subscribe';
+import { assertSameOrigin } from '@/lib/security/origin';
+import { rateLimit } from '@/lib/security/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +22,25 @@ export async function POST(request: NextRequest) {
     const investmentAmount = Number(amount);
     if (!Number.isFinite(investmentAmount) || investmentAmount <= 0) {
       return NextResponse.json({ error: 'Enter a valid investment amount' }, { status: 400 });
+    }
+    if (isAlphaMode()) {
+      assertSameOrigin(request);
+      rateLimit(request, 'alpha-subscribe', 8);
+      const result = await subscribeAlpha({
+        investorId: session.user.id,
+        investorName: session.user.name || 'Investor',
+        poolId,
+        amount: investmentAmount,
+      });
+      return NextResponse.json({
+        success: true,
+        investment: result.investment,
+        jobId: result.txHash,
+        reviewUrl: result.reviewUrl,
+        message: result.poolFullyFunded
+          ? 'Investment confirmed on Stellar Testnet. The opportunity is funded and waiting for supplier release.'
+          : 'Investment confirmed in escrow on Stellar Testnet.',
+      });
     }
     await ensureWallet('INVESTOR', session.user.id, session.user.name || 'Investor');
 

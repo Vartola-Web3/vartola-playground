@@ -27,7 +27,7 @@ export function HomeShowcase() {
           </div>
           <p className="mt-4 text-lg text-[#D7E7DF] sm:text-2xl">Productive asset finance, made transparent.</p>
           <div className="mt-5 flex flex-wrap justify-center gap-2 text-sm">
-            {['Real assets', 'Clear terms', 'Every payment recorded', 'Stellar Testnet demo'].map((item) => (
+            {['Real assets', 'Clear terms', 'Every payment recorded', 'Stellar Testnet'].map((item) => (
               <span key={item} className="rounded-full border border-[#35F49A]/50 px-3 py-1 text-[#E8FFF4]">{item}</span>
             ))}
           </div>

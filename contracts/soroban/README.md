@@ -1,6 +1,6 @@
-# AssetFi UAE - Soroban Smart Contracts (Phase 2)
+# Vartola Soroban contracts
 
-This directory contains Soroban smart contracts for AssetFi UAE on Stellar Testnet.
+These contracts target Stellar Testnet only. `wallet_registry` and `facility_contract` are the Alpha financial contracts. They are implemented and unit-tested. They are not deployed, so this repository does not publish contract IDs. `pool_contract` and `subscription_contract` are earlier metadata records and are not the Alpha money path.
 
 ## Contracts
 
@@ -25,6 +25,6 @@ soroban contract deploy \
   --network testnet
 ```
 
-## Testnet Deployment
+## Testnet status
 
-All contracts are deployed to Stellar Testnet only for Phase 2 prototype.
+Deployment is a next milestone, not a completed release. Mainnet is out of scope. VTAED, if issued, is a non-redeemable Testnet asset with no AED value.

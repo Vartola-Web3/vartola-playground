@@ -18,6 +18,9 @@ export default function RegisterPage() {
     phone: '',
     companyName: '',
     tradeLicenseNo: '',
+    country: 'AE',
+    residency: 'AE',
+    investorType: 'INDIVIDUAL',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -172,6 +175,23 @@ export default function RegisterPage() {
               placeholder="784-1234-1234567-1"
             />
           </div>
+
+          {formData.role === 'INVESTOR' && (
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                <Input value={formData.country} onChange={(e) => setFormData({ ...formData, country: e.target.value })} placeholder="AE" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Residency</label>
+                <Input value={formData.residency} onChange={(e) => setFormData({ ...formData, residency: e.target.value })} placeholder="AE" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Investor type</label>
+                <Input value={formData.investorType} onChange={(e) => setFormData({ ...formData, investorType: e.target.value })} placeholder="INDIVIDUAL" />
+              </div>
+            </div>
+          )}
 
           {formData.role === 'SME' && (
             <>

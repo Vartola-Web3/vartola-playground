@@ -1,9 +1,12 @@
 [workspace]
+resolver = "2"
 members = [
+    "finance_math",
     "facility_contract",
     "pool_contract",
     "subscription_contract",
     "payment_distributor",
+    "wallet_registry",
 ]
 
 [workspace.dependencies]

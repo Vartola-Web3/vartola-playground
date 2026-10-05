@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifySumsubWebhook } from '@/lib/integrations/sumsub';
+import { syncComplianceOnChain } from '@/lib/alpha/chain';
+import { isAlphaMode } from '@/lib/config/app-mode';
 
 export async function POST(request: NextRequest) {
   const rawBody = await request.text();
@@ -31,6 +33,24 @@ export async function POST(request: NextRequest) {
         verifiedAt: approved ? new Date() : null,
       },
     });
+    if (approved) {
+      const user = compliance.subjectType === 'INDIVIDUAL'
+        ? await prisma.user.findUnique({ where: { id: compliance.subjectId } })
+        : await prisma.user.findFirst({ where: { companyId: compliance.subjectId, role: 'SME' } });
+      if (user && user.accountStatus !== 'ACTIVE') {
+        await prisma.user.update({ where: { id: user.id }, data: { accountStatus: rejected ? 'REJECTED' : 'ACTIVE' } });
+      }
+      if (isAlphaMode() && user) {
+        try {
+          await syncComplianceOnChain(user.id);
+        } catch (error) {
+          console.error('Registry compliance sync failed:', error);
+        }
+      }
+    }
+    if (rejected && compliance.subjectType === 'INDIVIDUAL') {
+      await prisma.user.update({ where: { id: compliance.subjectId }, data: { accountStatus: 'REJECTED' } }).catch(() => undefined);
+    }
   }
   return NextResponse.json({ received: true });
 }

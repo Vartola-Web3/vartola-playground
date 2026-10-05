@@ -8,6 +8,7 @@
     "vercel-build": "node scripts/prepare-prisma.js && next build",
     "start": "next start -p 4200",
     "lint": "eslint",
+    "test": "tsx --test lib/alpha/money.test.ts lib/docs/budget.test.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:demo": "tsx prisma/seed-realistic-demo.ts"
   },
@@ -16,6 +17,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "@aws-sdk/s3-request-presigner": "^3.1146.0",
     "@hookform/resolvers": "^5.9.1",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-dialog": "^1.1.23",

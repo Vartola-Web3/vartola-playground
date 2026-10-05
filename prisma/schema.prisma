@@ -21,6 +21,13 @@ model User {
   companyId        String?  @map("company_id")
   company          Company? @relation(fields: [companyId], references: [id])
   stellarPublicKey String?  @map("stellar_public_key")
+  phone            String?
+  country          String?
+  residency        String?
+  investorType     String?   @map("investor_type")
+  accountStatus    String    @default("ACTIVE") @map("account_status")
+  emailVerifiedAt  DateTime? @map("email_verified_at")
+  phoneVerifiedAt  DateTime? @map("phone_verified_at")
 
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -31,6 +38,9 @@ model User {
   investments         Investment[]
   auditLogs           AuditLog[]
   underwritingReviews UnderwritingReview[]
+  wallets             UserWallet[]
+  phoneChallenges     PhoneChallenge[]
+  emailChallenges     EmailChallenge[]
 
   @@index([email])
   @@index([companyId])
@@ -200,6 +210,11 @@ model Facility {
   reserveRate     Float        @default(0) @map("reserve_rate")
   beneficiaryId   String?      @map("beneficiary_id")
   beneficiary     Beneficiary? @relation(fields: [beneficiaryId], references: [id])
+  supplierId      String?      @map("supplier_id")
+  supplier        Supplier?    @relation(fields: [supplierId], references: [id])
+  chainStatus          String? @map("chain_status")
+  participationUnits   Int     @default(0) @map("participation_units")
+  unitValue            Float   @default(100) @map("unit_value")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -210,6 +225,8 @@ model Facility {
   releases          FacilityRelease[]
   activationChecks  FacilityActivationCheck[]
   recoveries        FacilityRecovery[]
+  passports         AssetPassport[]
+  attestations      DocumentAttestation[]
 
   @@index([facilityNo])
   @@map("facilities")
@@ -278,6 +295,9 @@ model Investment {
   termsSnapshot       String? @map("terms_snapshot")
 
   stellarTxHash String? @map("stellar_tx_hash")
+  chainStatus        String? @map("chain_status")
+  chainError         String? @map("chain_error")
+  participationUnits Int     @default(0) @map("participation_units")
 
   subscribedAt DateTime  @default(now()) @map("subscribed_at")
   activatedAt  DateTime? @map("activated_at")
@@ -313,6 +333,7 @@ model Payment {
   status String // SCHEDULED, PENDING, PAID, LATE, MISSED
 
   stellarTxHash String? @map("stellar_tx_hash")
+  chainStatus   String? @map("chain_status")
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -341,6 +362,7 @@ model Distribution {
   status            String  @default("CONFIRMED")
 
   stellarTxHash String? @map("stellar_tx_hash")
+  chainStatus   String? @map("chain_status")
 
   distributedAt DateTime @default(now()) @map("distributed_at")
 
@@ -361,6 +383,7 @@ model FacilityAllocation {
   principalReturned   Float      @default(0) @map("principal_returned")
   leaseIncomeReceived Float      @default(0) @map("lease_income_received")
   recoveryReceived    Float      @default(0) @map("recovery_received")
+  participationUnits  Int        @default(0) @map("participation_units")
   status              String     @default("RESERVED")
   createdAt           DateTime   @default(now()) @map("created_at")
 
@@ -414,6 +437,7 @@ model FacilityRelease {
   amount         Float
   idempotencyKey String   @unique @map("idempotency_key")
   status         String
+  chainStatus    String?  @map("chain_status")
   txHash         String?  @map("tx_hash")
   createdAt      DateTime @default(now()) @map("created_at")
 
@@ -438,6 +462,8 @@ model FacilityRecovery {
   facility    Facility @relation(fields: [facilityId], references: [id])
   netProceeds Float    @map("net_proceeds")
   note        String   @default("")
+  chainStatus String?  @map("chain_status")
+  txHash      String?  @map("tx_hash")
   createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("facility_recoveries")
@@ -594,4 +620,149 @@ model RampOrder {
   @@unique([provider, providerOrderId])
   @@index([userId, createdAt])
   @@map("ramp_orders")
+}
+
+model UserWallet {
+  id        String        @id @default(cuid())
+  userId    String        @map("user_id")
+  user      User          @relation(fields: [userId], references: [id])
+  publicKey String        @unique @map("public_key")
+  provider  String        @default("EMBEDDED")
+  status    String        @default("ACTIVE")
+  secret    WalletSecret?
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@unique([userId, provider])
+  @@map("user_wallets")
+}
+
+model WalletSecret {
+  id         String     @id @default(cuid())
+  walletId   String     @unique @map("wallet_id")
+  wallet     UserWallet @relation(fields: [walletId], references: [id])
+  ciphertext String
+  iv         String
+  authTag    String     @map("auth_tag")
+  keyVersion Int        @default(1) @map("key_version")
+
+  @@map("wallet_secrets")
+}
+
+model Supplier {
+  id              String     @id @default(cuid())
+  companyName     String     @map("company_name")
+  kybStatus       String     @default("NOT_STARTED") @map("kyb_status")
+  payoutPublicKey String?    @map("payout_public_key")
+  status          String     @default("PENDING")
+  facilities      Facility[]
+  invoices        SupplierInvoice[]
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  @@map("suppliers")
+}
+
+model SupplierInvoice {
+  id         String   @id @default(cuid())
+  supplierId String   @map("supplier_id")
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  reference  String
+  amount     Float
+  status     String   @default("RECEIVED")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("supplier_invoices")
+}
+
+model AssetPassport {
+  id                   String   @id @default(cuid())
+  facilityId           String   @map("facility_id")
+  facility             Facility @relation(fields: [facilityId], references: [id])
+  assetId              String   @map("asset_id")
+  serialHash           String   @map("serial_hash")
+  assetType            String   @default("") @map("asset_type")
+  manufacturer         String   @default("")
+  model                String   @default("")
+  year                 Int?
+  purchaseValue        Float?   @map("purchase_value")
+  supplierName         String   @default("") @map("supplier_name")
+  legalOwner           String   @default("") @map("legal_owner")
+  operatorName         String   @default("") @map("operator_name")
+  insuranceStatus      String   @default("UNKNOWN") @map("insurance_status")
+  registrationStatus   String   @default("UNKNOWN") @map("registration_status")
+  deliveryStatus       String   @default("UNKNOWN") @map("delivery_status")
+  valuation            Float?
+  recoveryStatus       String   @default("NONE") @map("recovery_status")
+  chainTxHash          String?  @map("chain_tx_hash")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  @@index([facilityId])
+  @@map("asset_passports")
+}
+
+model DocumentAttestation {
+  id                 String    @id @default(cuid())
+  facilityId         String?   @map("facility_id")
+  facility           Facility? @relation(fields: [facilityId], references: [id])
+  documentId         String?   @map("document_id")
+  documentHash       String    @map("document_hash")
+  documentType       String    @map("document_type")
+  entityHash         String    @map("entity_hash")
+  verificationStatus String    @default("ANCHORED") @map("verification_status")
+  chainTxHash        String?   @map("chain_tx_hash")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  @@index([documentHash])
+  @@map("document_attestations")
+}
+
+model ChainEvent {
+  id         String   @id @default(cuid())
+  eventType  String   @map("event_type")
+  txHash     String   @map("tx_hash")
+  ledger     Int      @default(0)
+  contractId String   @default("") @map("contract_id")
+  entityType String   @default("") @map("entity_type")
+  entityId   String   @default("") @map("entity_id")
+  payload    String   @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@unique([txHash, eventType, entityId])
+  @@index([eventType, createdAt])
+  @@map("chain_events")
+}
+
+model PhoneChallenge {
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  user       User      @relation(fields: [userId], references: [id])
+  phone      String
+  codeHash   String    @map("code_hash")
+  expiresAt  DateTime  @map("expires_at")
+  consumedAt DateTime? @map("consumed_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@index([userId, phone])
+  @@map("phone_challenges")
+}
+
+model EmailChallenge {
+  id         String    @id @default(cuid())
+  userId     String    @map("user_id")
+  user       User      @relation(fields: [userId], references: [id])
+  codeHash   String    @map("code_hash")
+  expiresAt  DateTime  @map("expires_at")
+  consumedAt DateTime? @map("consumed_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("email_challenges")
+}
+
+model ContractRole {
+  id      String @id @default(cuid())
+  role    String @unique
+  address String @default("")
+  note    String @default("")
+
+  @@map("contract_roles")
 }

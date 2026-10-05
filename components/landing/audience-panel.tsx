@@ -28,7 +28,7 @@ const content: Record<
       ['Apply for Assets', 'Choose the vehicles or equipment your business needs.'],
       ['Get Assessed', 'We review your business, cash flow, and the assets being financed.'],
       ['Get Funded', 'Approved assets are financed and purchased through the platform.'],
-      ['Pay & Own', 'Make structured lease payments while building a path to ownership.'],
+      ['Repay', 'Make scheduled payments. Any path to title follows the facility agreement.'],
     ],
     action: 'Apply for Financing',
     href: '/register',
@@ -41,14 +41,14 @@ const content: Record<
       ['Tenure', '48 months'],
       ['Monthly Payment', 'AED 4,200'],
     ],
-    note: 'Get the assets your business needs, without the upfront burden.',
+    note: 'Illustrative example. Not a live offer.',
   },
   investor: {
     title: 'Invest in real productive assets.',
     body: 'Back UAE fleets and SMEs through structured asset finance.',
     steps: [
-      ['Explore Opportunities', 'Browse real fleet and SME asset-finance opportunities.'],
-      ['Review the Risk', 'See businesses, assets, Vartola score, indicative yield, and term.'],
+      ['Explore Opportunities', 'Browse facility opportunities tied to productive assets.'],
+      ['Review the Risk', 'See the business, the asset, the risk view, and the term. Income is not guaranteed.'],
       ['Choose Your Investment', 'Select the opportunity and amount that fits your preference.'],
       ['Receive Distributions', 'Earn principal and lease income as businesses make payments.'],
     ],
@@ -59,12 +59,11 @@ const content: Record<
     summaryTitle: 'Investment Snapshot',
     rows: [
       ['Asset Type', 'Mixed Fleet'],
-      ['Indicative Yield', '11.2%'],
+      ['Illustrative income', 'Not a forecast'],
       ['Term', '28 months'],
       ['Minimum Investment', 'AED 25,000'],
     ],
-    note: 'Next distribution expected',
-    noteDetail: '25 Jan 2027',
+    note: 'Illustrative example. Not a live offer or a promised distribution.',
   },
 };
 
@@ -164,7 +163,6 @@ export function AudiencePanel() {
               </span>
               <span>
                 {panel.note}
-                {audience === 'investor' ? <span className="mt-0.5 block text-xs text-[#9FB8AD]">Receive principal + lease income</span> : null}
               </span>
             </p>
             {panel.noteDetail ? <span className="shrink-0 font-medium text-white">{panel.noteDetail} →</span> : null}

@@ -11,8 +11,8 @@ export default auth((req) => {
   const userRole = req.auth?.user?.role;
 
   const isAuthPage = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register');
-  const publicRoutes = ['/', '/about', '/how-it-works', '/whitepaper', '/pitch', '/paperwork'];
-  const isPublicPage = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/marketplace') || nextUrl.pathname.startsWith('/api/marketplace') || nextUrl.pathname.startsWith('/_next') || nextUrl.pathname.startsWith('/api/auth');
+  const publicRoutes = ['/', '/about', '/how-it-works', '/whitepaper', '/pitch', '/paperwork', '/technical', '/grant', '/docs', '/legal'];
+  const isPublicPage = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/legal/') || nextUrl.pathname.startsWith('/marketplace') || nextUrl.pathname.startsWith('/api/marketplace') || nextUrl.pathname.startsWith('/_next') || nextUrl.pathname.startsWith('/api/auth');
 
   if (isPublicPage) {
     return NextResponse.next();

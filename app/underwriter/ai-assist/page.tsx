@@ -116,7 +116,7 @@ export default function AIAssistPage() {
               <li>• This is a <strong>stub implementation</strong> for grant demonstration</li>
               <li>• Real AI models would require: OpenAI/Claude API, custom ML training, labeled datasets</li>
               <li>• Production implementation: 6-12 months of model training and validation</li>
-              <li>• All outputs are simulated for prototype purposes</li>
+              <li>• Outputs are assistance inside the Alpha. They are not a credit decision</li>
               <li>• Testnet only - no real underwriting decisions</li>
             </ul>
           </Card>

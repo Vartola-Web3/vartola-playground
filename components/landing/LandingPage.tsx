@@ -5,14 +5,7 @@ import { BrandMark } from '@/components/brand/brand-mark';
 import { AudiencePanel } from '@/components/landing/audience-panel';
 import { HomeShowcase } from '@/components/landing/home-showcase';
 import { ExplainerVideo } from '@/components/marketing/explainer-video';
-const nav = [
-  ['Home', '/'],
-  ['How It Works', '/how-it-works'],
-  ['Whitepaper', '/whitepaper'],
-  ['Pitch Deck', '/pitch'],
-  ['Paperwork', '/paperwork'],
-  ['About', '/about'],
-];
+import { PUBLIC_NAV, ROADMAP } from '@/lib/docs/product';
 
 export function LandingPage() {
   return (
@@ -20,7 +13,7 @@ export function LandingPage() {
       <header className="vartola-frame flex h-16 items-center justify-between">
         <BrandMark />
         <nav className="hidden gap-6 text-sm text-[#9FB8AD] md:flex">
-          {nav.map(([label, href]) => (
+          {PUBLIC_NAV.map(([label, href]) => (
             <Link key={href} href={href} className="hover:text-[#F6FFF9]">
               {label}
             </Link>
@@ -65,21 +58,16 @@ export function LandingPage() {
 
         <section className="rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#0E211B] p-6 sm:p-8">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#70FFB8]">Delivery timeline</p><h2 className="mt-2 text-3xl font-semibold">Prove the lifecycle, then launch responsibly.</h2></div>
+            <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#70FFB8]">From this Alpha</p><h2 className="mt-2 text-3xl font-semibold">The platform is operating. Mainnet waits on the gates.</h2></div>
             <div className="flex flex-wrap gap-4">
-              <Link href="/pitch" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">Read the pitch deck</Link>
-              <Link href="/paperwork" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">View public paperwork</Link>
+              <Link href="/pitch" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">Read the pitch</Link>
+              <Link href="/docs" className="text-sm font-medium text-[#70FFB8] underline underline-offset-4">Documentation</Link>
             </div>
           </div>
-          <ol className="relative mt-8 grid gap-4 md:grid-cols-4 before:absolute before:left-[12.5%] before:right-[12.5%] before:top-5 before:hidden before:h-px before:bg-[#295143] md:before:block">
-            {[
-              ['2026 · Complete', 'Product simulation', 'Wallets, funding, installments, fees, and distributions validated.'],
-              ['2027 · Build', 'Grant & regulatory design', 'Target up to $150k, partner sandboxes, security assurance, and audited Testnet evidence.'],
-              ['2028 · Launch', 'Regulated logistics pilot', 'Target $1.5m seed and $2m separately structured asset capacity.'],
-              ['2029–31 · Scale', 'Equipment to real estate', 'UAE scale, GCC readiness, then a separately authorised property pilot.'],
-            ].map(([status, title, body], index) => <li key={title} className="relative rounded-2xl border border-[rgba(112,255,184,0.14)] bg-[#091713] p-5 pt-12">
-              <span className={`absolute left-5 top-3 z-10 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold ${index < 2 ? 'bg-[#35F49A] text-[#07120F]' : 'border border-[#41705E] bg-[#0E211B] text-[#9FB8AD]'}`}>{index + 1}</span>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#70FFB8]">{status}</p><h3 className="mt-2 font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-[#9FB8AD]">{body}</p>
+          <ol className="relative mt-8 grid gap-4 md:grid-cols-4">
+            {ROADMAP.slice(0, 4).map((item, index) => <li key={item.when} className="relative rounded-2xl border border-[rgba(112,255,184,0.14)] bg-[#091713] p-5 pt-12">
+              <span className="absolute left-5 top-3 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#35F49A] px-1 text-[10px] font-bold text-[#07120F]">{index + 1}</span>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#70FFB8]">{item.when}</p><h3 className="mt-2 font-semibold">{item.title}</h3><p className="mt-2 text-sm leading-6 text-[#9FB8AD]">{item.body}</p>
             </li>)}
           </ol>
         </section>

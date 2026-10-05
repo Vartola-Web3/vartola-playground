@@ -1,6 +1,6 @@
-# Vartola Five-Year Tokenization Plan (2027–2031)
+# Later scale hypotheses
 
-**Planning basis:** October 2026. Figures are management targets, not commitments. Regulatory classification, capital requirements, and permitted activities must be confirmed with UAE counsel and the selected regulator or regulated partner.
+The working Alpha exists in October 2026. Mainnet has no date. The years below are management hypotheses, not a statement that the product starts in 2027, and not commitments. Regulatory classification must be confirmed with UAE counsel.
 
 ## Funding strategy
 
@@ -8,7 +8,7 @@ Vartola should separate **company capital** (team, product, compliance, sales) f
 
 | Year | Company capital target | Asset capital target | Primary outcome |
 |---|---:|---:|---|
-| 2027 | $150k ecosystem grant / pre-seed | $0–0.5m controlled no-value or partner pilot | Regulatory design, partner sandboxes, audited Testnet MVP |
+| 2027 | Grant work on the existing Alpha | No live-money target is set | Testnet rail, audits, and regulatory design |
 | 2028 | $1.5m seed | $2m warehouse / SPV capacity | UAE logistics launch through an authorised structure; 20–40 financed assets |
 | 2029 | $4–5m Series A | $15m institutional facility capacity | Multi-emirate scale, equipment finance, automated servicing and recovery |
 | 2030 | $8–10m growth round | $50m cumulative funding capacity | GCC preparation, regulated transfer pilot if permitted, bank and originator integrations |

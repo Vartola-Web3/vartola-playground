@@ -222,12 +222,26 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
   if (facility.incomeStartDate == null || facility.status !== 'ACTIVE') throw new Error('Income starts only after the facility is active');
   const payer = await prisma.user.findFirst({ where: { companyId: facility.application?.companyId, role: 'SME' } });
   if (payer) await debitWallet('SME', payer.id, gross, `sme-pay:${key}`, facility.facilityNo);
-  const parts = splitPayment(gross, facility.serviceFeeRate, facility.reserveRate);
-  const scheduled = facility.payments
+  const feeSplit = splitPayment(gross, facility.serviceFeeRate, facility.reserveRate);
+  const scheduledRows = facility.payments
     .filter((row) => row.status !== 'PAID')
-    .sort((a, b) => a.paymentNo - b.paymentNo)[0];
+    .sort((a, b) => a.paymentNo - b.paymentNo);
+  const scheduled = scheduledRows[0];
   if (!scheduled) throw new Error('No unpaid installment is available');
   if (Math.abs(gross - scheduled.amount) > 0.01) throw new Error(`Payment amount must equal the installment amount ${scheduled.amount}`);
+  const alreadyReturned = facility.allocations.reduce((sum, row) => sum + row.principalReturned, 0);
+  const remainingPrincipal = Math.max(Math.round((facility.financeAmount - alreadyReturned) * 100) / 100, 0);
+  const equalPrincipal = Math.round((facility.financeAmount / Math.max(facility.term, 1)) * 100) / 100;
+  const principal = Math.min(
+    remainingPrincipal,
+    feeSplit.net,
+    scheduledRows.length <= 1 ? remainingPrincipal : equalPrincipal,
+  );
+  const parts = {
+    ...feeSplit,
+    principal,
+    leaseIncome: Math.round((feeSplit.net - principal) * 100) / 100,
+  };
   const payment = await prisma.payment.update({
     where: { id: scheduled.id },
     data: {
@@ -293,6 +307,21 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
     await payInvestor(allocation.investorId, share.principal, share.leaseIncome, `dist:${payment.id}:${allocation.id}`);
   }
   await audit(actorId, 'REPAYMENT_RECEIVED', facilityId, parts);
+  const principalLeft = Math.round((remainingPrincipal - principal) * 100) / 100;
+  if (scheduledRows.length <= 1 && principalLeft <= 0.01) {
+    await prisma.facility.update({
+      where: { id: facilityId },
+      data: { status: 'COMPLETED', closedAt: new Date() },
+    });
+    if (facility.poolId) {
+      const stillOpen = await prisma.facility.count({
+        where: { poolId: facility.poolId, status: { not: 'COMPLETED' } },
+      });
+      if (stillOpen === 0) {
+        await prisma.pool.update({ where: { id: facility.poolId }, data: { status: 'COMPLETED' } });
+      }
+    }
+  }
   await tryRecordChainEvent({
     type: 'RECORD_PAYMENT',
     entityType: 'Payment',

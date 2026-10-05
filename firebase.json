@@ -1,4 +1,18 @@
 {
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    },
+    "authorizedDomains": [
+      "localhost",
+      "assetfi-uae.firebaseapp.com",
+      "assetfi-uae.web.app",
+      "home.vartola.net",
+      "vartola-playground.vercel.app",
+      "vartola-playground-ahmed-fouads-projects-e05720c3.vercel.app",
+      "vartola-playground-git-main-ahmed-fouads-projects-e05720c3.vercel.app"
+    ]
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json",

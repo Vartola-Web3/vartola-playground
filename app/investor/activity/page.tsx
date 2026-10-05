@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 import { formatAED, formatDate } from '@/lib/formatters';
 import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
@@ -43,7 +44,7 @@ export default async function InvestorActivityPage() {
               <div>
                 <p className="font-medium">{row.label}</p>
                 <p className="text-sm text-[#708078]">{formatDate(row.at)}</p>
-                {row.review ? <a className="text-sm text-[#0A4934] underline" href={row.review} target="_blank" rel="noreferrer">Stellar reference</a> : <p className="text-sm text-[#708078]">Stellar reference pending</p>}
+                <TestnetAddress reviewUrl={row.review} />
               </div>
               <p className="font-semibold">{formatAED(row.amount)}</p>
             </article>

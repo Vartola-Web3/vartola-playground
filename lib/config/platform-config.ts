@@ -55,7 +55,7 @@ export async function getPlatformConfig(): Promise<PlatformConfig> {
       return {
         stellarNetwork: 'testnet',
         stellarHorizonUrl: 'https://horizon-testnet.stellar.org',
-        firebaseProjectId: '',
+        firebaseProjectId: 'assetfi-uae',
         emailProvider: 'console',
         paymentProvider: 'console',
         identityProvider: 'sumsub-sandbox',
@@ -74,7 +74,7 @@ export async function getPlatformConfig(): Promise<PlatformConfig> {
     return {
       stellarNetwork: 'testnet',
       stellarHorizonUrl: 'https://horizon-testnet.stellar.org',
-      firebaseProjectId: '',
+      firebaseProjectId: 'assetfi-uae',
       emailProvider: 'console',
       paymentProvider: 'console',
       identityProvider: 'sumsub-sandbox',

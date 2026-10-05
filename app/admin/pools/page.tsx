@@ -10,6 +10,7 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 import { formatCurrency } from '@/lib/formatters';
 import { isAdminOperator } from '@/lib/auth/roles';
 import { stellarReviewUrl } from '@/lib/stellar/explorer';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 
 interface Pool {
   id: string;
@@ -306,11 +307,7 @@ export default function PoolsManagementPage() {
                       {pool.facilities.map((facility) => (
                         <li key={facility.id} className="flex flex-wrap items-center gap-2">
                           <span>{facility.facilityNo} · {facility.application.applicationNo} · {facility.application.assetDescription} · {formatCurrency(facility.financeAmount)}</span>
-                          {stellarReviewUrl(facility.stellarTxHash) ? (
-                            <a className="text-[#0A4934] underline" href={stellarReviewUrl(facility.stellarTxHash)!} target="_blank" rel="noreferrer">Review asset</a>
-                          ) : (
-                            <span className="text-gray-400">Asset not on chain</span>
-                          )}
+                          <TestnetAddress hash={facility.stellarTxHash} />
                         </li>
                       ))}
                     </ul>
@@ -352,7 +349,7 @@ export default function PoolsManagementPage() {
                   </div>
                   <div className="mt-3 text-sm">
                     {stellarReviewUrl(pool.stellarTxHash) ? (
-                      <a className="font-medium text-[#0A4934] underline" href={stellarReviewUrl(pool.stellarTxHash)!} target="_blank" rel="noreferrer">Review opportunity on Stellar</a>
+                      <TestnetAddress hash={pool.stellarTxHash} />
                     ) : (
                       <button
                         type="button"

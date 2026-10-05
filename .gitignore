@@ -54,3 +54,5 @@ prisma/schema.postgres.prisma
 .vercel
 .env*
 .neon
+.firebase-runtime.json
+firebase-debug.log

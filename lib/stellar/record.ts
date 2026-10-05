@@ -2,6 +2,7 @@ import { prisma } from '@/lib/db';
 import { financialMode } from '@/lib/simulation/ledger';
 import { stellarReviewUrl } from '@/lib/stellar/explorer';
 import { enqueueJob, processJob, type JobType } from '@/lib/stellar/outbox/queue';
+import { operationTitle, rememberOperation } from '@/lib/firebase/operations';
 
 const REAL_HASH = /^[a-f0-9]{64}$/i;
 
@@ -19,6 +20,15 @@ export async function recordChainEvent(input: {
     throw new Error(job?.error || 'Stellar did not confirm this operation');
   }
   await persistHash(input.entityType, input.entityId, txHash);
+  await rememberOperation({
+    id: `${input.entityType}_${input.entityId}`,
+    title: operationTitle(input.type),
+    kind: input.type,
+    status: 'CONFIRMED',
+    testnetAddress: txHash,
+    entityType: input.entityType,
+    entityId: input.entityId,
+  });
   return { txHash, reviewUrl: stellarReviewUrl(txHash)! };
 }
 

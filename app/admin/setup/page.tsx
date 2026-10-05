@@ -27,7 +27,7 @@ export default function AdminSetupPage() {
   const [config, setConfig] = useState<PlatformConfig>({
     stellarNetwork: 'testnet',
     stellarHorizonUrl: 'https://horizon-testnet.stellar.org',
-    firebaseProjectId: '',
+    firebaseProjectId: 'assetfi-uae',
     emailProvider: 'console',
     paymentProvider: 'console',
     identityProvider: 'sumsub-sandbox',
@@ -165,10 +165,10 @@ export default function AdminSetupPage() {
                 <Input
                   value={config.firebaseProjectId}
                   onChange={(e) => setConfig({ ...config, firebaseProjectId: e.target.value })}
-                  placeholder="your-project-id"
+                  placeholder="assetfi-uae"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Find this in Firebase Console → Project Settings
+                  Project assetfi-uae. Login, applications, and the ledger stay in the app database. Stellar operations stay on Testnet.
                 </p>
               </div>
 
@@ -316,9 +316,9 @@ export default function AdminSetupPage() {
               
               <div>
                 <h3 className="font-semibold">Firebase:</h3>
-                <p>• Create a Firebase project at <a href="https://console.firebase.google.com" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">console.firebase.google.com</a></p>
-                <p>• Enable Firestore Database</p>
-                <p>• Download service account JSON and add credentials to .env</p>
+                <p>• Project in use: <strong>assetfi-uae</strong></p>
+                <p>• Firestore and Cloud Storage are not turned on for this project yet, so uploaded company files stay on local storage.</p>
+                <p>• Financing, payments, and distributions are recorded on Stellar Testnet, and each confirmed operation shows its transaction address.</p>
               </div>
               
               <div>

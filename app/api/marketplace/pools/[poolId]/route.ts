@@ -69,6 +69,7 @@ export async function GET(
       amount,
       at: operation.confirmedAt || operation.createdAt,
       reviewUrl,
+      txHash: operation.txHash,
     }];
   });
   const risk = pool.riskScore
@@ -86,6 +87,7 @@ export async function GET(
       id: pool.id,
       poolNo: pool.poolNo,
       reviewUrl: stellarReviewUrl(pool.stellarTxHash),
+      txHash: stellarReviewUrl(pool.stellarTxHash) ? pool.stellarTxHash : null,
       references,
       poolName: pool.poolName,
       description: pool.description,

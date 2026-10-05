@@ -42,6 +42,7 @@ export async function GET() {
         id: pool.id,
         poolNo: pool.poolNo,
         reviewUrl: stellarReviewUrl(pool.stellarTxHash),
+        txHash: stellarReviewUrl(pool.stellarTxHash) ? pool.stellarTxHash : null,
         poolName: pool.poolName,
         description: pool.description,
         fleetType: pool.fleetType,

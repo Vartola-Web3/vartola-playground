@@ -1,4 +1,11 @@
 {
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json",
+    "edition": "enterprise",
+    "database": "vartola-ops",
+    "location": "me-central2"
+  },
   "apphosting": {
     "backendId": "assetfi-web",
     "rootDir": "/",

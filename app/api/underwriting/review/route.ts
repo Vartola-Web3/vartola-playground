@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 import { calculateRisk } from '@/lib/risk-engine';
 import { AssetType } from '@/lib/types';
 import { tryRecordChainEvent } from '@/lib/stellar/record';
+import { rememberOperation } from '@/lib/firebase/operations';
 
 export async function POST(request: NextRequest) {
   try {
@@ -154,6 +155,15 @@ export async function POST(request: NextRequest) {
           dealRiskScore: riskResult.dealRiskScore,
         }),
       },
+    });
+
+    await rememberOperation({
+      id: `Review_${review.id}`,
+      title: `${decision.replaceAll('_', ' ')} ${application.applicationNo}`,
+      kind: `APPLICATION_${decision}`,
+      status: newStatus,
+      entityType: 'Application',
+      entityId: application.id,
     });
 
     return NextResponse.json({ success: true, review, riskResult });

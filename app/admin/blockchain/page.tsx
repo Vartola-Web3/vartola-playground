@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import DashboardLayout from '@/components/layout/dashboard-layout';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 import { useSession } from 'next-auth/react';
 
 interface BlockchainConfig {
@@ -21,7 +22,7 @@ interface ModeState {
 }
 
 interface SyncState { total: number; synced: number; }
-interface ChainTransaction { id: string; type: string; entityType: string; entityId: string; status: string; txHash: string | null; error: string | null; attempts: number; createdAt: string; confirmedAt: string | null; }
+interface ChainTransaction { id: string; type: string; entityType: string; entityId: string; status: string; txHash: string | null; error: string | null; attempts: number; createdAt: string; confirmedAt: string | null; firebase?: boolean; }
 
 export default function BlockchainSettingsPage() {
   const { data: session } = useSession();
@@ -186,7 +187,11 @@ export default function BlockchainSettingsPage() {
             <div className={`mt-4 rounded-xl p-3 text-sm ${modeState?.readiness.ready ? 'bg-green-50 text-green-800' : 'bg-amber-50 text-amber-900'}`}>
               {modeState?.readiness.ready ? `Ready · operator ${modeState.readiness.publicKey?.slice(0, 8)}…${modeState.readiness.publicKey?.slice(-6)}` : `Not ready · ${modeState?.readiness.problems.join(' · ') || 'Checking configuration'}`}
             </div>
-            {modeState?.readiness.publicKey && <a className="mt-3 inline-flex text-sm font-medium text-[#0D7A52] underline underline-offset-4" href={`https://stellar.expert/explorer/testnet/account/${modeState.readiness.publicKey}`} target="_blank" rel="noreferrer">Open Vartola operator on Stellar Expert</a>}
+            {modeState?.readiness.publicKey && (
+              <a className="mt-3 inline-flex break-all font-mono text-xs font-medium text-[#0D7A52] underline underline-offset-4" href={`https://stellar.expert/explorer/testnet/account/${modeState.readiness.publicKey}`} target="_blank" rel="noreferrer">
+                {modeState.readiness.publicKey}
+              </a>
+            )}
             {canConfigure && !modeState?.readiness.ready && modeState?.readiness.problems.some((problem) => problem.includes('not funded')) && (
               <Button className="mt-3" variant="outline" disabled={switching} onClick={provisionTestnet}>Create and fund Testnet operator</Button>
             )}
@@ -223,14 +228,14 @@ export default function BlockchainSettingsPage() {
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[720px] text-left text-sm">
-                <thead><tr className="border-b text-xs uppercase tracking-wide text-gray-500"><th className="py-3 pr-4">Operation</th><th className="py-3 pr-4">Record</th><th className="py-3 pr-4">Status</th><th className="py-3 pr-4">Confirmed</th><th className="py-3 text-right">Explorer</th></tr></thead>
+                <thead><tr className="border-b text-xs uppercase tracking-wide text-gray-500"><th className="py-3 pr-4">Operation</th><th className="py-3 pr-4">Record</th><th className="py-3 pr-4">Status</th><th className="py-3 pr-4">Confirmed</th><th className="py-3 text-right">Testnet address</th></tr></thead>
                 <tbody className="divide-y">
                   {transactions.map((tx) => <tr key={tx.id}>
-                    <td className="py-3 pr-4 font-medium text-[#13251E]">{tx.type.replaceAll('_', ' ')}</td>
+                    <td className="py-3 pr-4 font-medium text-[#13251E]">{tx.type.replaceAll('_', ' ')}{tx.firebase ? <span className="ml-2 rounded-full bg-[#FFF4E5] px-2 py-0.5 text-[10px] font-semibold text-[#C2410C]">Firebase</span> : null}</td>
                     <td className="py-3 pr-4"><span className="block text-gray-700">{tx.entityType}</span><span className="font-mono text-xs text-gray-400">{tx.entityId.slice(0, 12)}…</span></td>
                     <td className="py-3 pr-4"><span className={`rounded-full px-2.5 py-1 text-xs font-medium ${tx.status === 'CONFIRMED' ? 'bg-green-50 text-green-700' : tx.status === 'FAILED' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}`}>{tx.status}</span></td>
                     <td className="py-3 pr-4 text-gray-600">{tx.confirmedAt ? new Date(tx.confirmedAt).toLocaleString() : '—'}</td>
-                    <td className="py-3 text-right">{tx.txHash ? <a className="font-medium text-[#0D7A52] underline underline-offset-4" href={`https://stellar.expert/explorer/testnet/tx/${tx.txHash}`} target="_blank" rel="noreferrer">View transaction</a> : <span className="text-gray-400">Waiting</span>}</td>
+                    <td className="py-3 text-right"><TestnetAddress hash={tx.txHash} /></td>
                   </tr>)}
                   {!transactions.length && <tr><td colSpan={5} className="py-8 text-center text-gray-500">No Stellar transactions yet.</td></tr>}
                 </tbody>

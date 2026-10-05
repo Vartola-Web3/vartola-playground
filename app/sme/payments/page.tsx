@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 
 type Payment = { id: string; paymentNo: number; dueDate: string; amount: number; status: string; reviewUrl?: string | null };
 type FacilityPay = { id: string; facilityNo: string; description: string; monthly: number; payments: Payment[] };
@@ -66,7 +67,7 @@ export default function SmePaymentsPage() {
               <button type="button" className="rounded-xl bg-[#0D7A52] px-4 py-2 text-sm font-semibold text-white" onClick={topUp}>Add demo funds</button>
             </div>
           </div>
-          <p className="mt-3 text-xs text-[#708078]">Simulation only. Use this balance to pay scheduled installments.</p>
+          <p className="mt-3 text-xs text-[#708078]">Stellar Testnet. Use this balance to pay scheduled installments. No real money.</p>
         </section>
         <article className="rounded-3xl bg-white p-6 shadow-sm">
           <p className="text-sm text-[#708078]">Next payment</p>
@@ -87,7 +88,7 @@ export default function SmePaymentsPage() {
                 <span>Installment {payment.paymentNo} · {new Date(payment.dueDate).toLocaleDateString()}</span>
                 <span className="flex items-center gap-3 text-[#708078]">
                   <span>{payment.status === 'PAID' ? 'Paid' : payment.status === 'DUE' ? 'Due' : 'Upcoming'} · AED {payment.amount.toLocaleString()}</span>
-                  {payment.reviewUrl ? <a className="font-medium text-[#0A4934] underline" href={payment.reviewUrl} target="_blank" rel="noreferrer">Stellar reference</a> : <span>Stellar reference pending</span>}
+                  <TestnetAddress reviewUrl={payment.reviewUrl} />
                 </span>
               </div>
             ))}
@@ -100,7 +101,7 @@ export default function SmePaymentsPage() {
             {(wallet.entries || []).filter((entry) => entry.type === 'DEMO_TOP_UP').map((entry) => (
               <div key={entry.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#E5ECE8] px-3 py-2">
                 <span>{entry.description || 'Top-up'} · AED {entry.amount.toLocaleString()}</span>
-                {entry.reviewUrl ? <a className="font-medium text-[#0A4934] underline" href={entry.reviewUrl} target="_blank" rel="noreferrer">Stellar reference</a> : <span className="text-[#708078]">Stellar reference pending</span>}
+                <TestnetAddress reviewUrl={entry.reviewUrl} />
               </div>
             ))}
             {(wallet.entries || []).every((entry) => entry.type !== 'DEMO_TOP_UP') && <p className="text-[#708078]">No top-up yet.</p>}

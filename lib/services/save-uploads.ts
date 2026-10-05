@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import { rememberOperation } from '@/lib/firebase/operations';
 import { uploadDocument } from '@/lib/services/storage';
 
 const ALLOWED = new Set(['application/pdf', 'image/png', 'image/jpeg', 'image/jpg']);
@@ -36,6 +37,14 @@ export async function saveUploads(files: File[], applicationId: string, userId: 
         documentHash: stored.hash,
         uploadedBy: userId,
       },
+    });
+    await rememberOperation({
+      id: `Document_${doc.id}`,
+      title: doc.fileName,
+      kind: 'DOCUMENT_STORED',
+      status: 'STORED',
+      entityType: 'Document',
+      entityId: doc.id,
     });
     saved.push(doc);
   }

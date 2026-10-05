@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { countsFromAssetTypes, fleetImage, getFleetVisualType } from '@/lib/fleet-visual';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 
 type Opportunity = {
   id: string;
@@ -24,6 +25,7 @@ type Opportunity = {
   riskRating: string;
   status: string;
   reviewUrl?: string | null;
+  txHash?: string | null;
 };
 
 const money = (value: number) =>
@@ -136,9 +138,7 @@ function MarketplaceContent() {
                     <div className="h-full bg-[#15C77A]" style={{ width: `${progress}%` }} />
                   </div>
                 </div>
-                {item.reviewUrl && (
-                  <a className="inline-flex text-sm font-medium text-[#0A4934] underline" href={item.reviewUrl} target="_blank" rel="noreferrer">Stellar reference</a>
-                )}
+                <TestnetAddress hash={item.txHash} reviewUrl={item.reviewUrl} />
                 <div className="flex gap-2">
                   {canInvest ? (
                     <button type="button" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white" onClick={() => { setOpen(item); setAmount(String(item.minInvestment)); setNote(''); }}>

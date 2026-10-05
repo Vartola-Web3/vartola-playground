@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatAED, formatDate, getStatusColor } from '@/lib/formatters';
-import { stellarReviewUrl } from '@/lib/stellar/explorer';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 
 export default async function FacilityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -119,9 +119,7 @@ export default async function FacilityDetailPage({ params }: { params: Promise<{
                     {payment.paidAt && (
                       <div className="text-sm text-green-600">Paid: {formatDate(payment.paidAt)}</div>
                     )}
-                    {stellarReviewUrl(payment.stellarTxHash) && (
-                      <a className="text-sm text-[#0A4934] underline" href={stellarReviewUrl(payment.stellarTxHash)!} target="_blank" rel="noreferrer">Review on Stellar</a>
-                    )}
+                    <TestnetAddress hash={payment.stellarTxHash} />
                   </div>
                   <div className="text-right">
                     <div className="font-semibold">{formatAED(Number(payment.amount))}</div>
@@ -150,8 +148,8 @@ export default async function FacilityDetailPage({ params }: { params: Promise<{
               <div className="space-y-2 text-sm">
                 <div>
                   <span className="text-slate-600">Transaction Hash:</span>
-                  <div className="font-mono text-xs bg-slate-100 p-2 rounded mt-1 break-all">
-                    {facility.stellarTxHash}
+                  <div className="mt-1">
+                    <TestnetAddress hash={facility.stellarTxHash} />
                   </div>
                 </div>
                 {facility.stellarAssetId && (
@@ -161,16 +159,6 @@ export default async function FacilityDetailPage({ params }: { params: Promise<{
                       {facility.stellarAssetId}
                     </div>
                   </div>
-                )}
-                {stellarReviewUrl(facility.stellarTxHash) && (
-                  <a
-                    href={stellarReviewUrl(facility.stellarTxHash)!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-2 text-[#0A4934] underline text-sm"
-                  >
-                    Review on Stellar
-                  </a>
                 )}
               </div>
             </CardContent>

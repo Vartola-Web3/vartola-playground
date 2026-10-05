@@ -2,9 +2,9 @@ import { auth } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import DashboardLayout from '@/components/layout/dashboard-layout';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 import Link from 'next/link';
 import { InvestorPerformanceChart } from '@/components/analytics/finance-charts';
-import { stellarReviewUrl } from '@/lib/stellar/explorer';
 
 export default async function PortfolioPage() {
   const session = await auth();
@@ -67,7 +67,7 @@ export default async function PortfolioPage() {
           {[...distributions].reverse().map((distribution) => (
             <div key={distribution.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#E5ECE8] px-3 py-2">
               <span>{distribution.distributedAt.toLocaleDateString()} · {distribution.amount.toLocaleString()} AED · income {distribution.leaseIncomeAmount.toLocaleString()}</span>
-              {stellarReviewUrl(distribution.stellarTxHash) ? <a className="font-medium text-[#0A4934] underline" href={stellarReviewUrl(distribution.stellarTxHash)!} target="_blank" rel="noreferrer">Stellar reference</a> : <span className="text-[#708078]">Stellar reference pending</span>}
+              <TestnetAddress hash={distribution.stellarTxHash} />
             </div>
           ))}
           {distributions.length === 0 && <p className="text-[#708078]">Distributions appear after an installment is paid.</p>}
@@ -81,7 +81,10 @@ export default async function PortfolioPage() {
               <span className="rounded-full bg-[#ECFBF3] px-3 py-1 text-sm text-[#0D4D35]">{investment.pool.riskRating || investment.status}</span>
             </div>
             <p className="mt-3 text-sm text-[#62736C]">Your investment {investment.amount.toLocaleString()} AED · deployed {investment.deployedAmount.toLocaleString()} · reserved {investment.reservedAmount.toLocaleString()} · income {investment.leaseIncomeReceived.toLocaleString()}</p>
-            <Link href={`/marketplace/pools/${investment.poolId}`} className="mt-3 inline-block text-sm font-medium text-[#0D4D35]">View investment</Link>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <TestnetAddress hash={investment.stellarTxHash} />
+              <Link href={`/marketplace/pools/${investment.poolId}`} className="text-sm font-medium text-[#0D4D35]">View investment</Link>
+            </div>
           </article>
         ))}
         {investments.length === 0 && <p className="text-[#62736C]">No investments yet.</p>}

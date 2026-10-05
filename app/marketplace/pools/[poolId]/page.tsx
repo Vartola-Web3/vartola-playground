@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { countsFromAssetTypes, fleetImage, getFleetVisualType } from '@/lib/fleet-visual';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 
 const tabs = ['Overview', 'Businesses', 'Vehicles', 'Risk', 'Payment model', 'Documents', 'Advanced'];
 const money = (value: unknown) => new Intl.NumberFormat('en-AE', {
@@ -79,13 +80,16 @@ export default function OpportunityPage() {
               </span>
             </div>
             <section className="mt-5 rounded-[20px] border border-[#E4ECE8] bg-white p-5 shadow-sm">
-              <h2 className="text-lg font-semibold">On-chain references</h2>
-              <p className="mt-1 text-sm text-[#62736C]">Every confirmed operation on this opportunity has a public Stellar Testnet link.</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-lg font-semibold">On-chain references</h2>
+                <TestnetAddress hash={typeof item.txHash === 'string' ? item.txHash : null} reviewUrl={typeof item.reviewUrl === 'string' ? item.reviewUrl : null} />
+              </div>
+              <p className="mt-1 text-sm text-[#62736C]">Every confirmed operation on this opportunity shows its Stellar Testnet address.</p>
               <ul className="mt-4 space-y-2 text-sm">
-                {(((item.references as unknown) as { id: string; label: string; amount: number | null; at: string; reviewUrl: string }[]) || []).map((reference) => (
+                {(((item.references as unknown) as { id: string; label: string; amount: number | null; at: string; reviewUrl: string; txHash?: string | null }[]) || []).map((reference) => (
                   <li key={reference.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-[#F7FAF8] px-3 py-2">
                     <span>{reference.label}{reference.amount != null ? ` · ${money(reference.amount)}` : ''} · {new Date(reference.at).toLocaleDateString()}</span>
-                    <a className="font-medium text-[#0A4934] underline" href={reference.reviewUrl} target="_blank" rel="noreferrer">Stellar reference</a>
+                    <TestnetAddress hash={reference.txHash} reviewUrl={reference.reviewUrl} />
                   </li>
                 ))}
                 {(!Array.isArray(item.references) || item.references.length === 0) && (
@@ -180,7 +184,7 @@ export default function OpportunityPage() {
             ) : (
               <p className="mt-6 rounded-xl bg-[#F1F5F3] px-4 py-3 text-center text-sm font-semibold text-[#62736C]">Fully funded</p>
             )}
-            <p className="mt-3 text-center text-xs leading-5 text-[#7A8983]">Simulation only · Virtual tAED · No real value</p>
+            <p className="mt-3 text-center text-xs leading-5 text-[#7A8983]">Stellar Testnet · Virtual tAED · No real money</p>
           </aside>
         </div>
       </div>

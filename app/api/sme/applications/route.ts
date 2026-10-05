@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db';
 import { calculateRisk } from '@/lib/risk-engine';
 import { AssetType } from '@/lib/types';
 import { inferDocumentType, saveUploads } from '@/lib/services/save-uploads';
+import { rememberOperation } from '@/lib/firebase/operations';
 
 export async function POST(request: NextRequest) {
   try {
@@ -83,6 +84,15 @@ export async function POST(request: NextRequest) {
     if (files.length > 0) {
       await saveUploads(files, application.id, user.id);
     }
+
+    await rememberOperation({
+      id: `Application_${application.id}`,
+      title: asDraft ? `Draft ${application.applicationNo}` : `Application ${application.applicationNo}`,
+      kind: asDraft ? 'APPLICATION_DRAFT' : 'APPLICATION_SUBMITTED',
+      status: application.status,
+      entityType: 'Application',
+      entityId: application.id,
+    });
 
     await prisma.auditLog.create({
       data: {

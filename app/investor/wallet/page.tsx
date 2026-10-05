@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
+import { TestnetAddress } from '@/components/stellar/testnet-address';
 import DashboardLayout from '@/components/layout/dashboard-layout';
 import { formatCurrency } from '@/lib/formatters';
 
@@ -96,7 +97,7 @@ export default function WalletFaucetPage() {
               {transactions.map((entry) => (
                 <div key={entry.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#E5ECE8] px-3 py-2">
                   <span>{entry.description} · {formatCurrency(entry.amount)}</span>
-                  {entry.reviewUrl ? <a className="font-medium text-[#0A4934] underline" href={entry.reviewUrl} target="_blank" rel="noreferrer">Stellar reference</a> : <span className="text-[#708078]">Stellar reference pending</span>}
+                  <TestnetAddress reviewUrl={entry.reviewUrl} />
                 </div>
               ))}
               {transactions.length === 0 && <p className="text-[#708078]">No wallet activity yet.</p>}

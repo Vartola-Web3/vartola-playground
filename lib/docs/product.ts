@@ -52,6 +52,7 @@ export const PUBLIC_NAV = [
   ['White Paper', '/whitepaper'],
   ['Pitch', '/pitch'],
   ['Technical', '/technical'],
+  ['Proof', '/proof'],
   ['About', '/about'],
 ] as const;
 
@@ -124,7 +125,7 @@ export const RISK_LAYERS: { name: string; status: DocStatus; detail: string }[] 
   { name: 'Business risk', status: 'LIVE IN ALPHA', detail: 'Company age, revenue, cash flow, liabilities, sector, and documents produce a company score. Credit bureau data and payment capacity are added as providers allow.' },
   { name: 'Asset risk', status: 'LIVE IN ALPHA', detail: 'Asset type, age or condition, value band, and resale liquidity produce an asset score. Depreciation, residual value, supplier, and insurance are reviewed by the underwriter.' },
   { name: 'Deal risk', status: 'LIVE IN ALPHA', detail: 'Business and asset scores plus SME contribution, finance-to-value, term, and payment burden produce a deal score and a risk tier. DSCR applies where data allows.' },
-  { name: 'Facility risk', status: 'IN DEVELOPMENT', detail: 'Release conditions, delivery checks, and servicing status (late, default, recovery) are tracked per facility. A single facility risk score is not yet published.' },
+  { name: 'Facility risk', status: 'LIVE IN ALPHA', detail: 'A deterministic, versioned facility score (nine components, hashed inputs) with an underwriter explanation of positives, negatives, key risks and mitigants. An internal expected-loss estimate (PD × LGD × EAD) uses configurable assumptions. Rule-based, not machine learning, not a regulated rating. The score hash can be attested on-chain.' },
   { name: 'Portfolio risk', status: 'LIVE IN ALPHA', detail: 'Marketplace pool ratings weigh diversification, SME contribution, and concentration. Hard limits by SME, asset, industry, geography, maturity, and risk grade are enforced before live volume.' },
 ];
 
@@ -271,6 +272,12 @@ export const IMPLEMENTATION: { area: string; status: DocStatus; detail: string }
   { area: 'KYC / KYB permissioning', status: 'PARTNER DEPENDENCY', detail: 'Sumsub token and signed webhook handling exist. Approval updates a compliance case and, in Alpha mode, a non-sensitive permission flag in the registry. Production screening depends on the provider contract.' },
   { area: 'Private document storage with on-chain fingerprints', status: 'IN DEVELOPMENT', detail: 'Alpha mode requires private object storage (no silent local fallback), with SHA-256 fingerprints, signed upload and download URLs, content-type checks, server-side encryption, and real deletion. The signed-upload path has unit tests but has not been exercised against a real bucket.' },
   { area: 'Role separation, release limits, pause, upgrade timelock, and admin rotation', status: 'TESTNET', detail: 'Administrator, pauser, treasury, underwriter, operations and compliance roles have separate wallets on Testnet; release is authorized by one role and executed by another, with a daily release limit, a pause switch, two-step admin rotation, and a scheduled-upgrade timelock.' },
+  { area: 'Proof Center and reviewer overview', status: 'LIVE IN ALPHA', detail: 'Public /proof shows the real Testnet contracts, asset, reference facilities, live ledger and recorded engineering evidence; /proof/facility/<id> walks a facility lifecycle with explorer links; /grant/reviewer is a ten-minute overview without budget detail.' },
+  { area: 'Portfolio risk, expected loss, treasury, and stress scenarios', status: 'LIVE IN ALPHA', detail: 'Admin pages for portfolio concentration by SME, supplier, asset, sector, geography and grade, expected loss, treasury control with chain-versus-application state, and scenario analysis that is not a forecast.' },
+  { area: 'Asset servicing, collections, recovery, insurance and supplier failure workflows', status: 'LIVE IN ALPHA', detail: 'Asset health indicator, verification panel with sources, collections cases with allowed stage paths and an audit trail, recovery workspace, insurance claims and supplier failure cases. Time periods are facility parameters, not legal periods.' },
+  { area: 'Operations health, contract governance, compliance cases and role matrix', status: 'LIVE IN ALPHA', detail: 'Operations health, contract version history, compliance case view without personal data, a privileged role matrix with separated duties, and institutional reports (printable or JSON).' },
+  { area: 'Pilot pipeline and partner sandbox', status: 'LIVE IN ALPHA', detail: 'A pilot pipeline that shows only what an administrator enters (zero today), partner templates, and a sandbox of six scenarios on illustrative numbers. No partner, LOI or traction is claimed.' },
+  { area: 'Audit readiness package, security documents and Mainnet scorecard', status: 'IN DEVELOPMENT', detail: 'Internal, pre-audit documents (threat model, key management, incident response, disaster recovery, upgrade and disclosure policies, audit package) and a readiness scorecard that keeps Mainnet locked until every gate is complete. Not an independent audit.' },
   { area: 'Multisig, production key custody, and independent audit', status: 'SECURITY GATE', detail: 'The administrator is a single Testnet key. Multisig, hardware or MPC custody, and an independent contract and application audit come before Mainnet.' },
   { area: 'Admin multi-factor authentication', status: 'LIVE IN ALPHA', detail: 'Time-based one-time passwords (RFC 6238) are required for administrative roles in Alpha mode; demo quick-login accounts are unchanged outside Alpha mode.' },
   { area: 'Supplier self-service portal', status: 'LIVE IN ALPHA', detail: 'Suppliers sign in, see assigned facilities, submit invoices, VIN or serial hashes, and delivery evidence, and see release status. They cannot approve a release. Needs the supplier-user database migration applied.' },
@@ -305,11 +312,11 @@ export const NEXT_MILESTONE =
 export const ENGINEERING_PRIORITIES: { title: string; items: string[] }[] = [
   {
     title: 'Completed on Testnet',
-    items: ['VTAED wrapped as a Stellar Asset Contract', 'Registry and facility contract v3 deployed, initialized and linked, with separate role wallets', 'Explicit escrow states and release-condition attestations', 'Facility #001 (150,000 VTAED, 1,500 Participation Units) executed through repayment', 'Early settlement and default-recovery paths executed on separate test facilities', 'Reconciliation, indexer health, receipts, participation certificate, and public facility verification'],
+    items: ['VTAED wrapped as a Stellar Asset Contract', 'Registry and facility contract v3 deployed, initialized and linked, with separate role wallets', 'Explicit escrow states and release-condition attestations', 'Facility #001 (150,000 VTAED, 1,500 Participation Units) executed through repayment', 'Early settlement and default-recovery paths executed on separate test facilities', 'Reconciliation, indexer health, receipts, participation certificate, and public facility verification', 'Proof Center, expected-loss and portfolio risk, treasury control, asset servicing, collections and recovery workspaces, operations health, contract governance, pilot pipeline and partner sandbox'],
   },
   {
     title: 'Next engineering',
-    items: ['Test signed uploads against a real non-production bucket', 'Run the scheduled worker in the hosted environment and watch its alerts', 'Apply the supplier and MFA database migration to the hosted database', 'Move the administrator to a multisig account and rehearse an upgrade', 'Wire production Sumsub and email or SMS providers after provider agreements'],
+    items: ['Commission the independent audit using the audit readiness package', 'Test signed uploads against a real non-production bucket', 'Run the scheduled worker in the hosted environment and watch its alerts', 'Apply the supplier and MFA database migration to the hosted database', 'Move the administrator to a multisig account and rehearse an upgrade', 'Wire production Sumsub and email or SMS providers after provider agreements'],
   },
   {
     title: 'Before Mainnet',

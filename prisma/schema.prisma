@@ -812,3 +812,21 @@ model UserMfa {
 
   @@map("user_mfa")
 }
+
+// Generic operations records: pilot pipeline entries, collections cases, servicing events, insurance claims,
+// supplier-failure cases, contract governance entries and facility reserve settings. The payload is JSON.
+// These are operational records, never a source of financial truth.
+model OpsRecord {
+  id        String   @id @default(cuid())
+  kind      String
+  key       String
+  status    String   @default("OPEN")
+  data      String   @default("{}")
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([kind, status])
+  @@index([kind, key])
+  @@map("ops_records")
+}

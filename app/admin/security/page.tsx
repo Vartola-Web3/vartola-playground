@@ -1,67 +1,64 @@
-'use client';
+import { AdminPage, Badge, Card, Stat, Table, statusTone } from '@/components/ops/ui';
+import { MfaPanel } from '@/components/ops/mfa-panel';
+import { prisma } from '@/lib/db';
+import { isAlphaMode } from '@/lib/config/app-mode';
+import { hoursAgo } from '@/lib/ops/time';
+import { TESTNET } from '@/lib/docs/testnet';
+import { ACTIONS, MATRIX, MFA_REQUIRED, MULTISIG_POLICIES, PRIVILEGED_ROLES, multisigStatus, separationViolations } from '@/lib/ops/roles';
+
 export const dynamic = 'force-dynamic';
 
-import { useState } from 'react';
-import { signOut, useSession } from 'next-auth/react';
-import DashboardLayout from '@/components/layout/dashboard-layout';
-import { useApiResource } from '@/lib/hooks/use-api-resource';
-
-export default function SecurityPage() {
-  const { data: session } = useSession();
-  const state = useApiResource<{ alpha: boolean; enrolled: boolean; pending: boolean }>('/api/admin/mfa');
-  const [setup, setSetup] = useState<{ secret: string; uri: string } | null>(null);
-  const [code, setCode] = useState('');
-  const [message, setMessage] = useState('');
-  const [done, setDone] = useState(false);
-
-  const post = async (body: Record<string, string>) => {
-    const response = await fetch('/api/admin/mfa', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-    return { ok: response.ok, data: await response.json() };
-  };
-
-  const begin = async () => {
-    const result = await post({ action: 'begin' });
-    if (result.ok) setSetup(result.data);
-    else setMessage(result.data.error);
-  };
-  const confirm = async () => {
-    const result = await post({ action: 'confirm', code });
-    if (result.ok) {
-      setDone(true);
-      setMessage('Second factor enabled. Sign in again with your code.');
-    } else setMessage(result.data.error);
-  };
-
-  const enrolled = done || state.data?.enrolled;
+export default async function SecurityPage() {
+  const since = hoursAgo(7 * 24);
+  const [mfaEnrolled, adminCount, failed, privileged, roles] = await Promise.all([
+    prisma.userMfa.count({ where: { confirmedAt: { not: null } } }).catch(() => 0),
+    prisma.user.count({ where: { role: { in: ['ADMIN', 'ADMIN_REVIEWER'] } } }).catch(() => 0),
+    prisma.auditLog.count({ where: { action: { contains: 'FAILED' }, createdAt: { gte: since } } }).catch(() => 0),
+    prisma.auditLog.count({ where: { OR: [{ action: { contains: 'RELEASE' } }, { action: { contains: 'ROLE' } }, { action: { contains: 'PAUSE' } }], createdAt: { gte: since } } }).catch(() => 0),
+    prisma.contractRole.findMany({ orderBy: { role: 'asc' } }).catch(() => []),
+  ]);
+  const violations = separationViolations();
   return (
-    <DashboardLayout role={session?.user?.role || 'ADMIN'}>
-      <div className="max-w-xl space-y-4">
-        <h1 className="text-2xl font-semibold">Account security</h1>
-        <p className="text-sm text-slate-600">Administrators use a time-based code from an authenticator app. In Alpha mode this is required for administrative roles. The demo quick-login accounts are not affected outside Alpha mode.</p>
-        {state.loading ? <p className="text-sm">Loading…</p> : enrolled ? (
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm">
-            <p className="font-semibold text-emerald-900">Second factor is enabled.</p>
-            {done ? <button type="button" onClick={() => signOut({ callbackUrl: '/login' })} className="mt-3 rounded-full bg-emerald-600 px-4 py-2 text-white">Sign out and sign in again</button> : null}
-          </div>
-        ) : (
-          <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 text-sm">
-            {!setup ? (
-              <button type="button" onClick={begin} className="rounded-full bg-emerald-600 px-4 py-2 font-medium text-white">Set up second factor</button>
-            ) : (
-              <>
-                <p>Add this key to your authenticator app, then enter the 6-digit code it shows. The key is displayed once.</p>
-                <p className="break-all rounded-lg bg-slate-100 p-3 font-mono text-xs">{setup.secret}</p>
-                <a className="text-emerald-700 underline" href={setup.uri}>Open in authenticator app</a>
-                <div className="flex gap-2">
-                  <input value={code} onChange={(event) => setCode(event.target.value)} inputMode="numeric" maxLength={6} placeholder="6-digit code" className="h-10 flex-1 rounded-lg border border-slate-300 px-3" />
-                  <button type="button" onClick={confirm} className="rounded-full bg-emerald-600 px-4 py-2 font-medium text-white">Confirm</button>
-                </div>
-              </>
-            )}
-          </div>
-        )}
-        {message ? <p className="text-sm text-slate-700">{message}</p> : null}
+    <AdminPage title="Security center" intro="Controls and evidence. No secret is ever shown. Everything here is INTERNAL / PRE-AUDIT: no independent audit or penetration test has been completed.">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat label="Admin MFA" value={`${mfaEnrolled} of ${adminCount} enrolled`} hint={isAlphaMode() ? 'Enforced in Alpha mode' : 'Enforced in Alpha mode; demo accounts exempt'} />
+        <Stat label="Contract version" value={`v${TESTNET.deployment.contractVersion ?? 3}`} hint="Stellar Testnet" />
+        <Stat label="Failed attempts (7d)" value={failed} />
+        <Stat label="Privileged actions (7d)" value={privileged} />
+        <Stat label="Emergency pause" value="Available" hint="Pauser role can pause; only the contract admin can resume" />
+        <Stat label="Key management" value="Testnet role keys" hint="Production needs managed custody" />
+        <Stat label="Multisig" value={<Badge tone={statusTone(multisigStatus())}>{multisigStatus()}</Badge>} />
+        <Stat label="Independent audit" value={<Badge tone="bad">NOT STARTED</Badge>} hint="Audit readiness package prepared" />
       </div>
-    </DashboardLayout>
+
+      <Card title="Your account second factor"><MfaPanel /></Card>
+
+      <Card title="Privileged role wallets" note="Separate wallets per contract role. Addresses only.">
+        <Table head={['Role', 'Address']} rows={roles.map((row) => [row.role, <span key={row.role} className="break-all">{row.address}</span>])} empty="Recorded when Alpha governance is prepared." />
+      </Card>
+
+      <Card title="Privileged role matrix" note={violations.length ? `Separation violations: ${violations.join('; ')}` : 'Separation of duties holds: release authorization and supplier payment are different roles.'}>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[40rem] text-left text-xs">
+            <thead>
+              <tr className="border-b border-slate-200"><th className="py-2 pr-2 font-medium">Action</th>{PRIVILEGED_ROLES.map((role) => <th key={role} className="px-1 py-2 font-medium">{role.replaceAll('_', ' ')}</th>)}</tr>
+            </thead>
+            <tbody>
+              {ACTIONS.map((action) => (
+                <tr key={action} className="border-b border-slate-100">
+                  <td className="py-1.5 pr-2">{action.replaceAll('_', ' ')}</td>
+                  {PRIVILEGED_ROLES.map((role) => <td key={role} className="px-1 text-center">{MATRIX[action].includes(role) ? '●' : ''}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-2 text-xs text-slate-500">MFA required for: {MFA_REQUIRED.join(', ')}.</p>
+      </Card>
+
+      <Card title="Multisig readiness" note="Thresholds are configured policy. They are not enforced on-chain in this build and must not be described as production multisig.">
+        <Table head={['Operation', 'Threshold', 'Enforced on-chain']} rows={MULTISIG_POLICIES.map((policy) => [policy.operation, `${policy.threshold}-of-${policy.signers}`, policy.enforcedOnChain ? 'Yes' : 'No'])} />
+      </Card>
+    </AdminPage>
   );
 }

@@ -8,6 +8,7 @@
     "vercel-build": "node scripts/prepare-prisma.js && node scripts/sync-postgres-schema.js && next build",
     "start": "next start -p 4200",
     "lint": "eslint",
+    "benchmark:local": "tsx scripts/benchmark/local-load.ts",
     "test": "tsx --test lib/**/*.test.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:demo": "tsx prisma/seed-realistic-demo.ts",

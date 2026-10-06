@@ -41,7 +41,7 @@ Reconciliation on all three: HEALTHY, no findings. The indexer read 136 contract
 ## Application work in this phase
 
 - **Positions, receipts, certificate, verification**: investor positions panel with on-chain proof; receipts with a recomputable SHA-256; downloadable participation certificate with the legal disclaimer; public `/verify/facility/<id>` that reads the contract live and shows no private data; SME facility summary with an Advanced section; admin analytics and a transparency panel.
-- **Reconciliation and indexer**: scheduled worker (Vercel cron every 15 minutes, needs `CRON_SECRET`, Alpha only), manual run, alerts to audit log, Firebase and optional email, indexer health, retries, dead letters, safe re-index.
+- **Reconciliation and indexer**: scheduled worker (Vercel cron, daily on Hobby and every 15 minutes on Pro, needs `CRON_SECRET`, Alpha only), manual run, alerts to audit log, Firebase and optional email, indexer health, retries, dead letters, safe re-index.
 - **Security**: provider secrets encrypted at rest; admin TOTP MFA enforced in Alpha mode (RFC 6238 vectors pass); signed-upload code for private storage; Sumsub test and production credentials separated; supplier users and portal behind a migration; Firebase journal append-only with retry.
 - **Facility risk score v2** with nine components, versioned, hashed inputs, drivers shown, and on-chain attestation. Rule-based, not a rating agency score.
 - **Lint to zero errors** with a reusable `useApiResource` hook. No rule was disabled.

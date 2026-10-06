@@ -130,7 +130,7 @@ Earlier versions (v1, v2) are listed as superseded on `/technical`. Transaction 
 | Facility #001 (150,000 VTAED, 1,500 units), #002 settlement, #003 default and recovery on contract v3 | COMPLETE | Isolated test environment, not the public site |
 | Chain-first Alpha lifecycle (CHAIN_PENDING/CONFIRMED/FAILED) | COMPLETE | Prisma is updated only after confirmation |
 | Receipts, participation certificate, position and portfolio analytics, public facility verification | COMPLETE | Alpha mode; certificate is a platform record, not a security or proof of title |
-| Reconciliation and event indexer | COMPLETE on Testnet | Manual and scheduled (cron, 15 minutes, needs CRON_SECRET); retry and dead letters; alerts to audit log, Firebase, optional email |
+| Reconciliation and event indexer | COMPLETE on Testnet | Manual and scheduled (cron: daily on Hobby, 15 minutes on Pro; needs CRON_SECRET); retry and dead letters; alerts to audit log, Firebase, optional email |
 | Firebase journal | COMPLETE | Append-only with retry; not financial authority |
 | Facility risk score (`facility-risk-v2`) with on-chain attestation | COMPLETE | Rule-based, hashed inputs, drivers shown; not a rating agency score |
 | Admin MFA (TOTP) | COMPLETE in Alpha mode | Demo quick-login unchanged |

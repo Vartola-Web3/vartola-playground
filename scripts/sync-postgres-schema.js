@@ -15,11 +15,13 @@ const diff = spawnSync('npx', ['prisma', 'migrate', 'diff', '--from-url', url, '
 const script = (diff.stdout || '').trim();
 console.log('sync-postgres-schema: planned changes:');
 console.log(script || '(none)');
+if (diff.status !== 0) console.log('sync-postgres-schema: diff step reported:', (diff.stderr || '').trim().slice(0, 600));
 if (/\bDROP\s+(TABLE|COLUMN)\b/i.test(script)) {
   console.log('sync-postgres-schema: the plan contains a DROP, so nothing was applied. Review the plan above.');
   process.exit(0);
 }
-if (!script || /^-- This is an empty migration/i.test(script)) process.exit(0);
+// Only skip the push when the diff ran and found nothing. If the diff itself failed, db push still decides safely.
+if (diff.status === 0 && (!script || /^-- This is an empty migration/i.test(script))) process.exit(0);
 
 const push = spawnSync('npx', ['prisma', 'db', 'push', `--schema=${schema}`, '--skip-generate'], { stdio: 'inherit', shell: true });
 if (push.status !== 0) console.log('sync-postgres-schema: db push did not complete. The deploy continues; check the output above.');

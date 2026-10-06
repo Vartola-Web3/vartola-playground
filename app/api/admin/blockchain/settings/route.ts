@@ -8,13 +8,14 @@ import {
 } from '@/lib/config/blockchain-config';
 import { resetStellarProvider } from '@/lib/stellar/providers/factory';
 import { prisma } from '@/lib/db';
+import { maskSecret } from '@/lib/security/encrypted-secrets';
 import { isAdminOperator } from '@/lib/auth/roles';
 
 /**
  * GET /api/admin/blockchain/settings
  * Load current LIVE blockchain configuration
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth();
     if (!session || !isAdminOperator(session.user.role)) {
@@ -27,7 +28,9 @@ export async function GET(request: NextRequest) {
       success: true,
       canConfigure: session.user.role === 'ADMIN',
       config: {
-        alchemyApiKey: session.user.role === 'ADMIN' ? config.alchemyApiKey : '',
+        // The key is never sent back to the browser, only a masked hint.
+        alchemyApiKey: session.user.role === 'ADMIN' ? maskSecret(config.alchemyApiKey) : '',
+        alchemyApiKeySet: Boolean(config.alchemyApiKey),
         stellarRpcUrl: config.stellarRpcUrl,
         stellarHorizonUrl: config.stellarHorizonUrl,
         stellarSorobanRpcUrl: config.stellarSorobanRpcUrl,
@@ -80,7 +83,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Update settings in database (LIVE config)
-    if (alchemyApiKey !== undefined) {
+    // A masked value means the field was not changed.
+    if (alchemyApiKey !== undefined && !String(alchemyApiKey).startsWith('••••')) {
       await setBlockchainConfig(
         BLOCKCHAIN_CONFIG_KEYS.ALCHEMY_API_KEY,
         alchemyApiKey

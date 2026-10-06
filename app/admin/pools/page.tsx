@@ -1,7 +1,8 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,12 +36,15 @@ interface Pool {
 
 export default function PoolsManagementPage() {
   const { data: session, status } = useSession();
-  const [pools, setPools] = useState<Pool[]>([]);
-  const [available, setAvailable] = useState<Array<{ id: string; facilityNo: string; financeAmount: number; application: { applicationNo: string; assetDescription: string } }>>([]);
+  type Available = Array<{ id: string; facilityNo: string; financeAmount: number; application: { applicationNo: string; assetDescription: string } }>;
+  const resource = useApiResource<{ pools?: Pool[]; availableFacilities?: Available }>(status === 'authenticated' ? '/api/admin/pools' : null);
+  const pools: Pool[] = resource.data?.pools || [];
+  const available: Available = resource.data?.availableFacilities || [];
+  const loading = resource.loading || status === 'loading';
   const [picked, setPicked] = useState<Record<string, string>>({});
-  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const loadError = actionError || resource.error || '';
   const [saveError, setSaveError] = useState('');
-  const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedAssets, setSelectedAssets] = useState<string[]>([]);
   const [formData, setFormData] = useState({
@@ -50,28 +54,7 @@ export default function PoolsManagementPage() {
     assetFocus: '',
   });
 
-  const loadPools = async () => {
-    try {
-      const response = await fetch('/api/admin/pools');
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        setLoadError(data.error || 'Could not load approved assets');
-        return;
-      }
-      setLoadError('');
-      setPools(data.pools || []);
-      setAvailable(data.availableFacilities || []);
-    } catch (error) {
-      console.error('Failed to load pools:', error);
-      setLoadError('Could not load approved assets');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (status === 'authenticated') loadPools();
-  }, [status]);
+  const loadPools = resource.reload;
 
   const handleCreatePool = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -361,7 +344,7 @@ export default function PoolsManagementPage() {
                             body: JSON.stringify({ recordOnChain: true }),
                           });
                           const data = await res.json().catch(() => ({}));
-                          if (!res.ok) setLoadError(data.error || 'Could not record this opportunity on Stellar');
+                          if (!res.ok) setActionError(data.error || 'Could not record this opportunity on Stellar');
                           else loadPools();
                         }}
                       >

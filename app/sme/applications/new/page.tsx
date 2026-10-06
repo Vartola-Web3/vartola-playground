@@ -1,7 +1,7 @@
 ﻿'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ export default function NewApplicationPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [formData, setFormData] = useState({
+  const [rawForm, setFormData] = useState({
     assetType: 'CARGO_VAN',
     unitCount: '1',
     assetDescription: '',
@@ -24,17 +24,12 @@ export default function NewApplicationPage() {
     financeAmount: '',
     requestedTerm: '36',
   });
-
-  useEffect(() => {
-    const assetValue = parseFloat(formData.assetValue) || 0;
-    const contribution = parseFloat(formData.smeContribution) || 0;
-    if (assetValue > 0 && contribution >= 0) {
-      setFormData((prev) => ({
-        ...prev,
-        financeAmount: String(Math.max(assetValue - contribution, 0)),
-      }));
-    }
-  }, [formData.assetValue, formData.smeContribution]);
+  // The finance amount always follows asset value minus contribution, so it is derived rather than stored.
+  const assetValueNumber = parseFloat(rawForm.assetValue) || 0;
+  const contributionNumber = parseFloat(rawForm.smeContribution) || 0;
+  const formData = assetValueNumber > 0 && contributionNumber >= 0
+    ? { ...rawForm, financeAmount: String(Math.max(assetValueNumber - contributionNumber, 0)) }
+    : rawForm;
 
   const submitApplication = async (asDraft: boolean) => {
     setError('');

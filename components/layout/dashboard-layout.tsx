@@ -15,10 +15,14 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
   const router = useRouter();
   const { data: session } = useSession();
   const [financialMode, setFinancialMode] = useState<'SIMULATION' | 'STELLAR_TESTNET'>('SIMULATION');
+  const [appLabel, setAppLabel] = useState('Demo / Test Data');
   const [query, setQuery] = useState('');
   useEffect(() => {
     fetch('/api/financial-mode').then((response) => response.json()).then((data) => {
       if (data.mode === 'STELLAR_TESTNET') setFinancialMode('STELLAR_TESTNET');
+    }).catch(() => undefined);
+    fetch('/api/app-mode').then((response) => response.json()).then((data) => {
+      if (data.label) setAppLabel(data.label);
     }).catch(() => undefined);
   }, [pathname]);
 
@@ -88,6 +92,7 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
                   </div>
                 )}
               </div>
+              <p className="rounded-full bg-[#E7F8EF] px-3 py-1 text-xs text-[#0D7A52]">{appLabel}</p>
               <p className={`rounded-full px-3 py-1 text-xs ${financialMode === 'STELLAR_TESTNET' ? 'bg-sky-50 text-sky-900' : 'bg-amber-50 text-amber-900'}`}>
                 {financialMode === 'STELLAR_TESTNET' ? 'Stellar Testnet' : 'Simulation'}
               </p>
@@ -158,6 +163,10 @@ function getNavigationForRole(role: string) {
         { label: 'Wallet', href: '/investor/wallet' },
         { label: 'Activity', href: '/investor/activity' },
       ];
+    case 'SUPPLIER':
+      return [
+        { label: 'My facilities', href: '/supplier' },
+      ];
     case 'UNDERWRITER':
       return [
         { label: 'Overview', href: '/underwriter' },
@@ -172,6 +181,9 @@ function getNavigationForRole(role: string) {
         { label: 'Users', href: '/admin/users' },
         { label: 'Simulation', href: '/admin/simulation' },
         { label: 'Blockchain', href: '/admin/blockchain' },
+        { label: 'Reconciliation', href: '/admin/reconciliation' },
+        { label: 'Analytics', href: '/admin/analytics' },
+        { label: 'Security', href: '/admin/security' },
         { label: 'Settings', href: '/admin/setup' },
       ];
       return role === 'ADMIN' ? items : items.filter((item) => item.label !== 'Settings');

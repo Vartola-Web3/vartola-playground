@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import * as bcrypt from 'bcryptjs';
+import { isAlphaMode } from '@/lib/config/app-mode';
+import { ensureEmbeddedWallet } from '@/lib/stellar/wallets/provider';
+import { rateLimit } from '@/lib/security/rate-limit';
+import { assertSameOrigin } from '@/lib/security/origin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,13 +18,23 @@ export async function POST(request: NextRequest) {
       phone,
       companyName,
       tradeLicenseNo,
+      country,
+      residency,
+      investorType,
     } = body;
+
+    assertSameOrigin(request);
+    rateLimit(request, 'register', 8);
 
     if (!email || !password || !name || !role || !emiratesId || !phone) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
+    }
+
+    if (isAlphaMode() && role === 'INVESTOR' && (!country || !residency || !investorType)) {
+      return NextResponse.json({ error: 'Country, residency, and investor type are required' }, { status: 400 });
     }
 
     if (role !== 'SME' && role !== 'INVESTOR') {
@@ -86,8 +100,20 @@ export async function POST(request: NextRequest) {
         name,
         role,
         companyId,
+        phone,
+        country: country || null,
+        residency: residency || null,
+        investorType: investorType || null,
+        accountStatus: isAlphaMode() ? 'EMAIL_PENDING' : 'ACTIVE',
       },
     });
+    if (isAlphaMode()) {
+      try {
+        await ensureEmbeddedWallet(user.id);
+      } catch (error) {
+        console.error('Embedded wallet creation failed:', error);
+      }
+    }
 
     await prisma.auditLog.create({
       data: {

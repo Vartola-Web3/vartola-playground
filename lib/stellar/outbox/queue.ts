@@ -33,7 +33,7 @@ export interface BlockchainJob {
   type: JobType;
   entityType: string;
   entityId: string;
-  payload: any;
+  payload: Record<string, unknown>;
   status: JobStatus;
   txHash?: string;
   attempts: number;
@@ -52,7 +52,7 @@ export async function enqueueJob(params: {
   type: JobType;
   entityType: string;
   entityId: string;
-  payload: any;
+  payload: Record<string, unknown>;
   maxAttempts?: number;
 }): Promise<string> {
   const job = await prisma.stellarTransaction.create({
@@ -111,7 +111,7 @@ export async function updateJobStatus(
     incrementAttempts?: boolean;
   }
 ): Promise<void> {
-  const updateData: any = {
+  const updateData: Record<string, unknown> = {
     status,
   };
 
@@ -231,7 +231,8 @@ export async function processJob(jobId: string): Promise<string | null> {
     console.log(`✅ Job ${jobId} processed successfully: ${txHash}`);
 
     return txHash;
-  } catch (error: any) {
+  } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
     console.error(`❌ Job ${jobId} failed:`, error);
 
     const errorMessage = error.message || 'Unknown error';

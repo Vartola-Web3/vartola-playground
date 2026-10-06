@@ -2,11 +2,20 @@ import { createHmac, timingSafeEqual } from 'crypto';
 
 const baseUrl = 'https://api.sumsub.com';
 
+// Test and production credentials are separate variables. Production screening is never used unless an operator
+// sets SUMSUB_ENVIRONMENT=production after the provider agreement exists; until then only the test credentials work.
+export type SumsubEnvironment = 'test' | 'production';
+
+export function sumsubEnvironment(): SumsubEnvironment {
+  return process.env.SUMSUB_ENVIRONMENT === 'production' ? 'production' : 'test';
+}
+
 function credentials() {
+  const production = sumsubEnvironment() === 'production';
   return {
-    token: process.env.SUMSUB_APP_TOKEN || '',
-    secret: process.env.SUMSUB_SECRET_KEY || '',
-    level: process.env.SUMSUB_LEVEL_NAME || 'vartola-demo',
+    token: (production ? process.env.SUMSUB_PROD_APP_TOKEN : process.env.SUMSUB_APP_TOKEN) || '',
+    secret: (production ? process.env.SUMSUB_PROD_SECRET_KEY : process.env.SUMSUB_SECRET_KEY) || '',
+    level: (production ? process.env.SUMSUB_PROD_LEVEL_NAME : process.env.SUMSUB_LEVEL_NAME) || 'vartola-demo',
   };
 }
 
@@ -43,7 +52,7 @@ export async function createSumsubSdkToken(userId: string, email?: string | null
 }
 
 export function verifySumsubWebhook(rawBody: string, digest?: string | null) {
-  const secret = process.env.SUMSUB_WEBHOOK_SECRET || '';
+  const secret = (sumsubEnvironment() === 'production' ? process.env.SUMSUB_PROD_WEBHOOK_SECRET : process.env.SUMSUB_WEBHOOK_SECRET) || '';
   if (!secret || !digest) return false;
   const expected = createHmac('sha256', secret).update(rawBody).digest('hex');
   const supplied = digest.toLowerCase();

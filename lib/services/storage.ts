@@ -48,7 +48,9 @@ export async function getDocumentUrl(path: string): Promise<string> {
   return `/api/documents/${encodeURIComponent(path)}`;
 }
 
+// Removes the stored object for real. It throws when the object cannot be removed.
 export async function deleteDocument(path: string): Promise<boolean> {
-  console.log('Document deletion requested:', path);
+  const { deleteStoredDocument } = await import('@/lib/storage/document-provider');
+  await deleteStoredDocument(path);
   return true;
 }

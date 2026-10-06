@@ -20,6 +20,8 @@ export default async function DashboardPage() {
       redirect('/sme');
     case 'INVESTOR':
       redirect('/investor');
+    case 'SUPPLIER':
+      redirect('/supplier');
     default:
       redirect('/login');
   }

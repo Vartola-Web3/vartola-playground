@@ -28,19 +28,19 @@ export interface StellarProvider {
    */
   submitTransaction(
     transaction: Transaction | FeeBumpTransaction
-  ): Promise<any>;
+  ): Promise<unknown>;
 
   /**
    * Get transaction by hash
    * Used to verify transaction status after submission
    */
-  getTransaction(hash: string): Promise<any>;
+  getTransaction(hash: string): Promise<unknown>;
 
   /**
    * Get account information
    * Returns account details including balances, sequence number
    */
-  getAccount(publicKey: string): Promise<any>;
+  getAccount(publicKey: string): Promise<unknown>;
 
   /**
    * Get provider name for logging/debugging

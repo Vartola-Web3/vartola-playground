@@ -73,7 +73,7 @@ export async function POST(
     kind === 'DOCUMENT_REQUEST'
       ? `File request on ${application.applicationNo}`
       : `New ticket message on ${application.applicationNo}`;
-  const bodyText = `${session.user.name || 'AssetFi'} wrote:\n${message || 'See attached files.'}${
+  const bodyText = `${session.user.name || 'Vartola'} wrote:\n${message || 'See attached files.'}${
     saved.length ? `\nAttachments: ${saved.map((file) => file.fileName).join(', ')}` : ''
   }`;
   await Promise.all([...emails].map((to) => sendEmail({ to, subject, body: bodyText })));

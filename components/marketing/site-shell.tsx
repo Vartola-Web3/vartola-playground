@@ -1,37 +1,5 @@
 import Link from 'next/link';
-import { BrandMark } from '@/components/brand/brand-mark';
-
-const links = [
-  { href: '/', label: 'Home' },
-  { href: '/how-it-works', label: 'How It Works' },
-  { href: '/whitepaper', label: 'Whitepaper' },
-  { href: '/pitch', label: 'Pitch Deck' },
-  { href: '/paperwork', label: 'Paperwork' },
-  { href: '/about', label: 'About' },
-];
-
-export function SiteNav() {
-  return (
-    <header className="sticky top-0 z-20 border-b border-[rgba(112,255,184,0.14)] bg-[#07120F]/90 backdrop-blur">
-      <div className="vartola-frame flex h-16 items-center justify-between">
-        <BrandMark />
-        <nav className="hidden items-center gap-6 text-sm text-[#9FB8AD] lg:flex">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-[#F6FFF9]">
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <Link
-          href="/login"
-          className="rounded-full bg-[#35F49A] px-4 py-2 text-sm font-semibold text-[#07120F]"
-        >
-          Launch Demo
-        </Link>
-      </div>
-    </header>
-  );
-}
+export { SiteNav } from '@/components/marketing/site-nav';
 
 export function SiteFooter() {
   return (
@@ -48,8 +16,8 @@ export function SiteFooter() {
           <Link href="/login" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">
             Launch Demo
           </Link>
-          <Link href="/about" className="rounded-full border border-[rgba(112,255,184,0.24)] px-5 py-3 text-sm font-medium text-[#F6FFF9]">
-            About
+          <Link href="/docs" className="rounded-full border border-[rgba(112,255,184,0.24)] px-5 py-3 text-sm font-medium text-[#F6FFF9]">
+            Documentation
           </Link>
         </div>
       </div>

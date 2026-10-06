@@ -10,6 +10,7 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = 
         nextUrl.pathname.startsWith('/sme') ||
+        nextUrl.pathname.startsWith('/supplier') ||
         nextUrl.pathname.startsWith('/investor') ||
         nextUrl.pathname.startsWith('/underwriter') ||
         nextUrl.pathname.startsWith('/admin');
@@ -27,6 +28,7 @@ export const authConfig = {
         token.id = user.id;
         token.role = user.role;
         token.email = user.email;
+        token.mfaEnrollment = Boolean((user as { mfaEnrollment?: boolean }).mfaEnrollment);
       }
       return token;
     },
@@ -35,6 +37,7 @@ export const authConfig = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.email = token.email as string;
+        session.user.mfaEnrollment = Boolean(token.mfaEnrollment);
       }
       return session;
     },

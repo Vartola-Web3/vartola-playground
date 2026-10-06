@@ -46,32 +46,35 @@ export class StellarPublicRpcProvider implements StellarProvider {
 
   async submitTransaction(
     transaction: Transaction | FeeBumpTransaction
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
       const response = await this.horizonServer.submitTransaction(transaction);
       console.log('[Public RPC] Transaction submitted:', response.hash);
       return response;
-    } catch (error: any) {
+    } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
       console.error('[Public RPC] Transaction submission failed:', error?.message);
       throw error;
     }
   }
 
-  async getTransaction(hash: string): Promise<any> {
+  async getTransaction(hash: string): Promise<unknown> {
     try {
       const response = await this.horizonServer.transactions().transaction(hash).call();
       return response;
-    } catch (error: any) {
+    } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
       console.error('[Public RPC] Failed to get transaction:', error?.message);
       throw error;
     }
   }
 
-  async getAccount(publicKey: string): Promise<any> {
+  async getAccount(publicKey: string): Promise<unknown> {
     try {
       const account = await this.horizonServer.loadAccount(publicKey);
       return account;
-    } catch (error: any) {
+    } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
       console.error('[Public RPC] Failed to load account:', error?.message);
       throw error;
     }

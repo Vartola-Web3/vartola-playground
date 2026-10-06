@@ -12,7 +12,6 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 export default function CreateUserPage() {
   const router = useRouter();
   const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -47,6 +46,7 @@ export default function CreateUserPage() {
     }
   };
 
+  if (!session) return <div>Loading...</div>;
   if (!session || session.user.role !== 'ADMIN') {
     return <div>Access denied</div>;
   }

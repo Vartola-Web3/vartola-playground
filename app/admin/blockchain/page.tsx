@@ -42,13 +42,15 @@ export default function BlockchainSettingsPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncState, setSyncState] = useState<SyncState | null>(null);
   const [transactions, setTransactions] = useState<ChainTransaction[]>([]);
-
-  useEffect(() => {
-    loadConfig();
-    loadMode();
-    loadSync();
-    loadTransactions();
-  }, []);
+  const [alpha, setAlpha] = useState<{
+    mode: string;
+    network: string;
+    asset?: { label?: string; issuer?: string | null; distributor?: string | null };
+    contracts?: { registry?: string | null; facility?: string | null };
+    facilities?: { id: string; facilityNo: string; status: string; chainStatus: string | null; participationUnits: number; stellarTxHash: string | null }[];
+    events?: { id: string; eventType: string; txHash: string; ledger: number }[];
+    attestations?: { id: string; documentType: string; documentHash: string }[];
+  } | null>(null);
 
   const loadMode = async () => {
     const response = await fetch('/api/admin/financial-mode');
@@ -125,6 +127,15 @@ export default function BlockchainSettingsPage() {
     }
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- load the admin snapshot once on mount
+    loadConfig();
+    loadMode();
+    loadSync();
+    loadTransactions();
+    fetch('/api/admin/blockchain/alpha').then((response) => response.ok ? response.json() : null).then(setAlpha).catch(() => undefined);
+  }, []);
+
   const saveConfig = async () => {
     setSaving(true);
     setMessage('');
@@ -169,6 +180,36 @@ export default function BlockchainSettingsPage() {
           </p>
           {!canConfigure && <p className="mt-3 inline-flex rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-800">Operations Admin · blockchain configuration and sync are read-only</p>}
         </div>
+
+        {alpha && (
+          <Card className="border-2 border-[#DCE6E1]">
+            <CardHeader>
+              <CardTitle>Alpha Testnet</CardTitle>
+              <CardDescription>{alpha.mode} · {alpha.network} · {alpha.asset?.label}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <p>VTAED issuer: {alpha.asset?.issuer || 'not issued'}</p>
+              <p>Distribution account: {alpha.asset?.distributor || 'not issued'}</p>
+              <p className="break-all">Wallet registry: {alpha.contracts?.registry ? <a className="text-[#0D7A52] underline" href={`https://stellar.expert/explorer/testnet/contract/${alpha.contracts.registry}`} target="_blank" rel="noreferrer">{alpha.contracts.registry}</a> : 'not deployed'}</p>
+              <p className="break-all">Facility contract: {alpha.contracts?.facility ? <a className="text-[#0D7A52] underline" href={`https://stellar.expert/explorer/testnet/contract/${alpha.contracts.facility}`} target="_blank" rel="noreferrer">{alpha.contracts.facility}</a> : 'not deployed'}</p>
+              <p><a className="text-[#0D7A52] underline" href="/admin/reconciliation">Reconciliation status</a></p>
+              {alpha.asset?.issuer && <a className="inline-flex text-[#0D7A52] underline" href={`https://stellar.expert/explorer/testnet/account/${alpha.asset.issuer}`} target="_blank" rel="noreferrer">Issuer on Stellar Expert</a>}
+              <div className="grid gap-2">
+                {(alpha.facilities || []).map((facility) => (
+                  <p key={facility.id}>{facility.facilityNo} · {facility.status} · {facility.chainStatus} · {facility.participationUnits} units {facility.stellarTxHash ? `· ${facility.stellarTxHash.slice(0, 10)}` : ''}</p>
+                ))}
+                {(alpha.events || []).slice(0, 6).map((event: { id: string; eventType: string; txHash: string; ledger: number }) => (
+                  <p key={event.id}><a className="text-[#0D7A52] underline" href={`https://stellar.expert/explorer/testnet/tx/${event.txHash}`} target="_blank" rel="noreferrer">{event.eventType}</a> · ledger {event.ledger}</p>
+                ))}
+                {(alpha.attestations || []).map((row: { id: string; documentType: string; documentHash: string }) => (
+                  <p key={row.id}>{row.documentType} · {row.documentHash.slice(0, 16)}</p>
+                ))}
+              </div>
+              {canConfigure && <Button variant="outline" onClick={() => fetch('/api/admin/blockchain/index', { method: 'POST' }).then(() => fetch('/api/admin/blockchain/alpha').then((response) => response.json()).then(setAlpha))}>Index Soroban events</Button>}
+              {canConfigure && <Button variant="outline" onClick={() => fetch('/api/admin/blockchain/alpha', { method: 'POST' }).then(() => fetch('/api/admin/blockchain/alpha').then((response) => response.json()).then(setAlpha))}>Prepare governance roles</Button>}
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="border-2 border-[#DCE6E1]">
           <CardHeader>
@@ -361,7 +402,7 @@ export default function BlockchainSettingsPage() {
           <CardContent>
             <div className="text-sm text-gray-700 space-y-2">
               <p>
-                <strong>Prototype:</strong> Configuration values are stored in plaintext in the database.
+                <strong>Alpha:</strong> Configuration values are stored in plaintext in the database.
               </p>
               <p>
                 <strong>Production:</strong> Use a managed secrets vault, controlled signer, regulated settlement partners, and formal release approval.

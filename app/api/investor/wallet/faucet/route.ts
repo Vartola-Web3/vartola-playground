@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { isAlphaMode } from '@/lib/config/app-mode';
 import { auth } from '@/lib/auth/auth';
 
 import { prisma } from '@/lib/db';
@@ -16,6 +17,9 @@ export async function POST(request: Request) {
       where: { id: session.user.id },
     });
 
+    if (isAlphaMode()) {
+      return NextResponse.json({ error: 'Alpha mode uses the VTAED distribution account. Demo top-ups stay in Demo mode.' }, { status: 400 });
+    }
     const body = await request.json().catch(() => ({}));
     const faucetAmount = Number(body.amount || 10000);
     if (!Number.isFinite(faucetAmount) || faucetAmount <= 0 || faucetAmount > 5000000) {

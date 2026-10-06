@@ -1,7 +1,8 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { use, useState, useEffect } from 'react';
+import { use, useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
@@ -27,30 +28,12 @@ export default function PoolDetailPage({ params }: { params: Promise<{ id: strin
   const { id } = use(params);
   const router = useRouter();
   const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
-  const [pool, setPool] = useState<Pool | null>(null);
-  const [loading, setLoading] = useState(true);
+  const resource = useApiResource<{ pool: Pool | null }>(`/api/investor/pools/${id}`);
+  const pool = resource.data?.pool ?? null;
+  const loading = resource.loading;
   const [subscribing, setSubscribing] = useState(false);
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    loadPool();
-  }, [id]);
-
-  const loadPool = async () => {
-    try {
-      const response = await fetch(`/api/investor/pools/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setPool(data.pool);
-      }
-    } catch (error) {
-      console.error('Failed to load pool:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,3 +1,5 @@
+import { describe, it } from 'node:test';
+import { expect } from '@/lib/test-utils/expect';
 import { calculateRisk, assignRiskTier } from '../index';
 import { CompanyData, AssetData, DealData, ApplicationData } from '../index';
 

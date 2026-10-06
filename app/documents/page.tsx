@@ -11,7 +11,7 @@ export default function DocumentsPage() {
           {/* Header */}
           <div className="text-center mb-12">
             <div className="inline-block px-4 py-2 bg-yellow-500/20 rounded-lg border border-yellow-500/50 mb-6">
-              <span className="text-yellow-300 font-semibold">⚠️ Information for Prototype Demonstration - Not Accepting Real Applications</span>
+              <span className="text-yellow-300 font-semibold">Working Alpha · not a licensed financing offer · do not upload real identity documents</span>
             </div>
             <h1 className="text-5xl font-bold text-white mb-4">
               Required Documents & KYC Checklist
@@ -32,10 +32,10 @@ export default function DocumentsPage() {
               <h2 className="text-2xl font-bold text-red-200 mb-3">⚠️ Important Notice | إشعار هام</h2>
               <div className="space-y-2 text-red-100 text-sm">
                 <p>
-                  <strong>English:</strong> AssetFi UAE is currently a technology prototype on Stellar Testnet and is NOT accepting real applications, documents, or investments. This page outlines the documentation that WOULD be required if the platform were licensed and operational. Do not submit real personal or business documents to this demo system.
+                  <strong>English:</strong> Vartola is a working Alpha from RIMAL TECH - FZCO. It is not licensed to take real applications, documents, or investments. This page lists documents a future licensed process would require. Do not submit real personal or business documents here.
                 </p>
                 <p dir="rtl" lang="ar">
-                  <strong>العربية:</strong> AssetFi UAE حالياً نموذج أولي تقني على Stellar Testnet ولا يقبل طلبات أو مستندات أو استثمارات حقيقية. تحدد هذه الصفحة الوثائق التي ستكون مطلوبة إذا كانت المنصة مرخصة وتعمل. لا ترسل مستندات شخصية أو تجارية حقيقية لنظام العرض التوضيحي هذا.
+                  <strong>العربية:</strong> فارتولا منصة عاملة ضمن مرحلة ألفا لشركة RIMAL TECH - FZCO. ليست مرخصة لقبول طلبات أو مستندات أو استثمارات حقيقية. تعرض هذه الصفحة الوثائق التي قد يطلبها مسار مرخص لاحقاً. لا ترسل مستندات شخصية أو تجارية حقيقية هنا.
                 </p>
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function DocumentsPage() {
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
                         <strong className="text-white">Bank Account Details | تفاصيل الحساب البنكي:</strong>
-                        <p className="text-sm mt-1">UAE bank account in investor's name for investment transfers and return distributions. Bank letter or cancelled cheque.</p>
+                        <p className="text-sm mt-1">UAE bank account in investor&apos;s name for investment transfers and return distributions. Bank letter or cancelled cheque.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
@@ -391,7 +391,7 @@ export default function DocumentsPage() {
 
                 <div className="bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/50">
                   <p className="text-yellow-200 text-sm">
-                    <strong>🔒 Privacy Guarantee:</strong> AssetFi UAE will never store raw documents or personally identifiable information on the Stellar blockchain. Only cryptographic hashes are recorded on-chain for verification purposes. All PII remains in secure off-chain storage with strict access controls.
+                    <strong>🔒 Privacy Guarantee:</strong> Vartola will never store raw documents or personally identifiable information on the Stellar blockchain. Only cryptographic hashes are recorded on-chain for verification purposes. All PII remains in secure off-chain storage with strict access controls.
                   </p>
                 </div>
               </div>
@@ -450,10 +450,10 @@ export default function DocumentsPage() {
             <section className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-8 border border-blue-500/30 text-center">
               <h2 className="text-2xl font-bold text-white mb-4">Questions About Documentation?</h2>
               <p className="text-blue-200 mb-6">
-                This page is for informational purposes only. AssetFi UAE is a Testnet prototype and is not currently accepting real documents or applications.
+                This page is informational. Vartola is a working Alpha and is not accepting real documents or applications.
               </p>
               <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                هذه الصفحة لأغراض إعلامية فقط. AssetFi UAE هو نموذج أولي على Testnet ولا يقبل حالياً مستندات أو طلبات حقيقية.
+                هذه الصفحة معلوماتية. فارتولا منصة عاملة ضمن مرحلة ألفا ولا تقبل حالياً مستندات أو طلبات حقيقية.
               </p>
               <div className="flex gap-4 justify-center">
                 <Link 

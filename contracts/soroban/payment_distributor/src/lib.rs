@@ -116,6 +116,29 @@ impl PaymentDistributor {
         }
         (total_payment * investor_amount) / pool_total
     }
+
+    pub fn calculate_platform_fee(_env: Env, gross: i128, fee_bps: u32) -> i128 {
+        finance_math::platform_fee(gross, fee_bps)
+    }
+
+    pub fn calculate_reserve(_env: Env, gross: i128, reserve_bps: u32) -> i128 {
+        finance_math::reserve_amount(gross, reserve_bps)
+    }
+
+    pub fn calculate_principal(
+        _env: Env,
+        finance_amount: i128,
+        term_months: u32,
+        payment_index: u32,
+        remaining: i128,
+        net: i128,
+    ) -> i128 {
+        finance_math::principal_component(finance_amount, term_months, payment_index, remaining, net)
+    }
+
+    pub fn calculate_income(_env: Env, net: i128, principal: i128) -> i128 {
+        finance_math::income_component(net, principal)
+    }
 }
 
 #[cfg(test)]

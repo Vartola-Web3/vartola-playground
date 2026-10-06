@@ -1,0 +1,797 @@
+{
+  "network": "Stellar Testnet",
+  "deployment": {
+    "network": "Stellar Testnet",
+    "passphrase": "Test SDF Network ; September 2015",
+    "deployedAt": "2026-10-06T01:32:43.721Z",
+    "asset": {
+      "code": "VTAED",
+      "issuer": "GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32",
+      "contractId": "CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS"
+    },
+    "registryContractId": "CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC",
+    "facilityContractId": "CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM",
+    "treasury": "GA4QQ7PLFRWZW7BDBPPKGTQ2UOBL6IJ35HOMWNEEZ7I52A3VPAEGI3DB",
+    "admin": "GCKPCTIBILOCNFZRN6Q2P3GM6Q3RY3EADRDSAPF7IMUATE2UGPERXM7T",
+    "pauser": "GCIG5QFLRMCAC2BTC2XUJBXKXK3WFN5G2KPQKZ2VKO3YZ2QQZZHASNAJ",
+    "roles": {
+      "underwriter": "GDKEWLFB4VYJ2ASU434QETOTEAV4NVG2V7CHOMCU5IEUBACRFSGYQCGU",
+      "operations": "GCQGIQNAJEHL3P57A64W3FZP4YAAS54X6T2I56DHOKBMHTWM3RGHAGMM",
+      "compliance": "GAJGA57FTBLDB4KZYTL5QV3N3B54OOAUP46MY4K7AJTCKPG3C42JJ54H"
+    },
+    "transactions": {
+      "assetContract": {
+        "id": "CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS",
+        "hash": "567bfb993c0e5c869f53e945f03f05ac23d77d46a498078f954be945d194985d",
+        "ledger": 5041644
+      },
+      "registryDeploy": {
+        "id": "CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC",
+        "hash": "f2961e4720d0989427282e2b05ee2e4c44faf3401c0bcc70b2221ecc1dc1711c",
+        "ledger": 5045343
+      },
+      "registryInit": {
+        "hash": "ed5917dc794e7903f454d8fc54ac22086d3c5dfddc95f7d69992abe8a68eec5a",
+        "ledger": 5045344
+      },
+      "facilityDeploy": {
+        "id": "CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM",
+        "hash": "8be49a9d0e1cc5d0c6c4bf575bed261f6a648926087e969e18c4f5dc6d769a7f",
+        "ledger": 5045346
+      },
+      "facilityInit": {
+        "hash": "91e310999e7c7fa68de5609510d8fb148210f77a5837f96aed4a344a8f294657",
+        "ledger": 5045347
+      },
+      "link": {
+        "hash": "caa59bb59b2b4b48362431d0344fc1dfc3135396bde6d115f3ded1a15b9f6878",
+        "ledger": 5045348
+      },
+      "role_underwriter": {
+        "hash": "5794ca325f697eaf39366753b23291f7360da1e5ce8173d29fe9af473332e43e",
+        "ledger": 5045350
+      },
+      "role_operations": {
+        "hash": "33ee46cfe61b6cea8e52e282b120fa41677dc574b42b0d4cd4ed4614fc0d6041",
+        "ledger": 5045353
+      },
+      "role_compliance": {
+        "hash": "d9ff028eaace1251e3af88c254a1c1da2ff872647a53f6a930d9b2359052db5e",
+        "ledger": 5045355
+      }
+    },
+    "contractVersion": 2,
+    "history": [
+      {
+        "version": "v1",
+        "facilityContractId": "CBJQTADVGYRFR3XQLLE7XF252GPILPBYSJ5N7RLOLBPXJK4NNBN3I7II",
+        "registryContractId": "CBDBVD2GE2MYWDRCM2XSQANSTIISECNP6ABFAH7O2K5SPOHKQRFVZ6KK",
+        "note": "Superseded before use: settle and record_repayment accepted caller-chosen terms."
+      },
+      {
+        "version": "v2",
+        "facilityContractId": "CACYOVPKDOO52KZPYZN22BMX6XFEDQIQRSW4RKXPVTTBW4M3HQRVAG42",
+        "registryContractId": "CDQIPV2MPRQUQNAFUZP5SXRAP7BFYB6FZMWRR3YIZIVN2VTBWIGXC4AE",
+        "note": "Hardened authorization. Superseded by role separation, explicit escrow states and release attestations."
+      }
+    ]
+  },
+  "facilities": [
+    {
+      "facilityNo": "FAC-FLEET-001",
+      "financeAmount": 150000,
+      "term": 24,
+      "status": "ACTIVE",
+      "chainStatus": "CHAIN_CONFIRMED",
+      "participationUnits": 1500,
+      "events": [
+        {
+          "eventType": "FacilityCreated",
+          "txHash": "7d4af2dfc5b9ba07cc3c171957d263f951258770900a6b65ba93d9143adf9bc1",
+          "ledger": 5045471
+        },
+        {
+          "eventType": "RiskAttested",
+          "txHash": "a1ddb3f9c8358af58d35083f4c986334ba0b9c917f63294fa54342b39d331da2",
+          "ledger": 5045472
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "cd58dfb9e681d9269e187ce061c8987e138a5366719d4c8b8f7c98972bf10df8",
+          "ledger": 5045480
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "1d014f8ebe25cb6f148d3e7ce235763e3d003aafa4634c37881cd7a45baae857",
+          "ledger": 5045488
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "7ca780393ffdc6955bb186c09b9d2f9eee6ed7107418041008c716d6b8c09173",
+          "ledger": 5045496
+        },
+        {
+          "eventType": "EscrowReleaseLocked",
+          "txHash": "079cff85fc87f78cf2351753d57ba52e4b1e1696e814f66d6c1074a406af1a9b",
+          "ledger": 5045497
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "56fed7db1b088e9885da9846ca65153aa4986b18fb0b0d71f688cc8ffa800585",
+          "ledger": 5045498
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "442201ff9ec408e3afa69eea621e297fdac6b0e856fe9dc099ee9b8ea2c84a7d",
+          "ledger": 5045499
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "24ef439444fff45ac5bf6e88fa721b6078e17c4d0bd3c2224cedfc358bf40688",
+          "ledger": 5045500
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "ffe1865619582cd65121ba3ae75c8eda8ab47a368d57fbcc8767dbcf097002f2",
+          "ledger": 5045501
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "555227bd14d573e84d4edadd9b8eb31050be844bc7291c7e6584c4017cdcb46b",
+          "ledger": 5045502
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "2867674a6d22127e530a4fd2d91dbc04a043c68d595b08e81a7d0b6dea67b64f",
+          "ledger": 5045503
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "3a8c16185ef83a14b12d333d09ccdc769a968dd3bd7140a298c979667c1cfa30",
+          "ledger": 5045504
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "09afb7ab237144eb1aa462a9bbd7c9a10c7dc96a69711a4e6a47d9e67459abd3",
+          "ledger": 5045505
+        },
+        {
+          "eventType": "ReleaseAuthorized",
+          "txHash": "3a0de5d301685ca4b920ebb354e7bfd231197b6b7b14aa84183886fa1aed573c",
+          "ledger": 5045506
+        },
+        {
+          "eventType": "ReleaseExecuted",
+          "txHash": "7d02f12491dc2852f2d83c48eb10c22847b16919851081a059ec7a29fbd0c02d",
+          "ledger": 5045507
+        },
+        {
+          "eventType": "AssetPassportAnchored",
+          "txHash": "9e1f4ad5e71bbc7cbe049c33de2bf66e240dee59ac97e72b19fad10e7f3823a3",
+          "ledger": 5045508
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "176a6895b766337e8b1c101e5879f2de488754926493e91966291426c3d15e87",
+          "ledger": 5045509
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "7da2ebf025915cb3118f27c59d6ac70b19b60d8e129b427608eed538d1b29d60",
+          "ledger": 5045510
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "1d30c7d9b6246425a8569f6e11310ccad78e867f12155f1752dde7e94880b88c",
+          "ledger": 5045511
+        },
+        {
+          "eventType": "FacilityActivated",
+          "txHash": "3c51217924a8c30865f5873b3b719ef20c0c5ed481d0f05a6b67d101cff78c18",
+          "ledger": 5045513
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "cf26b8fa616d5ea2ed593cc8aee7ec024e2b3ce78c699b01ac2bd645ed0a9f5b",
+          "ledger": 5045514
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "e456ac1f862b28780113c1a03860a32d2d4b868d2570310b1ebb97ef4838397a",
+          "ledger": 5045515
+        },
+        {
+          "eventType": "RepaymentRecorded",
+          "txHash": "704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c",
+          "ledger": 5045517
+        },
+        {
+          "eventType": "DistributionExecuted",
+          "txHash": "704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c",
+          "ledger": 5045517
+        },
+        {
+          "eventType": "RepaymentRecorded",
+          "txHash": "cbc0a71a40001fa447209e33d240340aae89192b1ab8edd4538d990865562b8b",
+          "ledger": 5045518
+        },
+        {
+          "eventType": "DistributionExecuted",
+          "txHash": "cbc0a71a40001fa447209e33d240340aae89192b1ab8edd4538d990865562b8b",
+          "ledger": 5045518
+        },
+        {
+          "eventType": "EscrowOpened",
+          "txHash": "7d4af2dfc5b9ba07cc3c171957d263f951258770900a6b65ba93d9143adf9bc1",
+          "ledger": 5045471
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "fd3bc1f1361a485ba83cc1b6cce937765fbe09bf99582b096860e02d873d998e",
+          "ledger": 5045479
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "cd58dfb9e681d9269e187ce061c8987e138a5366719d4c8b8f7c98972bf10df8",
+          "ledger": 5045480
+        },
+        {
+          "eventType": "EscrowPartiallyFunded",
+          "txHash": "cd58dfb9e681d9269e187ce061c8987e138a5366719d4c8b8f7c98972bf10df8",
+          "ledger": 5045480
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "1aa30f0592dc7e6eceb750bb1843aa34a17fbeb31cb0f259a99f8099d32bab55",
+          "ledger": 5045487
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "1d014f8ebe25cb6f148d3e7ce235763e3d003aafa4634c37881cd7a45baae857",
+          "ledger": 5045488
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "46d38e1ff2a63e6abf0028bd24928daaa7e872d0c37b1433e4110f4ea6ef132f",
+          "ledger": 5045495
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "7ca780393ffdc6955bb186c09b9d2f9eee6ed7107418041008c716d6b8c09173",
+          "ledger": 5045496
+        },
+        {
+          "eventType": "FacilityFunded",
+          "txHash": "7ca780393ffdc6955bb186c09b9d2f9eee6ed7107418041008c716d6b8c09173",
+          "ledger": 5045496
+        },
+        {
+          "eventType": "EscrowFullyFunded",
+          "txHash": "7ca780393ffdc6955bb186c09b9d2f9eee6ed7107418041008c716d6b8c09173",
+          "ledger": 5045496
+        },
+        {
+          "eventType": "EscrowReleaseAuthorized",
+          "txHash": "3a0de5d301685ca4b920ebb354e7bfd231197b6b7b14aa84183886fa1aed573c",
+          "ledger": 5045506
+        },
+        {
+          "eventType": "EscrowReleased",
+          "txHash": "7d02f12491dc2852f2d83c48eb10c22847b16919851081a059ec7a29fbd0c02d",
+          "ledger": 5045507
+        },
+        {
+          "eventType": "DistributionCalculated",
+          "txHash": "704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c",
+          "ledger": 5045517
+        },
+        {
+          "eventType": "DistributionCalculated",
+          "txHash": "cbc0a71a40001fa447209e33d240340aae89192b1ab8edd4538d990865562b8b",
+          "ledger": 5045518
+        },
+        {
+          "eventType": "RiskAttested",
+          "txHash": "55fad71de686936b4f201699ec3ed11bf7691a411a262c486c57083df1f8b6d2",
+          "ledger": 5045623
+        }
+      ]
+    },
+    {
+      "facilityNo": "FAC-FLEET-002",
+      "financeAmount": 3000,
+      "term": 6,
+      "status": "COMPLETED",
+      "chainStatus": "CHAIN_CONFIRMED",
+      "participationUnits": 30,
+      "events": [
+        {
+          "eventType": "FacilityCreated",
+          "txHash": "c1fa16c7383037a17ad48abd08ffa86faaa343a1066b8f1774f70534317f547e",
+          "ledger": 5045365
+        },
+        {
+          "eventType": "RiskAttested",
+          "txHash": "0727cd57294c36e3a636586242f5425e024f7392deb12887e5724f53ce6cdb7b",
+          "ledger": 5045366
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "458de64b9ad9feacd0d0494ca6777b2a8c847af14ce13304221bcbe13dcc0581",
+          "ledger": 5045374
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "d91c7b3705c1a5af8a0ce3d3e4b7abe745451500ce322bcd71c6814587f36717",
+          "ledger": 5045382
+        },
+        {
+          "eventType": "EscrowReleaseLocked",
+          "txHash": "92d689bc76816a7577b9743c03a1527e5ddfc034a300847b78d6e972011d07e0",
+          "ledger": 5045383
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "ec079f986a40ec71665b96ca31a3298186ebd1b786abc9289bd06048cab00831",
+          "ledger": 5045384
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "05e48af29e52d3f8934f4b94780acadcc8415aa8123fcf07310cf9f3146b0bbe",
+          "ledger": 5045385
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "f35794e9957799c0b620c09cf1dd6792f2b946aa2992806e31cbbcfe26f1b735",
+          "ledger": 5045386
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "af3be78e8063de66bcc3c794e54fd7c0340ceb63abc98ea261c3d0c56dcfe331",
+          "ledger": 5045387
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "7139eb264065fcaf6cdd5c7f276bacf92d97ec2db4a99334dca6b43895e3e5c8",
+          "ledger": 5045388
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "468b14e887c271b9eec48c790634f279096f6d4f064e807fa9c86c3966329771",
+          "ledger": 5045389
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "08b8e6be3a4ddfbaadccd0380090585adaffe9221b13287a47a88ce04c3c4dbd",
+          "ledger": 5045390
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "d134790ca7f64da92eaa1e723e56890e0f720f273239f6be569a1142064236e0",
+          "ledger": 5045391
+        },
+        {
+          "eventType": "ReleaseAuthorized",
+          "txHash": "2f2310f9b63824f86da49c69916bf3e1082aef8462dcf2cf5276d0aaf0ba545b",
+          "ledger": 5045392
+        },
+        {
+          "eventType": "ReleaseExecuted",
+          "txHash": "042a1ca9c2f5e2647cca7dede5e0c24f49237d01d7910be026b8f102612cd49a",
+          "ledger": 5045393
+        },
+        {
+          "eventType": "AssetPassportAnchored",
+          "txHash": "99c1b61ad371dc6fb723945eedb5643668b2a93740f114e58d7d6b5bdd547bff",
+          "ledger": 5045394
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "863dd2b885eb560e1a6d1bd333cf4d3ca473738702a4de817d88b70b24a61db0",
+          "ledger": 5045395
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "939fa295a18613d0ea7369a01cabbdef75e22d1079acc45e63a1715e3ad7c9c8",
+          "ledger": 5045396
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "a05a3148f5ab34b81310ddfa2e56133fa02b324a732d7499bd222ed72c20067f",
+          "ledger": 5045397
+        },
+        {
+          "eventType": "FacilityActivated",
+          "txHash": "24e6a0ccf2bdfbfaf1d260bc8e4c063c2474b0b2b56e5c7e4e97848aa53c8ad8",
+          "ledger": 5045399
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "d947a63f26769314b0487565517b02af52ea17e898a9fadbaf9bb71d15a88cf0",
+          "ledger": 5045400
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "793a76652e43692bb597f34f624bc6b80eff71b9e5c56c0804d2c77d5b2e80e8",
+          "ledger": 5045401
+        },
+        {
+          "eventType": "RepaymentRecorded",
+          "txHash": "c7482518d07652fe6e22ff7da385de83e01ae9c54f6dbf12456d656fa8bc9395",
+          "ledger": 5045403
+        },
+        {
+          "eventType": "DistributionExecuted",
+          "txHash": "c7482518d07652fe6e22ff7da385de83e01ae9c54f6dbf12456d656fa8bc9395",
+          "ledger": 5045403
+        },
+        {
+          "eventType": "SettlementQuoted",
+          "txHash": "afbebae65d8c3fb50301355e40b32400d10d6412f309f0cb969c67bda42842c2",
+          "ledger": 5045404
+        },
+        {
+          "eventType": "FacilityClosed",
+          "txHash": "773edfad4af81b0acb76fef3b3d1e93692b01d1d1a7d70833e10b262bcc9b906",
+          "ledger": 5045405
+        },
+        {
+          "eventType": "EscrowOpened",
+          "txHash": "c1fa16c7383037a17ad48abd08ffa86faaa343a1066b8f1774f70534317f547e",
+          "ledger": 5045365
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "f710aea600fe3862f9945cfa59f5498e1e6d571bb85845b0711617281710f2cc",
+          "ledger": 5045373
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "458de64b9ad9feacd0d0494ca6777b2a8c847af14ce13304221bcbe13dcc0581",
+          "ledger": 5045374
+        },
+        {
+          "eventType": "EscrowPartiallyFunded",
+          "txHash": "458de64b9ad9feacd0d0494ca6777b2a8c847af14ce13304221bcbe13dcc0581",
+          "ledger": 5045374
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "c56ec3e27554100f018c302fae9955f7b76b0cf24902e56a2b03549c3a58f084",
+          "ledger": 5045381
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "d91c7b3705c1a5af8a0ce3d3e4b7abe745451500ce322bcd71c6814587f36717",
+          "ledger": 5045382
+        },
+        {
+          "eventType": "FacilityFunded",
+          "txHash": "d91c7b3705c1a5af8a0ce3d3e4b7abe745451500ce322bcd71c6814587f36717",
+          "ledger": 5045382
+        },
+        {
+          "eventType": "EscrowFullyFunded",
+          "txHash": "d91c7b3705c1a5af8a0ce3d3e4b7abe745451500ce322bcd71c6814587f36717",
+          "ledger": 5045382
+        },
+        {
+          "eventType": "EscrowReleaseAuthorized",
+          "txHash": "2f2310f9b63824f86da49c69916bf3e1082aef8462dcf2cf5276d0aaf0ba545b",
+          "ledger": 5045392
+        },
+        {
+          "eventType": "EscrowReleased",
+          "txHash": "042a1ca9c2f5e2647cca7dede5e0c24f49237d01d7910be026b8f102612cd49a",
+          "ledger": 5045393
+        },
+        {
+          "eventType": "DistributionCalculated",
+          "txHash": "c7482518d07652fe6e22ff7da385de83e01ae9c54f6dbf12456d656fa8bc9395",
+          "ledger": 5045403
+        },
+        {
+          "eventType": "SettlementExecuted",
+          "txHash": "773edfad4af81b0acb76fef3b3d1e93692b01d1d1a7d70833e10b262bcc9b906",
+          "ledger": 5045405
+        },
+        {
+          "eventType": "DistributionCalculated",
+          "txHash": "773edfad4af81b0acb76fef3b3d1e93692b01d1d1a7d70833e10b262bcc9b906",
+          "ledger": 5045405
+        },
+        {
+          "eventType": "DistributionExecuted",
+          "txHash": "773edfad4af81b0acb76fef3b3d1e93692b01d1d1a7d70833e10b262bcc9b906",
+          "ledger": 5045405
+        },
+        {
+          "eventType": "EscrowClosed",
+          "txHash": "773edfad4af81b0acb76fef3b3d1e93692b01d1d1a7d70833e10b262bcc9b906",
+          "ledger": 5045405
+        },
+        {
+          "eventType": "RiskAttested",
+          "txHash": "b980e185056f90b845f8d3ceec36e093f0550243e7509bfe91fb831d77d1eb7c",
+          "ledger": 5045621
+        }
+      ]
+    },
+    {
+      "facilityNo": "FAC-FLEET-003",
+      "financeAmount": 3000,
+      "term": 6,
+      "status": "CLOSED",
+      "chainStatus": "CHAIN_CONFIRMED",
+      "participationUnits": 30,
+      "events": [
+        {
+          "eventType": "FacilityCreated",
+          "txHash": "bce16b5ba57fd7b203d0b7d541d58baba0e5e13b0e726eeb55d79bfb968266f5",
+          "ledger": 5045414
+        },
+        {
+          "eventType": "RiskAttested",
+          "txHash": "6c645c3da858cb911566f50e9eac14ad808cd24323e0a8b5ee221674f6141baa",
+          "ledger": 5045415
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "244241bea0989cfb1d64eca7667c4a5d336d29b0e4cf63db160e33a4105b776d",
+          "ledger": 5045423
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "551ed4df76cd969407864908050c05089b3d5808db23bbbecf03cc0a7abee9bb",
+          "ledger": 5045431
+        },
+        {
+          "eventType": "EscrowReleaseLocked",
+          "txHash": "9e097aa59e0c29fb7ba48120bdaf462447cf411bdb132718fe824955c18cea9c",
+          "ledger": 5045432
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "9d7583135523a49442e503a1efc7e7583b786f1472ec58ed87c02d31d5057ea5",
+          "ledger": 5045433
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "5475083e3df950c999149269f0e170dddaccbacb6005b2349cbfbb742d3d6761",
+          "ledger": 5045434
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "c6441bd7cace6a472b324063c5ea45328e4a4bcc988ee2f5ea9a91022dd2a22f",
+          "ledger": 5045435
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "e854d9e6107813f4613063dc502f6eab9c19c7fe0a34190b131167184c6cac33",
+          "ledger": 5045436
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "99b361d600925af2552da899ca472abbec206def65395f1734ff5a06a7d1c1ee",
+          "ledger": 5045437
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "541cea72c88fd189bb7be1d4bbbc2095169f68aca10c44d1d34b779f7a8f9596",
+          "ledger": 5045438
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "d9a3f4f366005240ff168903cc269ffcb19ecde8d7ab26909619b634195f7ab9",
+          "ledger": 5045439
+        },
+        {
+          "eventType": "ReleaseConditionAttested",
+          "txHash": "30f2cf1f27078964b4f304ba8b2700de05cd7fdd54cbf06cf28a3a8c8ef47dcf",
+          "ledger": 5045440
+        },
+        {
+          "eventType": "ReleaseAuthorized",
+          "txHash": "e3803076438f266a16e6bb41f5ec9388e3a189fe082ed2ba9e2b573a69e6efc9",
+          "ledger": 5045441
+        },
+        {
+          "eventType": "ReleaseExecuted",
+          "txHash": "588003ffeab8534d2c28b9fe384566a965660213a6c2be22be4b4c848eadaadf",
+          "ledger": 5045442
+        },
+        {
+          "eventType": "AssetPassportAnchored",
+          "txHash": "4f7ed2e9cfda12030e154e2e707ca0e3059eff8885a17083bb3c743cdbcf6349",
+          "ledger": 5045443
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "a4a49bbc3d3e72cfba99da66c4197f0fbb231fb5d1b9776523d72338e6a8b84e",
+          "ledger": 5045444
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "08a451d44bd212421033bec68cfc4bc66c0f5bd3c9db891b9795a1bff99769a8",
+          "ledger": 5045445
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "6bfa908ef8b2326b654ef920edb3e0b6a322b505877367dfc1bb63e75e33713c",
+          "ledger": 5045446
+        },
+        {
+          "eventType": "FacilityActivated",
+          "txHash": "06273700d86b7578278bead185fcc92ac9aed20f2b830a2c31746d2631b7a4f0",
+          "ledger": 5045448
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "82cf3fc22df6081342b37b290f2d484fdb3ddd87ea9d2733cda564eae2dab2e1",
+          "ledger": 5045449
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "49d599e592c87d89574b898425c657f4c778258c9422481ad5bd4b24c84d399f",
+          "ledger": 5045450
+        },
+        {
+          "eventType": "RepaymentRecorded",
+          "txHash": "c0e4484653b6366888a6d5f52d8849f6e7f9047bf8b43ecbefd722550dc0acf3",
+          "ledger": 5045452
+        },
+        {
+          "eventType": "DistributionExecuted",
+          "txHash": "c0e4484653b6366888a6d5f52d8849f6e7f9047bf8b43ecbefd722550dc0acf3",
+          "ledger": 5045452
+        },
+        {
+          "eventType": "FacilityStatus:GRACE",
+          "txHash": "88c0811b2432725c2230f0663b6ee1dd93656a9578d07ebac48bc151427d9576",
+          "ledger": 5045453
+        },
+        {
+          "eventType": "FacilityLate",
+          "txHash": "402154387a04d57b47124046d53298f9e279756d206e6570c5417de62c2db2aa",
+          "ledger": 5045454
+        },
+        {
+          "eventType": "FacilityStatus:DEFAULT_NOTICE",
+          "txHash": "5e0738d09ede14a34cee4410f0c465eaa359d1a42dee18b9e301e1452879f6e9",
+          "ledger": 5045455
+        },
+        {
+          "eventType": "FacilityDefaulted",
+          "txHash": "4375f7387d45c69d63da8fc20affdcf0bca7961166c3c1607f8ede42c0e7b093",
+          "ledger": 5045456
+        },
+        {
+          "eventType": "FacilityStatus:REPOSSESSION",
+          "txHash": "cc13ab5c26adfb05d1b6bd47892e9e9231e6c36c682257c3a1a22ac3a2d37535",
+          "ledger": 5045457
+        },
+        {
+          "eventType": "FacilityStatus:ASSET_SALE",
+          "txHash": "b48484e0d0c6fcb4b3b6baed6c03f29ce805302e8c873d09f040df09a05e27d3",
+          "ledger": 5045458
+        },
+        {
+          "eventType": "RecoveryRecorded",
+          "txHash": "fdbb7f59b5a55043993237e7ddb74b87dc9e8817fc84fddeb01b7ab97c4b349b",
+          "ledger": 5045460
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "750a28d64afe3ad7c5e806fd4b08b5dbc8f7069306bc1c4f6fc130a5e31340c1",
+          "ledger": 5045461
+        },
+        {
+          "eventType": "AssetStatusChanged",
+          "txHash": "847113d358fd76e1a29ea0bf84189d5cf467ed8c5b092b755b497e6161e73ed0",
+          "ledger": 5045462
+        },
+        {
+          "eventType": "EscrowOpened",
+          "txHash": "bce16b5ba57fd7b203d0b7d541d58baba0e5e13b0e726eeb55d79bfb968266f5",
+          "ledger": 5045414
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "5e916c6f2d1cf03c0d2d8ec5e6a1784ab9a9ae9f5bb56984710dcc2b4b69b85d",
+          "ledger": 5045422
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "244241bea0989cfb1d64eca7667c4a5d336d29b0e4cf63db160e33a4105b776d",
+          "ledger": 5045423
+        },
+        {
+          "eventType": "EscrowPartiallyFunded",
+          "txHash": "244241bea0989cfb1d64eca7667c4a5d336d29b0e4cf63db160e33a4105b776d",
+          "ledger": 5045423
+        },
+        {
+          "eventType": "InvestmentSubscribed",
+          "txHash": "0897b9a3e2fe5aa55ad3a9ad6385d099685022782b98185403423f194f8e82cb",
+          "ledger": 5045430
+        },
+        {
+          "eventType": "InvestmentReserved",
+          "txHash": "551ed4df76cd969407864908050c05089b3d5808db23bbbecf03cc0a7abee9bb",
+          "ledger": 5045431
+        },
+        {
+          "eventType": "FacilityFunded",
+          "txHash": "551ed4df76cd969407864908050c05089b3d5808db23bbbecf03cc0a7abee9bb",
+          "ledger": 5045431
+        },
+        {
+          "eventType": "EscrowFullyFunded",
+          "txHash": "551ed4df76cd969407864908050c05089b3d5808db23bbbecf03cc0a7abee9bb",
+          "ledger": 5045431
+        },
+        {
+          "eventType": "EscrowReleaseAuthorized",
+          "txHash": "e3803076438f266a16e6bb41f5ec9388e3a189fe082ed2ba9e2b573a69e6efc9",
+          "ledger": 5045441
+        },
+        {
+          "eventType": "EscrowReleased",
+          "txHash": "588003ffeab8534d2c28b9fe384566a965660213a6c2be22be4b4c848eadaadf",
+          "ledger": 5045442
+        },
+        {
+          "eventType": "DistributionCalculated",
+          "txHash": "c0e4484653b6366888a6d5f52d8849f6e7f9047bf8b43ecbefd722550dc0acf3",
+          "ledger": 5045452
+        },
+        {
+          "eventType": "FacilityGrace",
+          "txHash": "88c0811b2432725c2230f0663b6ee1dd93656a9578d07ebac48bc151427d9576",
+          "ledger": 5045453
+        },
+        {
+          "eventType": "DefaultNoticeIssued",
+          "txHash": "5e0738d09ede14a34cee4410f0c465eaa359d1a42dee18b9e301e1452879f6e9",
+          "ledger": 5045455
+        },
+        {
+          "eventType": "RepossessionStarted",
+          "txHash": "cc13ab5c26adfb05d1b6bd47892e9e9231e6c36c682257c3a1a22ac3a2d37535",
+          "ledger": 5045457
+        },
+        {
+          "eventType": "AssetSaleStarted",
+          "txHash": "b48484e0d0c6fcb4b3b6baed6c03f29ce805302e8c873d09f040df09a05e27d3",
+          "ledger": 5045458
+        },
+        {
+          "eventType": "DistributionCalculated",
+          "txHash": "fdbb7f59b5a55043993237e7ddb74b87dc9e8817fc84fddeb01b7ab97c4b349b",
+          "ledger": 5045460
+        },
+        {
+          "eventType": "DistributionExecuted",
+          "txHash": "fdbb7f59b5a55043993237e7ddb74b87dc9e8817fc84fddeb01b7ab97c4b349b",
+          "ledger": 5045460
+        },
+        {
+          "eventType": "FacilityClosed",
+          "txHash": "fdbb7f59b5a55043993237e7ddb74b87dc9e8817fc84fddeb01b7ab97c4b349b",
+          "ledger": 5045460
+        },
+        {
+          "eventType": "EscrowClosed",
+          "txHash": "fdbb7f59b5a55043993237e7ddb74b87dc9e8817fc84fddeb01b7ab97c4b349b",
+          "ledger": 5045460
+        },
+        {
+          "eventType": "RiskAttested",
+          "txHash": "34a10473e5a3285dd08818687343e92eb0fac5ca5bd39badc5fb22b35f5c3531",
+          "ledger": 5045622
+        }
+      ]
+    }
+  ],
+  "exportedAt": "2026-10-06T01:55:21.988Z"
+}

@@ -5,6 +5,8 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatAED, formatDate, getStatusColor } from '@/lib/formatters';
 import { TestnetAddress } from '@/components/stellar/testnet-address';
+import { SmeFacilityPanel } from '@/components/web3/sme-facility-panel';
+import { isAlphaMode } from '@/lib/config/app-mode';
 
 export default async function FacilityDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -50,6 +52,7 @@ export default async function FacilityDetailPage({ params }: { params: Promise<{
   return (
     <DashboardLayout role={session.user.role}>
       <div className="space-y-6">
+        {isAlphaMode() ? <SmeFacilityPanel facilityId={facility.id} /> : null}
         <div>
           <h1 className="text-3xl font-bold text-slate-900">{facility.facilityNo}</h1>
           <p className="text-slate-600 mt-1">{facility.application.assetDescription}</p>

@@ -1,7 +1,8 @@
 ﻿'use client';
 export const dynamic = 'force-dynamic';
 
-import { use, useState, useEffect } from 'react';
+import { use, useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
@@ -42,58 +43,36 @@ export default function ApplicationDetailPage({ params }: { params: Promise<{ id
   const { id } = use(params);
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
-  const [application, setApplication] = useState<Application | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const resource = useApiResource<{ application: Application }>(sessionStatus === 'authenticated' && id ? `/api/sme/applications/${id}` : null);
+  // Local changes (saved edits, uploads, posted reviews) sit on top of the loaded application until the next reload.
+  const [local, setLocal] = useState<{ source: Application | undefined; value: Application } | null>(null);
+  const loaded = resource.data?.application;
+  const application: Application | null = local && local.source === loaded ? local.value : loaded ?? null;
+  const setApplication = (value: Application) => setLocal({ source: loaded, value });
+  const loading = resource.loading && !loaded;
+  const [actionError, setError] = useState('');
+  const error = actionError || resource.error || '';
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({
-    assetType: '',
-    assetDescription: '',
-    assetValue: '',
-    smeContribution: '',
-    financeAmount: '',
-    requestedTerm: '36',
-  });
-
-  const loadApplication = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/sme/applications/${id}`);
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || 'Failed to load application');
-      }
-      const data = await response.json();
-      setApplication(data.application);
-      setForm({
-        assetType: data.application.assetType || 'TRUCK',
-        assetDescription: data.application.assetDescription || '',
-        assetValue: String(data.application.assetValue ?? ''),
-        smeContribution: String(data.application.smeContribution ?? ''),
-        financeAmount: String(data.application.financeAmount ?? ''),
-        requestedTerm: String(data.application.requestedTerm ?? '36'),
-      });
-      setError('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load application');
-    } finally {
-      setLoading(false);
-    }
+  type FormShape = { assetType: string; assetDescription: string; assetValue: string; smeContribution: string; financeAmount: string; requestedTerm: string };
+  const base: FormShape = {
+    assetType: application?.assetType || 'TRUCK',
+    assetDescription: application?.assetDescription || '',
+    assetValue: String(application?.assetValue ?? ''),
+    smeContribution: String(application?.smeContribution ?? ''),
+    financeAmount: String(application?.financeAmount ?? ''),
+    requestedTerm: String(application?.requestedTerm ?? '36'),
   };
-
-  useEffect(() => {
-    if (sessionStatus === 'authenticated' && id) loadApplication();
-  }, [id, sessionStatus]);
-
-  useEffect(() => {
-    const assetValue = parseFloat(form.assetValue) || 0;
-    const contribution = parseFloat(form.smeContribution) || 0;
-    if (assetValue > 0 && contribution >= 0) {
-      setForm((prev) => ({ ...prev, financeAmount: String(Math.max(assetValue - contribution, 0)) }));
-    }
-  }, [form.assetValue, form.smeContribution]);
+  const [edits, setEdits] = useState<Partial<FormShape>>({});
+  const merged: FormShape = { ...base, ...edits };
+  const assetValueNumber = parseFloat(merged.assetValue) || 0;
+  const contributionNumber = parseFloat(merged.smeContribution) || 0;
+  // The finance amount always follows asset value minus contribution, so it is derived, not stored.
+  const form: FormShape = assetValueNumber > 0 && contributionNumber >= 0
+    ? { ...merged, financeAmount: String(Math.max(assetValueNumber - contributionNumber, 0)) }
+    : merged;
+  const setForm = (next: FormShape) => setEdits(next);
 
   const patch = async (body: Record<string, unknown>) => {
     setBusy(true);

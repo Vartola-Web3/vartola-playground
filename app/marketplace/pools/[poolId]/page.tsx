@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -16,32 +17,11 @@ const money = (value: unknown) => new Intl.NumberFormat('en-AE', {
 export default function OpportunityPage() {
   const params = useParams<{ poolId: string }>();
   const { data: session } = useSession();
-  const [item, setItem] = useState<Record<string, unknown> | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const resource = useApiResource<{ pool?: Record<string, unknown> | null }>(`/api/marketplace/pools/${encodeURIComponent(params.poolId)}`);
+  const item = resource.data?.pool || null;
+  const loading = resource.loading;
+  const error = resource.error ? (resource.error === 'Request failed' ? 'Could not load this opportunity.' : resource.error) : '';
   const [tab, setTab] = useState('Overview');
-
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    setError('');
-    fetch(`/api/marketplace/pools/${encodeURIComponent(params.poolId)}`)
-      .then(async (response) => {
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.error || 'Could not load this opportunity.');
-        return data;
-      })
-      .then((data) => {
-        if (active) setItem(data.pool || null);
-      })
-      .catch((reason: Error) => {
-        if (active) setError(reason.message);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => { active = false; };
-  }, [params.poolId]);
 
   if (loading) return <main className="vartola-grid-light min-h-screen text-[#62736C]"><div className="vartola-frame py-8">Loading opportunity…</div></main>;
   if (error || !item) {

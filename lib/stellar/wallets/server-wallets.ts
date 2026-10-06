@@ -40,7 +40,8 @@ function loadKeypairFromEnv(envVarName: string, description: string): Keypair {
 
   try {
     return Keypair.fromSecret(secret);
-  } catch (error: any) {
+  } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
     throw new Error(
       `Invalid secret key for ${envVarName}: ${error.message}. ` +
       `Secret keys must start with 'S' and be 56 characters long.`
@@ -154,7 +155,8 @@ export function validateWalletConfiguration(): void {
     }
 
     console.log('✅ Server wallet configuration validated');
-  } catch (error: any) {
+  } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
     console.error('❌ Server wallet configuration validation failed:', error.message);
     throw error;
   }

@@ -1,7 +1,7 @@
 export function FloatingFinanceCard({
   title,
   units,
-  status = 'Financed',
+  status = 'In scope',
   className = '',
 }: {
   title: string;

@@ -5,6 +5,8 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 import { TestnetAddress } from '@/components/stellar/testnet-address';
 import Link from 'next/link';
 import { InvestorPerformanceChart } from '@/components/analytics/finance-charts';
+import { PositionsPanel } from '@/components/web3/positions-panel';
+import { isAlphaMode } from '@/lib/config/app-mode';
 
 export default async function PortfolioPage() {
   const session = await auth();
@@ -50,6 +52,7 @@ export default async function PortfolioPage() {
         </div>
         <Link href="/marketplace" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">Invest</Link>
       </div>
+      {isAlphaMode() ? <PositionsPanel investorId={session.user.id} /> : null}
       <div className="grid gap-3 sm:grid-cols-4">
         <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="text-sm text-[#708078]">Reserved</p><p className="mt-2 text-2xl font-semibold">{reserved.toLocaleString()} AED</p></div>
         <div className="rounded-3xl bg-white p-5 shadow-sm"><p className="text-sm text-[#708078]">Deployed</p><p className="mt-2 text-2xl font-semibold">{deployed.toLocaleString()} AED</p></div>

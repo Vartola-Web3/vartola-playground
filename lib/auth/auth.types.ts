@@ -7,6 +7,7 @@ declare module 'next-auth' {
       email: string;
       name: string;
       role: string;
+      mfaEnrollment?: boolean;
     };
   }
 
@@ -15,5 +16,6 @@ declare module 'next-auth' {
     email: string;
     name: string;
     role: string;
+    mfaEnrollment?: boolean;
   }
 }

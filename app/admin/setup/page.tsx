@@ -1,7 +1,8 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,8 +24,8 @@ interface PlatformConfig {
 
 export default function AdminSetupPage() {
   const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
-  const [config, setConfig] = useState<PlatformConfig>({
+  const [edits, setEdits] = useState<Partial<PlatformConfig>>({});
+  const defaults: PlatformConfig = {
     stellarNetwork: 'testnet',
     stellarHorizonUrl: 'https://horizon-testnet.stellar.org',
     firebaseProjectId: 'assetfi-uae',
@@ -35,32 +36,16 @@ export default function AdminSetupPage() {
     settlementProvider: 'circle-sandbox',
     aecbApiUrl: '',
     storageType: 'local',
-  });
-  const [loading, setLoading] = useState(true);
+  };
+  const resource = useApiResource<{ config?: Partial<PlatformConfig> }>('/api/admin/config');
+  const config: PlatformConfig = { ...defaults, ...(resource.data?.config || {}), ...edits };
+  const setConfig = (next: PlatformConfig) => setEdits(next);
+  const loading = resource.loading;
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [testUser, setTestUser] = useState({ email: '', password: '' });
   const [creatingTest, setCreatingTest] = useState(false);
 
-  useEffect(() => {
-    loadConfig();
-  }, []);
-
-  const loadConfig = async () => {
-    try {
-      const response = await fetch('/api/admin/config');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.config) {
-          setConfig((current) => ({ ...current, ...data.config }));
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load config:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +64,7 @@ export default function AdminSetupPage() {
       } else {
         setMessage('Failed to save configuration');
       }
-    } catch (error) {
+    } catch {
       setMessage('Error saving configuration');
     } finally {
       setSaving(false);
@@ -104,14 +89,15 @@ export default function AdminSetupPage() {
         setTestUser({ email: 'setup@assetfi.ae', password: 'setup123' });
         setMessage('Test admin created successfully!');
       }
-    } catch (error) {
+    } catch {
       setMessage('Failed to create test admin');
     } finally {
       setCreatingTest(false);
     }
   };
 
-  if (!session || session.user.role !== 'ADMIN') {
+  if (!session) return <div>Loading...</div>;
+  if (session.user.role !== 'ADMIN') {
     return <div>Access denied</div>;
   }
 
@@ -335,7 +321,7 @@ export default function AdminSetupPage() {
               
               <div>
                 <h3 className="font-semibold">AECB Integration:</h3>
-                <p>• Stub implementation for MVP</p>
+                <p>• Integration in development, not a live production control</p>
                 <p>• Production requires AECB partnership and API access</p>
                 <p>• Used for company credit checks and KYB verification</p>
               </div>
@@ -355,7 +341,7 @@ export default function AdminSetupPage() {
               <li>• Never commit real credentials to git</li>
               <li>• Use environment variables for sensitive data</li>
               <li>• Production deployment requires additional security hardening</li>
-              <li>• This is a prototype - not production-ready for real funds</li>
+              <li>• Working Alpha only. Real funds stay behind the regulatory and Mainnet gates</li>
             </ul>
           </Card>
         </div>

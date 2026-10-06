@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/db';
+import { isAlphaMode } from '@/lib/config/app-mode';
 import { recordRepayment } from '@/lib/lifecycle/service';
 import { creditWallet, ensureWallet, financialMode, simulationDate } from '@/lib/simulation/ledger';
 import { stellarReviewUrl } from '@/lib/stellar/explorer';
@@ -53,6 +54,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   try {
     if (body.action === 'topup') {
+      if (isAlphaMode()) throw new Error('Alpha mode uses the VTAED distribution account. Demo top-ups stay in Demo mode.');
       const amount = Number(body.amount);
       if (!Number.isFinite(amount) || amount <= 0 || amount > 5000000) throw new Error('Enter an amount between AED 1 and AED 5,000,000');
       const idempotencyKey = `sme-topup:${session.user.id}:${Date.now()}`;

@@ -1,3 +1,5 @@
+import { isAlphaMode } from '@/lib/config/app-mode';
+import { alphaActivate, alphaMarkStatus, alphaRecordRepayment, alphaRecover, alphaRelease, alphaSettle } from '@/lib/alpha/lifecycle';
 import { prisma } from '@/lib/db';
 import { ACTIVATION_CHECKS, RELEASE_CONDITIONS, allocateShares, isReady, splitPayment } from '@/lib/lifecycle/rules';
 import { sendEmail } from '@/lib/services/email';
@@ -11,7 +13,10 @@ async function audit(userId: string, action: string, entityId: string, changes: 
 }
 
 export async function ensureChecklists(facilityId: string) {
-  for (const [conditionType, label] of RELEASE_CONDITIONS) {
+  const conditions = isAlphaMode()
+    ? [...RELEASE_CONDITIONS, ['KYB', 'KYC/KYB approved'] as const]
+    : RELEASE_CONDITIONS;
+  for (const [conditionType, label] of conditions) {
     await prisma.facilityReleaseCondition.upsert({
       where: { facilityId_conditionType: { facilityId, conditionType } },
       update: {},
@@ -46,6 +51,7 @@ export async function refreshFundingStatus(facilityId: string) {
 }
 
 export async function releaseFacilityFunds(facilityId: string, actorId: string) {
+  if (isAlphaMode()) return alphaRelease(facilityId, actorId);
   const existing = await prisma.facilityRelease.findUnique({ where: { facilityId } });
   if (existing) throw new Error('Facility was already released');
   const facility = await prisma.facility.findUnique({
@@ -97,6 +103,7 @@ export async function releaseFacilityFunds(facilityId: string, actorId: string) 
 }
 
 export async function activateFacility(facilityId: string, actorId: string) {
+  if (isAlphaMode()) return alphaActivate(facilityId, actorId);
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },
     include: { activationChecks: true, allocations: true },
@@ -145,6 +152,7 @@ export async function activateFacility(facilityId: string, actorId: string) {
 }
 
 export async function activateFundedSimulationPool(poolId: string, actorId: string) {
+  if (isAlphaMode()) throw new Error('Alpha mode does not activate a facility when funding completes');
   const pool = await prisma.pool.findUnique({
     where: { id: poolId },
     include: {
@@ -214,6 +222,7 @@ export async function activateFundedSimulationPool(poolId: string, actorId: stri
 }
 
 export async function recordRepayment(facilityId: string, actorId: string, gross: number, key: string) {
+  if (isAlphaMode()) return alphaRecordRepayment(facilityId, actorId, gross, key);
   const facility = await prisma.facility.findUnique({
     where: { id: facilityId },
     include: { allocations: true, payments: true, application: true },
@@ -341,6 +350,7 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
 }
 
 export async function settleEarly(facilityId: string, actorId: string, amount: number) {
+  if (isAlphaMode()) return alphaSettle(facilityId, actorId, amount);
   await recordRepayment(facilityId, actorId, amount, `settle:${facilityId}`);
   await prisma.facility.update({
     where: { id: facilityId },
@@ -350,6 +360,7 @@ export async function settleEarly(facilityId: string, actorId: string, amount: n
 }
 
 export async function markStatus(facilityId: string, actorId: string, status: string, reason: string) {
+  if (isAlphaMode()) return alphaMarkStatus(facilityId, actorId, status, reason);
   const allowed = ['PAYMENT_LATE', 'DEFAULT_REVIEW', 'DEFAULTED', 'REPOSSESSION_PENDING', 'REPOSSESSED', 'RESALE_PENDING', 'CLOSED'];
   if (!allowed.includes(status)) throw new Error('Status is not allowed');
   await prisma.facility.update({ where: { id: facilityId }, data: { status } });
@@ -357,6 +368,7 @@ export async function markStatus(facilityId: string, actorId: string, status: st
 }
 
 export async function recordRecovery(facilityId: string, actorId: string, netProceeds: number) {
+  if (isAlphaMode()) return alphaRecover(facilityId, actorId, netProceeds);
   const facility = await prisma.facility.findUnique({ where: { id: facilityId }, include: { allocations: true } });
   if (!facility) throw new Error('Facility not found');
   const recovery = await prisma.facilityRecovery.create({ data: { facilityId, netProceeds, note: 'Recovery proceeds' } });

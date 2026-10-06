@@ -8,6 +8,18 @@
  */
 
 import { prisma } from '@/lib/db';
+import { SECRET_SETTING_KEYS, encryptedSecretProvider } from '@/lib/security/encrypted-secrets';
+
+// Secret settings are stored encrypted. A legacy plaintext value still reads correctly until it is migrated.
+function readSetting(key: string, value: string) {
+  if (!SECRET_SETTING_KEYS.includes(key) || !value) return value;
+  try {
+    return encryptedSecretProvider.open(value);
+  } catch (error) {
+    console.error('Could not decrypt a stored secret:', error instanceof Error ? error.message : error);
+    return '';
+  }
+}
 
 /**
  * Blockchain configuration keys stored in SystemSettings
@@ -54,7 +66,7 @@ export async function getBlockchainConfig(
     });
 
     if (setting && setting.value && setting.value.trim() !== '') {
-      return setting.value;
+      return readSetting(key, setting.value);
     }
 
     // Fallback to environment variable
@@ -105,7 +117,7 @@ export async function loadBlockchainConfig(): Promise<{
 
     const configData: Record<string, string> = {};
     settings.forEach(setting => {
-      configData[setting.key] = setting.value;
+      configData[setting.key] = readSetting(setting.key, setting.value);
     });
 
     // Update cache
@@ -179,15 +191,16 @@ export async function setBlockchainConfig(
   key: string,
   value: string
 ): Promise<void> {
+  const stored = SECRET_SETTING_KEYS.includes(key) && value ? encryptedSecretProvider.seal(value) : value;
   await prisma.systemSettings.upsert({
     where: { key },
     create: {
       key,
-      value,
+      value: stored,
       category: 'blockchain',
     },
     update: {
-      value,
+      value: stored,
     },
   });
 

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { authConfig } from '@/lib/auth/auth.config';
 import { prisma } from '@/lib/db';
 import { latestReviewUrls } from '@/lib/stellar/record';
 

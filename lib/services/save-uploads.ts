@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/db';
 import { rememberOperation } from '@/lib/firebase/operations';
-import { uploadDocument } from '@/lib/services/storage';
+import { storeDocument } from '@/lib/storage/document-provider';
+import { attestDocumentOnChain } from '@/lib/alpha/chain';
+import { entityHash } from '@/lib/alpha/identity';
+import { isAlphaMode } from '@/lib/config/app-mode';
 
 const ALLOWED = new Set(['application/pdf', 'image/png', 'image/jpeg', 'image/jpg']);
 const MAX_BYTES = 8 * 1024 * 1024;
@@ -25,7 +28,7 @@ export async function saveUploads(files: File[], applicationId: string, userId: 
       throw new Error('File exceeds 8MB');
     }
     const buffer = Buffer.from(await file.arrayBuffer());
-    const stored = await uploadDocument(buffer, file.name, mime);
+    const stored = await storeDocument(buffer, file.name, mime);
     const doc = await prisma.document.create({
       data: {
         applicationId,
@@ -39,13 +42,33 @@ export async function saveUploads(files: File[], applicationId: string, userId: 
       },
     });
     await rememberOperation({
-      id: `Document_${doc.id}`,
+      id: `Document_${doc.id}_${stored.hash.slice(0, 12)}`,
       title: doc.fileName,
       kind: 'DOCUMENT_STORED',
       status: 'STORED',
       entityType: 'Document',
       entityId: doc.id,
     });
+    if (isAlphaMode()) {
+      try {
+        const anchored = await attestDocumentOnChain({
+          documentHash: stored.hash,
+          documentType: doc.documentType,
+          entityHash: entityHash('application', applicationId),
+        });
+        await prisma.documentAttestation.create({
+          data: {
+            documentId: doc.id,
+            documentHash: stored.hash,
+            documentType: doc.documentType,
+            entityHash: entityHash('application', applicationId),
+            chainTxHash: anchored.hash,
+          },
+        });
+      } catch (error) {
+        console.error('Document attestation failed:', error);
+      }
+    }
     saved.push(doc);
   }
   return saved;

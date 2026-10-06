@@ -1,7 +1,7 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
@@ -27,27 +27,9 @@ interface Pool {
 
 export default function PoolsBrowsePage() {
   const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
-  const [pools, setPools] = useState<Pool[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadPools();
-  }, []);
-
-  const loadPools = async () => {
-    try {
-      const response = await fetch('/api/investor/pools');
-      if (response.ok) {
-        const data = await response.json();
-        setPools(data.pools);
-      }
-    } catch (error) {
-      console.error('Failed to load pools:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const resource = useApiResource<{ pools: Pool[] }>('/api/investor/pools');
+  const pools = resource.data?.pools || [];
+  const loading = resource.loading;
 
   if (!session) return <div>Loading...</div>;
 

@@ -1,7 +1,8 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useSession } from 'next-auth/react';
 import { Card } from '@/components/ui/card';
 import DashboardLayout from '@/components/layout/dashboard-layout';
@@ -23,30 +24,12 @@ interface AuditLog {
 
 export default function AuditLogPage() {
   const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
-  const [logs, setLogs] = useState<AuditLog[]>([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('ALL');
+  const resource = useApiResource<{ logs: AuditLog[] }>(filter === 'ALL' ? '/api/admin/audit' : `/api/admin/audit?action=${filter}`);
+  const logs = resource.data?.logs || [];
+  const loading = resource.loading;
 
-  useEffect(() => {
-    loadAuditLogs();
-  }, [filter]);
-
-  const loadAuditLogs = async () => {
-    try {
-      const url = filter === 'ALL' ? '/api/admin/audit' : `/api/admin/audit?action=${filter}`;
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        setLogs(data.logs);
-      }
-    } catch (error) {
-      console.error('Failed to load audit logs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  if (!session) return <div>Loading...</div>;
   if (!session || !isAdminOperator(session.user.role)) {
     return <div>Access denied</div>;
   }

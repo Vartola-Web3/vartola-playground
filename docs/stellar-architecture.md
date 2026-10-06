@@ -1,8 +1,10 @@
+> **HISTORICAL — AssetFi-era note.** Written before the October 2026 Vartola Alpha. It may describe an MVP-stage plan that the code has since replaced. The current state is in `README.md`, `docs/project-status-2026-10.md`, and `docs/audit-2026-10-05.md`.
+
 # AssetFi UAE - Stellar Architecture
 
 ## Overview
 
-AssetFi UAE uses Stellar Testnet to represent asset lifecycle, investor participation, and payment distribution on-chain. This document describes the Stellar/Soroban architecture for both Phase 1 (MVP stubs) and Phase 2 (full implementation).
+Vartola uses Stellar Testnet for event fingerprints and for the non-redeemable VTAED asset. Soroban facility execution is implemented in this repository and is not deployed. Treat older “stub” sections below as historical design notes, not as the October 2026 status. The public status is `/technical`.
 
 ## Network Configuration
 

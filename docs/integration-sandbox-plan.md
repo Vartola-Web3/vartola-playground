@@ -1,6 +1,8 @@
+> **HISTORICAL — AssetFi-era note.** Written before the October 2026 Vartola Alpha. It may describe an MVP-stage plan that the code has since replaced. The current state is in `README.md`, `docs/project-status-2026-10.md`, and `docs/audit-2026-10-05.md`.
+
 # Vartola integration sandbox plan
 
-Vartola stays simulation-first. External providers are adapters around the same internal workflow, so moving from simulation to sandbox or replacing a provider does not change investment accounting.
+The public Alpha walkthrough uses the application ledger. Alpha mode is the Soroban execution path and is not the default until contracts are deployed. External providers stay adapters around that workflow.
 
 ## Target stack
 

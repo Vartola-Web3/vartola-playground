@@ -6,6 +6,7 @@ import { calculateRisk } from '@/lib/risk-engine';
 import { AssetType } from '@/lib/types';
 import { tryRecordChainEvent } from '@/lib/stellar/record';
 import { rememberOperation } from '@/lib/firebase/operations';
+import { scoreFacility } from '@/lib/risk-engine/facility-risk-store';
 
 export async function POST(request: NextRequest) {
   try {
@@ -137,6 +138,8 @@ export async function POST(request: NextRequest) {
           },
         });
       }
+
+      await scoreFacility(facility.id, session.user.id).catch((error) => console.error('Facility risk score failed:', error));
 
     }
 

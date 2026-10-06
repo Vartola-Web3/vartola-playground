@@ -1,5 +1,7 @@
 'use client';
 
+
+import Link from 'next/link';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -102,6 +104,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [totp, setTotp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -118,11 +121,12 @@ export default function LoginPage() {
       const result = await signIn('credentials', {
         email,
         password,
+        totp: totp.trim(),
         redirect: false,
       });
 
       if (result?.error) {
-        setError('Invalid email or password');
+        setError('Invalid email, password, or authentication code');
         setLoading(false);
         return;
       }
@@ -156,10 +160,10 @@ export default function LoginPage() {
         <section className="relative hidden w-[42%] flex-col justify-between overflow-hidden bg-[#063426] px-9 py-10 text-white lg:flex">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_82%,rgba(53,244,154,0.22),transparent_36%)]" />
           <div className="relative">
-            <a href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <img src="/brand/vartola-logo.png" alt="" className="h-12 w-12 rounded-2xl" />
               <span className="text-xl font-semibold">Vartola</span>
-            </a>
+            </Link>
             <h1 className="mt-12 text-[3.15rem] font-semibold leading-[0.98] tracking-tight">
               Asset<br />
               finance for a<br />
@@ -238,6 +242,11 @@ export default function LoginPage() {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <label htmlFor="totp" className="text-sm font-medium text-[#13251E]">Authentication code <span className="font-normal text-[#708078]">(administrators)</span></label>
+              <input id="totp" inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="6-digit code" value={totp} onChange={(e) => setTotp(e.target.value)} className="h-11 w-full rounded-xl border border-[#DCE6E1] bg-white px-3 text-sm text-[#13251E] outline-none focus:ring-2 focus:ring-[#15C77A]/35" />
+            </div>
+
             {error && <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{error}</div>}
 
             <button type="submit" disabled={loading} className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#0E9F6E] text-sm font-semibold text-white hover:bg-[#0B8A5F] disabled:opacity-60">
@@ -249,7 +258,7 @@ export default function LoginPage() {
           <div className="mx-auto mt-8 w-full max-w-md">
             <div className="mb-4 flex items-center gap-3 text-xs text-[#93A29B]">
               <span className="h-px flex-1 bg-[#E5ECE8]" />
-              Try a demo account
+              Demo / Test Data
               <span className="h-px flex-1 bg-[#E5ECE8]" />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">

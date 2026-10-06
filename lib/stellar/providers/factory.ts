@@ -52,7 +52,8 @@ export async function createStellarProvider(): Promise<StellarProvider> {
         return alchemy;
       }
       console.warn('⚠️ Alchemy health check failed, falling back to public Stellar endpoints');
-    } catch (error: any) {
+    } catch (caught) {
+    const error = caught as Error & { code?: string; status?: number; response?: { status?: number; data?: unknown } };
       console.warn('⚠️ Failed to initialize Alchemy provider:', error.message);
       console.warn('⚠️ Falling back to public RPC');
     }

@@ -1,7 +1,8 @@
 'use client';
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useApiResource } from '@/lib/hooks/use-api-resource';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { TestnetAddress } from '@/components/stellar/testnet-address';
@@ -10,34 +11,17 @@ import { formatCurrency } from '@/lib/formatters';
 
 export default function WalletFaucetPage() {
   const { data: session } = useSession();
-  const [walletAddress, setWalletAddress] = useState<string>('');
-  const [balance, setBalance] = useState<number>(0);
-  const [reserved, setReserved] = useState<number>(0);
-  const [deployed, setDeployed] = useState<number>(0);
+  type WalletData = { publicKey?: string; balance?: number; reserved?: number; deployed?: number; transactions?: Array<{ id: string; description: string; amount: number; at: string; reviewUrl?: string | null }> };
+  const wallet = useApiResource<WalletData>('/api/investor/wallet');
+  const walletAddress = wallet.data?.publicKey || '';
+  const balance = wallet.data?.balance || 0;
+  const reserved = wallet.data?.reserved || 0;
+  const deployed = wallet.data?.deployed || 0;
+  const transactions = wallet.data?.transactions || [];
   const [topUpAmount, setTopUpAmount] = useState('100000');
   const [reference, setReference] = useState('Demo card payment');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [transactions, setTransactions] = useState<Array<{ id: string; description: string; amount: number; at: string; reviewUrl?: string | null }>>([]);
-  async function initializeWallet() {
-    try {
-      const response = await fetch('/api/investor/wallet');
-      if (response.ok) {
-        const data = await response.json();
-        setWalletAddress(data.publicKey || '');
-        setBalance(data.balance || 0);
-        setReserved(data.reserved || 0);
-        setDeployed(data.deployed || 0);
-        setTransactions(data.transactions || []);
-      }
-    } catch (error) {
-      console.error('Failed to load wallet:', error);
-    }
-  }
-
-  useEffect(() => {
-    initializeWallet();
-  }, []);
 
   const handleFaucetRequest = async () => {
     setLoading(true);
@@ -49,7 +33,7 @@ export default function WalletFaucetPage() {
       });
       const data = await response.json();
       if (response.ok) {
-        setBalance(data.newBalance);
+        wallet.reload();
         setMessage(data.reviewUrl ? 'Top-up recorded on Stellar.' : 'Top-up saved. Stellar reference pending.');
       } else {
         setMessage(data.error || 'Top-up failed.');
@@ -72,9 +56,9 @@ export default function WalletFaucetPage() {
         <div className="mt-6 grid gap-4">
           <article className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
             <div className="grid gap-4 sm:grid-cols-3">
-              <div><p className="text-sm text-[#708078]">Available</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(balance)}</p></div>
+              <div><p className="text-sm text-[#708078]">Cash Balance</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(balance)}</p></div>
               <div><p className="text-sm text-[#708078]">Reserved</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(reserved)}</p></div>
-              <div><p className="text-sm text-[#708078]">Deployed</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(deployed)}</p></div>
+              <div><p className="text-sm text-[#708078]">Investments</p><p className="mt-2 text-3xl font-semibold">{formatCurrency(deployed)}</p></div>
             </div>
           </article>
           <article className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
@@ -105,7 +89,7 @@ export default function WalletFaucetPage() {
           </article>
           {walletAddress && (
             <details className="rounded-3xl bg-white p-5 text-sm shadow-sm">
-              <summary className="cursor-pointer text-[#708078]">Advanced details</summary>
+              <summary className="cursor-pointer text-[#708078]">Advanced · Blockchain Details</summary>
               <p className="mt-3 break-all font-mono text-xs">{walletAddress}</p>
             </details>
           )}

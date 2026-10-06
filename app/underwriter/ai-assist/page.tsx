@@ -10,9 +10,8 @@ import DashboardLayout from '@/components/layout/dashboard-layout';
 
 export default function AIAssistPage() {
   const { data: session } = useSession();
-  if (!session) return <div>Loading...</div>;
   const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<Record<string, unknown> | null>(null);
 
   const runDemo = async () => {
     setLoading(true);
@@ -36,6 +35,7 @@ export default function AIAssistPage() {
     }
   };
 
+  if (!session) return <div>Loading...</div>;
   if (!session || session.user.role !== 'UNDERWRITER') {
     return <div>Access denied</div>;
   }
@@ -46,7 +46,7 @@ export default function AIAssistPage() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold">AI Underwriting Assistant</h1>
           <p className="text-gray-600 mt-2">
-            Automated risk analysis and underwriting insights (Prototype Stub)
+            Automated risk analysis and underwriting insights (demo provider, rule-based stub)
           </p>
         </div>
 
@@ -111,12 +111,12 @@ export default function AIAssistPage() {
           </Card>
 
           <Card className="p-6 bg-yellow-50">
-            <h3 className="font-semibold mb-2">⚠️ Phase 3 Status: Prototype Stubs</h3>
+            <h3 className="font-semibold mb-2">⚠️ Demo provider: rule-based stub, not a live AI service</h3>
             <ul className="text-sm text-gray-700 space-y-1">
               <li>• This is a <strong>stub implementation</strong> for grant demonstration</li>
               <li>• Real AI models would require: OpenAI/Claude API, custom ML training, labeled datasets</li>
               <li>• Production implementation: 6-12 months of model training and validation</li>
-              <li>• All outputs are simulated for prototype purposes</li>
+              <li>• Outputs are assistance inside the Alpha. They are not a credit decision</li>
               <li>• Testnet only - no real underwriting decisions</li>
             </ul>
           </Card>

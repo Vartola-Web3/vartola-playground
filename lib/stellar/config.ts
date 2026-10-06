@@ -7,13 +7,25 @@ import { Networks } from '@stellar/stellar-sdk';
  * ⚠️ NOTE: This uses process.env for network-level config
  * For RPC URLs and API keys, the system reads from database FIRST via blockchain-config.ts
  */
+// Hosted environment variables are often pasted with quotes or spaces. A value that is not a valid URL falls back to
+// the Testnet default instead of crashing the build when a module is loaded.
+export function cleanUrl(value: string | undefined, fallback: string) {
+  const text = (value || '').trim().replace(/^["']+|["']+$/g, '').trim();
+  if (!text) return fallback;
+  try {
+    return new URL(text).toString().replace(/\/$/, '');
+  } catch {
+    return fallback;
+  }
+}
+
 export const STELLAR_CONFIG = {
   network: (process.env.STELLAR_NETWORK || 'testnet') as 'testnet' | 'mainnet',
   networkPassphrase: process.env.STELLAR_NETWORK_PASSPHRASE || Networks.TESTNET,
-  horizonUrl: process.env.STELLAR_HORIZON_URL || 'https://horizon-testnet.stellar.org',
-  sorobanRpcUrl: process.env.STELLAR_SOROBAN_RPC_URL || 'https://soroban-testnet.stellar.org',
-  explorerUrl: process.env.STELLAR_EXPLORER_URL || 'https://stellar.expert/explorer/testnet',
-  friendbotUrl: process.env.STELLAR_FRIENDBOT_URL || 'https://friendbot.stellar.org',
+  horizonUrl: cleanUrl(process.env.STELLAR_HORIZON_URL, 'https://horizon-testnet.stellar.org'),
+  sorobanRpcUrl: cleanUrl(process.env.STELLAR_SOROBAN_RPC_URL, 'https://soroban-testnet.stellar.org'),
+  explorerUrl: cleanUrl(process.env.STELLAR_EXPLORER_URL, 'https://stellar.expert/explorer/testnet'),
+  friendbotUrl: cleanUrl(process.env.STELLAR_FRIENDBOT_URL, 'https://friendbot.stellar.org'),
 } as const;
 
 /**

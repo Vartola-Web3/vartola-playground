@@ -92,7 +92,7 @@ Five non-binding templates, partner sandbox with six scenarios, reviewer overvie
 
 ## 22. Test results
 
-- Application tests: 141 pass, 0 fail (was 96).
+- Application tests: 148 pass, 0 fail (was 96).
 - Soroban contract tests: 44 pass (facility 26, finance math 8, registry 5, others).
 - Local load simulation recorded in `docs/operations/BENCHMARKS.md` (not a Testnet benchmark; no real Testnet benchmark run).
 

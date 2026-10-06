@@ -16,13 +16,14 @@ export const ENTITY = {
   name: 'RIMAL TECH - FZCO',
   form: 'UAE Free Zone technology company',
   note: 'The company develops technology infrastructure. It is not a bank, lender, licensed crowdfunding operator, broker, custodian, or investment firm.',
+  statement: 'Vartola is developed by RIMAL TECH - FZCO. Regulated financial activities, where applicable, are intended to operate through appropriate legal structures and/or licensed partners subject to legal and regulatory approval.',
 };
 
 export const POSITIONING =
-  'Vartola is a productive-asset finance infrastructure platform designed to help UAE SMEs access the vehicles and equipment they need to grow, while giving eligible capital providers structured access to asset-backed financing opportunities.';
+  'Vartola is building programmable financial infrastructure for productive real-world assets.';
 
 export const POSITIONING_DETAIL =
-  'It combines underwriting, asset acquisition, servicing, investor participation, and programmable financial execution using Stellar and Soroban.';
+  'It connects SME asset demand, capital, underwriting, suppliers, asset lifecycle management, servicing, collections, recovery, treasury and financial settlement through programmable finance on Stellar and Soroban.';
 
 export const PILLARS = ['Asset-finance infrastructure', 'Capital marketplace', 'Asset servicing platform', 'Stellar / Soroban financial rail'] as const;
 
@@ -43,17 +44,17 @@ export const RETURNS_NOTE =
   'Returns are not guaranteed. Investment eligibility and offering structure remain subject to applicable regulation.';
 
 export const DISCLAIMER =
-  'This material describes the Vartola working Alpha and its Stellar Testnet financial layer. It is not an offer, prospectus, or solicitation. It does not promise returns, repayment, or recovery. Vartola does not currently take real client money, issue a redeemable currency, or conduct a licensed financing business. Mainnet and live-money deployment follow regulatory, legal, security, payment/custody, and operational readiness gates.';
+  'This material describes working Financial Web3 infrastructure on Stellar Testnet. It is not an offer, prospectus, or solicitation. It does not promise returns, repayment, or recovery. Vartola does not currently take real client money, issue a redeemable currency, or conduct a licensed financing business. Mainnet and live-money deployment follow regulatory, legal, security, payment/custody, and operational readiness gates.';
 
 export const PUBLIC_NAV = [
-  ['Home', '/'],
   ['How It Works', '/how-it-works'],
   ['Marketplace', '/marketplace'],
-  ['White Paper', '/whitepaper'],
   ['Pitch', '/pitch'],
+  ['White Paper', '/whitepaper'],
   ['Technical', '/technical'],
   ['Proof', '/proof'],
   ['About', '/about'],
+  ['Contact', '/contact'],
 ] as const;
 
 export const GITHUB = 'https://github.com/fouxh/vartola-playground';
@@ -148,109 +149,103 @@ export const GATED = ['Live money', 'Mainnet financial launch', 'Real investor f
 export const GRANT_ASK = 'Up to USD 150,000 equivalent in XLM';
 
 export const GRANT_SENTENCE =
-  'Vartola is seeking ecosystem support to accelerate Stellar/Soroban engineering, security, compliance infrastructure and production readiness.';
+  'Vartola has already built and validated a Financial Web3 architecture on Stellar Testnet. Ecosystem support accelerates independent security validation, regulated operating structure, production financial rails and controlled Mainnet readiness.';
 
 export const GRANT_OBJECTIVES = [
-  'Complete Soroban financial execution',
-  'Security and audit readiness',
-  'Compliance infrastructure',
-  'Testnet validation',
-  'Mainnet readiness',
+  'Independent security validation',
+  'Regulated operating structure',
+  'Production financial rails',
+  'Controlled real-world pilot',
+  'Controlled Mainnet readiness',
 ];
 
 export const GRANT_USE = [
-  'Soroban financial contracts',
-  'Stellar asset integration',
-  'Wallet infrastructure',
-  'Security and audits',
-  'Indexing and reconciliation',
-  'Compliance infrastructure',
-  'Production hardening',
-  'Mainnet readiness',
+  'Independent Soroban contract audit',
+  'Platform penetration test',
+  'Production custody and multisig',
+  'Regulatory and legal structuring',
+  'Payment and settlement rail integration',
+  'Security monitoring and operations',
+  'Controlled pilot support',
 ];
 
+// Sequenced work. No dates are promised and no amounts are shown publicly.
 export const GRANT_MILESTONES = [
   {
-    name: 'Milestone 1',
-    window: 'November–December 2026',
+    name: 'Independent security',
+    window: 'First after the current Testnet phase',
     deliverables: [
-      'Wallet registry and facility contracts deployed on Stellar Testnet',
-      'VTAED movement into facility escrow and Participation Units demonstrated',
-      'Embedded Testnet wallet path available in Alpha mode',
-      'Admin view of real Testnet transaction references',
+      'External Soroban contract audit and remediation',
+      'Platform penetration test and fixes',
+      'Production key and custody review',
+      'Production multisig configuration and security monitoring',
     ],
   },
   {
-    name: 'Milestone 2',
-    window: 'January–February 2027',
+    name: 'Operating structure and rails',
+    window: 'Alongside security work',
     deliverables: [
-      'Repayment, distribution, early settlement, and recovery execution on Testnet',
-      'Digital Asset Passport and document attestations anchored for a reviewer facility',
-      'Event indexer and reconciliation between Soroban results and the application read model',
-      'Security hardening, audit preparation, and governance design',
+      'UAE legal classification and final facility structure',
+      'Asset ownership and security model',
+      'Licensed or regulated partner model where required',
+      'Approved settlement asset, payment rails, custody and treasury operations',
     ],
   },
   {
-    name: 'Milestone 3',
-    window: 'March–May 2027',
+    name: 'Controlled pilot and readiness',
+    window: 'Only after the applicable gates',
     deliverables: [
-      'KYC and KYB permissioning connected to the wallet registry',
-      'Legal architecture drafted and licensed-partner structure prepared',
-      'Regulatory dependencies documented as launch gates',
-      'External audit engagement and production-operations testing for a controlled pilot',
+      'Controlled pilot with real SMEs, suppliers and qualified partners',
+      'No fabricated traction: only real, verifiable pilot data',
+      'Mainnet readiness review against the written gates',
+      'Controlled Mainnet only after every applicable gate is satisfied',
     ],
   },
 ] as const;
 
-// The one master timeline. It starts from the working platform in October 2026.
+// The one master timeline. It begins with the current Testnet architecture and promises no Mainnet date.
 export const ROADMAP = [
   {
-    when: 'October 2026',
-    title: 'Current platform',
-    body: 'Working Vartola Alpha with an end-to-end financing product foundation, VTAED on Stellar Testnet, and Soroban contracts deployed on Testnet with Facility #001 executed end to end.',
-    points: ['SME workflow', 'Investor workflow', 'Underwriting and risk engine', 'Facilities', 'Servicing, repayment, and distribution', 'Late, default, and recovery', 'VTAED issued on Testnet', 'Soroban contracts deployed on Testnet', 'Facility #001 executed end to end', 'Web3 architecture expansion'],
+    when: 'CURRENT — STELLAR TESTNET',
+    title: 'Working Financial Web3 infrastructure',
+    body: 'Embedded wallets and permissioning, Soroban facility contracts, Participation Units, programmable escrow, controlled supplier release, waterfalls, repayment, distribution, early settlement, default and recovery, asset servicing, risk and expected loss, treasury, reconciliation, proof and governance. Three reference facilities executed on Testnet.',
+    points: ['Facility contracts v3', 'Escrow and controlled release', 'Positions and distributions', 'Asset Passport and servicing', 'Risk and Expected Loss', 'Treasury and reconciliation', 'Proof Center', 'Audit-readiness package'],
   },
   {
-    when: 'November 2026',
-    title: 'Stellar-native financial layer',
-    body: 'Contracts are deployed. Operate the Alpha money path in the shared environment and expose real references in admin tooling.',
-    points: ['Facility contracts', 'Escrow', 'Participation Units', 'Wallet infrastructure and permissioning', 'Testnet settlement asset flows', 'Blockchain admin tooling', 'SCF submission and ecosystem engagement'],
+    when: 'NEXT — INDEPENDENT SECURITY',
+    title: 'Independent security validation',
+    body: 'External review of the contracts and the platform before any production use.',
+    points: ['External Soroban contract audit', 'Platform penetration test', 'Production key and custody review', 'Production multisig configuration', 'Security monitoring'],
   },
   {
-    when: 'December 2026',
-    title: 'Servicing and asset infrastructure',
-    body: 'Harden servicing on-chain and anchor the asset record.',
-    points: ['Repayment and distribution contracts', 'Asset Passport', 'Document attestations', 'Secure document storage', 'Event indexing', 'Financial reconciliation', 'Integration testing', 'Supplier workflow improvements'],
+    when: 'REGULATORY GATE',
+    title: 'Regulated operating structure',
+    body: 'Approval is not a date Vartola controls. The structure is defined with counsel and, where required, licensed partners.',
+    points: ['UAE legal classification', 'Final facility structure', 'Asset ownership and security model', 'Licensed financing or regulated partner model where required', 'Client-money responsibilities', 'Approved agreements'],
   },
   {
-    when: 'January 2027',
-    title: 'Compliance and risk infrastructure',
-    body: 'Connect verification to permissioning and complete the downside workflow.',
-    points: ['KYC and KYB integrations', 'Wallet permissioning', 'AML and sanctions architecture', 'Supplier and dealer workflows', 'Servicing hardening', 'Portfolio risk controls', 'Early settlement', 'Default and recovery automation'],
+    when: 'PRODUCTION FINANCIAL RAILS',
+    title: 'Settlement, custody and treasury',
+    body: 'An approved settlement asset and regulated rails replace the Testnet asset.',
+    points: ['Approved settlement asset', 'Regulated payment rails', 'Custody', 'Treasury operations', 'Fiat and Stellar connectivity', 'Settlement reconciliation'],
   },
   {
-    when: 'February 2027',
-    title: 'Security and resilience',
-    body: 'Prepare the system for independent review.',
-    points: ['Smart-contract testing', 'Audit preparation', 'Penetration testing', 'Web and API security', 'Governance and multisig', 'Treasury controls', 'Reconciliation', 'Monitoring', 'Incident response', 'Business continuity and wind-down preparation'],
+    when: 'CONTROLLED PILOT',
+    title: 'Real-world pilot, no fake traction',
+    body: 'A controlled facility with real counterparties once the gates above allow it.',
+    points: ['Real SMEs', 'Real suppliers', 'Qualified partners', 'One controlled facility'],
   },
   {
-    when: 'March 2027',
-    title: 'Regulatory and partner structure',
-    body: 'Define the approved operating structure. Approval itself is not a date Vartola controls.',
-    points: ['Legal and regulatory perimeter', 'Operating structure', 'Licensed-partner discussions', 'Asset ownership and security model', 'Legal documentation', 'Custody and payment design', 'Insurance', 'Recovery and service partners', 'Final agreements'],
-  },
-  {
-    when: 'April–May 2027',
-    title: 'Production readiness',
-    body: 'Independent review and controlled pilot preparation. No live-money date is promised.',
-    points: ['External audits', 'Regulatory implementation', 'Partner integrations', 'Compliance implementation', 'Production reconciliation', 'Production operations testing', 'Controlled pilot preparation'],
-  },
-  {
-    when: 'Mainnet',
+    when: 'CONTROLLED MAINNET',
     title: 'Gated, not dated',
     body: MAINNET_STATEMENT,
     points: [],
+  },
+  {
+    when: 'SCALE',
+    title: 'More productive assets',
+    body: 'Logistics fleets first, then broader productive assets, each after its own legal classification.',
+    points: ['Logistics fleets', 'Delivery motorcycles', 'Vans', 'Trucks', 'Cold-chain vehicles', 'Later business equipment and other productive asset classes'],
   },
 ] as const;
 
@@ -304,10 +299,10 @@ export const MAINNET_GATES = [
 ] as const;
 
 export const CURRENT_POSITION =
-  'Vartola is a working Soroban-native asset-finance Alpha on Stellar Testnet: VTAED, deployed contracts, escrow, programmable release, repayment, distribution, early settlement, default and recovery, and reconciliation. It uses no real money and no real AED, is not licensed financing, is not audited, and is not on Mainnet.';
+  'Vartola is working Financial Web3 infrastructure for productive real-world asset finance on Stellar Testnet: VTAED, deployed Soroban contracts, escrow, programmable release, repayment, distribution, early settlement, default and recovery, risk, treasury and reconciliation. It uses no real money and no real AED, is not licensed financing, has no independent audit, and is not on Mainnet.';
 
 export const NEXT_MILESTONE =
-  'Run the Alpha path in the hosted environment with scheduled reconciliation, test private storage against a real bucket, and complete the security, regulatory and custody gates before any Mainnet pilot.';
+  'Independent security validation, a regulated operating structure, production financial rails and a controlled real-world pilot, in that order of dependency, before any controlled Mainnet step.';
 
 export const ENGINEERING_PRIORITIES: { title: string; items: string[] }[] = [
   {
@@ -323,3 +318,55 @@ export const ENGINEERING_PRIORITIES: { title: string; items: string[] }[] = [
     items: ['Independent smart-contract audit and penetration test', 'Production key custody, multisig, and a monitored on-call process', 'Regulatory, legal, custody and payment gates', 'No Mainnet date is promised'],
   },
 ];
+
+// ---------------------------------------------------------------------------------------------------------------
+// Shared public facts. Public pages read from here so the story stays the same everywhere.
+// ---------------------------------------------------------------------------------------------------------------
+
+export const HEADLINE = 'Working Financial Web3 infrastructure for productive real-world asset finance on Stellar Testnet.';
+
+export const SEO = {
+  home: { title: 'Vartola | Programmable Asset Finance on Stellar', description: 'Programmable financial infrastructure for productive real-world assets, working on Stellar Testnet with Soroban facility contracts.' },
+  pitch: { title: 'Vartola Pitch | Financial Web3 Infrastructure', description: 'The productive-asset finance gap, the working Stellar and Soroban architecture, and the road to controlled Mainnet.' },
+  whitepaper: { title: 'Vartola Whitepaper | Productive Asset Finance Infrastructure', description: 'The authoritative product document: facilities, escrow, risk, servicing, recovery, governance and regulatory path.' },
+  technical: { title: 'Vartola Technical Architecture | Stellar & Soroban', description: 'Contracts, financial state model, finality, indexing, reconciliation, security and real Testnet references.' },
+  proof: { title: 'Vartola Proof Center | Stellar Testnet Execution', description: 'Verify the contracts, asset and reference facilities on Stellar Testnet.' },
+  howItWorks: { title: 'How Vartola Works | Productive Asset Finance', description: 'The path for SMEs, investors, suppliers and operations, and what happens on-chain and what stays private.' },
+  contact: { title: 'Contact Vartola | Partnerships & SME Pilots', description: 'Talk to Vartola about SME pilots, suppliers, capital partners, institutions and technical collaboration.' },
+  grant: { title: 'Vartola Grant Brief | Stellar Ecosystem Support', description: 'What exists today on Stellar Testnet, why Soroban is necessary, and what ecosystem support accelerates.' },
+  about: { title: 'About Vartola | RIMAL TECH - FZCO', description: 'A technology company building programmable financial infrastructure for productive real-world assets.' },
+} as const;
+
+export const CONNECTS = ['SME asset demand', 'Capital', 'Underwriting', 'Suppliers', 'Asset lifecycle management', 'Servicing', 'Collections', 'Recovery', 'Treasury', 'Financial settlement'] as const;
+
+export const STATUS_LABELS = {
+  current: 'CURRENT — STELLAR TESTNET',
+  working: 'WORKING FINANCIAL WEB3 INFRASTRUCTURE',
+  security: 'NEXT — INDEPENDENT SECURITY',
+  regulatory: 'REGULATORY GATE',
+  rails: 'PRODUCTION FINANCIAL RAILS',
+  pilot: 'CONTROLLED PILOT',
+  mainnet: 'CONTROLLED MAINNET',
+} as const;
+
+export const CURRENT_CAPABILITIES = [
+  ['Wallets and access', ['Embedded Stellar wallets', 'Wallet permissioning', 'KYC and KYB aware access']],
+  ['Financial execution', ['Soroban facility contracts', 'Facility-level financial positions and Participation Units', 'Programmable escrow', 'Controlled supplier release', 'Financial waterfalls', 'Repayments and distributions', 'Early settlement', 'Default and recovery']],
+  ['Records and proof', ['Financial receipts', 'Digital Participation Records', 'Digital Asset Passport and asset verification', 'Risk snapshot attestations', 'Public Proof Center']],
+  ['Risk and treasury', ['Facility risk score', 'Expected Loss framework', 'Portfolio risk', 'Treasury control center', 'Facility reserves']],
+  ['Servicing and operations', ['Asset servicing', 'Supplier network and performance scoring', 'Servicing and collections', 'Recovery workspace', 'Insurance-event and supplier-failure workflows', 'Continuous event indexing', 'Automated reconciliation', 'Operations health monitoring']],
+  ['Security and governance', ['Role separation', 'Admin MFA', 'Encrypted platform secrets', 'Private signed document storage', 'Contract governance', 'Multisig-ready architecture', 'Business continuity and wind-down architecture', 'Audit-readiness package']],
+  ['Pilot readiness', ['Institutional sandbox', 'Pilot-management infrastructure']],
+] as const;
+
+export const NOT_CURRENT = ['Mainnet', 'Real-money investor activity', 'A regulated public offering', 'Licensed lending', 'Production custody', 'An independent security audit', 'Production settlement rails'] as const;
+
+export const ROLE_FLOWS = {
+  sme: ['Apply', 'Verify', 'Underwrite', 'Facility created', 'Capital committed', 'Release conditions verified', 'Supplier paid', 'Asset delivered', 'Facility active', 'Repay', 'Complete or settle'],
+  investor: ['Verify', 'Embedded Stellar wallet', 'Browse facilities', 'Review risk', 'Participate', 'Capital enters programmable escrow', 'Release conditions verified', 'Supplier paid', 'Track position', 'Receive distributions', 'Settlement or recovery'],
+  supplier: ['KYB', 'Quote', 'Invoice', 'Asset allocation', 'Delivery evidence', 'Payment status', 'Service and warranty records'],
+  operations: ['Underwriting', 'Release control', 'Asset verification', 'Servicing', 'Collections', 'Recovery', 'Reconciliation'],
+} as const;
+
+export const ON_CHAIN_ITEMS = ['Wallet address and permission flags', 'Facility financial state', 'Escrow state and balances', 'Participation Units and positions', 'Release-condition attestations (evidence hash only)', 'Repayment, distribution, settlement and recovery events', 'Risk snapshot and document hashes', 'Asset passport events'] as const;
+export const PRIVATE_ITEMS = ['Identity and KYC data', 'Company and commercial documents', 'Bank and credit information', 'Supplier contracts and invoices', 'The risk model inputs themselves', 'Internal notes and collections cases'] as const;

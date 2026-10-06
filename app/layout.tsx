@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SEO } from '@/lib/docs/product';
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProviderWrapper from "@/components/providers/session-provider-wrapper";
@@ -14,9 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vartola | Productive asset finance for UAE SMEs",
-  description:
-    "Vartola helps UAE SMEs access the productive assets they need to grow, starting with logistics fleets and expanding into business equipment.",
+  title: SEO.home.title,
+  description: SEO.home.description,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

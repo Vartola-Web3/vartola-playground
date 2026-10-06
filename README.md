@@ -1,57 +1,105 @@
 # Vartola
 
-Vartola is a productive-asset finance infrastructure platform for UAE SMEs. It combines facility origination, a capital marketplace, asset servicing, and a Stellar / Soroban rail. The company behind the product is RIMAL TECH - FZCO, a UAE Free Zone technology company. It is not a licensed lender. The current environment uses test assets only and carries no real monetary value.
+**Programmable financial infrastructure for productive real-world assets.**
 
-The default process mode is `APP_MODE=DEMO`. That walkthrough keeps the seeded accounts, virtual tAED, and a shortcut that activates a facility when an opportunity is fully funded so repayment can be reviewed. `APP_MODE=ALPHA` finalizes investments, escrow, release, repayment, distribution, settlement, and recovery only after a confirmed Soroban Testnet transaction. The Soroban contracts `wallet_registry` and `facility_contract` are deployed and initialized on Stellar Testnet, and Facility #001 ran end to end on them in an isolated Alpha test environment. The public site still runs Demo mode. VTAED, a non-redeemable test asset, is issued on Stellar Testnet. Mainnet is not enabled, and nothing has been independently audited.
+Working Financial Web3 infrastructure for productive real-world asset finance on Stellar Testnet. Built on Stellar. Executed through Soroban. Developed by RIMAL TECH - FZCO.
 
-The public site is [home.vartola.net](https://home.vartola.net).
+> **Status: CURRENT — STELLAR TESTNET.** VTAED is a test asset with no monetary value and is not redeemable. There is no Mainnet deployment, no real-money activity, no independent security audit and no licence or regulatory approval. See [Regulatory status](#regulatory-status).
 
-## Financing cycle
+## What Vartola is
 
-1. An SME submits a vehicle funding request and can attach company documents.
-2. An underwriter reviews the company, the asset, and the deal, then approves or rejects. Approval creates a facility and its payment schedule.
-3. An operations admin creates a pool and connects the approved facility. The pool target is the finance amount.
-4. Investors participate. In the public walkthrough, virtual balances stay reserved until the pool is full. In Alpha mode, value is reserved in the facility contract.
-5. The public walkthrough can activate a facility when funding completes. The intended rail does not. Release checks, supplier payment, and delivery evidence come first, and Alpha mode waits for a confirmed Soroban result.
-6. The SME pays the next unpaid installment at any time, including before the due date.
-7. Each installment returns an equal share of principal, with any remainder on the last installment, plus the income left after fees. Investors receive their share in proportion to what they deployed.
-8. When the principal is fully returned, the facility is completed. When every facility in the pool is completed, the pool is completed.
+Vartola connects SME asset demand, capital, underwriting, suppliers, asset lifecycle management, servicing, collections, recovery, treasury and financial settlement through programmable finance on Stellar and Soroban. The first asset class is UAE logistics fleets: delivery motorcycles, vans, trucks and cold-chain vehicles.
 
-## Roles
+It is not a crypto exchange, a DeFi protocol, a crowdfunding site or a token project. The financed asset earns the repayment, and the facility rules are enforced by contracts rather than by a spreadsheet.
 
-| Role | What they do |
+## Why it exists
+
+SMEs need productive assets (vehicles, later equipment) to grow, but buying them upfront consumes the working capital they need to operate, and financing infrastructure is fragmented across underwriting, suppliers, servicing and recovery. Capital providers lack a controlled, verifiable way to take part in a single financed asset and follow where the money goes. Vartola puts the whole lifecycle in one facility record.
+
+## Current Financial Web3 architecture
+
+| Layer | Role |
 | --- | --- |
-| SME | Apply for a vehicle, upload documents, and pay the active schedule. |
-| Investor | Fund a wallet, invest in an open opportunity, and receive principal and income. |
-| Underwriter | Score and approve or reject applications. |
-| Operations admin | Create pools, watch facilities, and review the Testnet operation log. |
-| Platform owner | Full admin, including system setup. This account is created by the demo seed and is not shown on the public login screen. |
+| **Stellar** | Asset and value settlement rail: VTAED test asset, accounts, trustlines, Stellar Asset Contract |
+| **Soroban** | Programmable financial execution: wallet registry and facility contracts (v3) |
+| **Prisma** | Application and read model (SQLite locally, PostgreSQL when hosted) |
+| **Firebase** | Append-only operations journal and admin visibility |
+| **Private object storage** | Sensitive documents with signed, short-lived access |
 
-Public pages do not require a session: home, about, how it works, whitepaper, pitch, documentation, the technical brief, the grant brief, draft legal pages, and the marketplace. Each signed-in role is limited to its own area.
+Financial flow:
 
-## Stack
+```
+USER ACTION → APPLICATION VALIDATION → SOROBAN / STELLAR EXECUTION → CHAIN CONFIRMATION
+            → PRISMA PROJECTION → FIREBASE OPERATIONAL EVENT → RECONCILIATION
+```
 
-- Next.js 16.3.8 and React 19, App Router
-- NextAuth credentials sessions
-- Prisma 5.22 with SQLite in this repository
-- Stellar Testnet through Horizon. Each confirmed job writes one `manage_data` operation carrying a SHA-256 fingerprint of the event
-- Firebase project `assetfi-uae`, Firestore database `vartola-ops`, used as an operations journal
-- Tailwind CSS 4
+In Alpha mode the chain is the financial source. Prisma is updated only after a confirmed transaction, a failed or unconfirmed call can never be recorded as successful, and a Firebase failure never blocks or reverses a confirmed result. Contract sources are in `contracts/soroban`.
 
-| Store | Role |
+## Current capabilities (Stellar Testnet)
+
+- **Access:** embedded Stellar wallets, wallet permissioning, KYC and KYB aware access.
+- **Execution:** Soroban facility contracts, facility-level positions and Participation Units, programmable escrow, controlled supplier release (eight attested conditions, one role authorizes and another pays), one waterfall for repayment, settlement and recovery, distributions, early settlement, default and recovery.
+- **Records and proof:** financial receipts, Digital Participation Records, Digital Asset Passport and asset verification, risk snapshot attestations, a public Proof Center.
+- **Risk and treasury:** facility risk score, Expected Loss framework (PD × LGD × EAD, internal estimate), portfolio risk, treasury control center, facility reserves.
+- **Servicing and operations:** asset servicing and health indicator, supplier network and performance score, collections and recovery workspace, insurance-event and supplier-failure workflows, continuous event indexing, scheduled reconciliation, operations health.
+- **Security and governance:** role separation and a privileged role matrix, admin MFA (TOTP), encrypted platform secrets, private signed document storage, contract governance, multisig-ready architecture, business continuity and wind-down plans, an audit-readiness package.
+- **Pilot readiness:** an institutional sandbox and a pilot pipeline that shows only what an administrator enters (zero today).
+
+## Financial lifecycle
+
+SME application → underwriting → facility → investor participation → escrow → controlled release → supplier → asset delivered → repayment → distribution → settlement or recovery.
+
+## On-chain vs off-chain
+
+| On-chain (verifiable) | Off-chain (private) |
 | --- | --- |
-| Prisma | Users, companies, applications, document metadata, compliance, risk, dashboards, and the read model of chain state. It does not override a confirmed Soroban financial result in Alpha. |
-| Firebase `vartola-ops` | Operations journal and admin visibility. A failed journal write does not undo a confirmed Soroban transaction. Alpha journal rows use a unique event id. |
-| Stellar Testnet | VTAED, a non-redeemable test asset already issued for Alpha. Demo balances stay virtual tAED. Event fingerprints in demo mode are not transfers. |
-| Soroban | Wallet registry and facility contract source: escrow, participation units, release, repayment, distribution, recovery, and document or asset hashes. Deployed and initialized on Stellar Testnet; used by Alpha mode only. Not audited, not on Mainnet. |
+| Wallet address and permission flags | Identity and KYC data |
+| Facility financial state | Company and commercial documents |
+| Escrow state and balances | Bank and credit information |
+| Participation Units and positions | Supplier contracts and invoices |
+| Release-condition attestations (evidence hash only) | Risk model inputs |
+| Repayment, distribution, settlement, recovery events | Internal notes and collections cases |
+| Risk snapshot and document hashes | Application, analytics and UI data |
 
-Demo settlement of virtual balances stays in Prisma. Alpha settlement is the Soroban facility contract. Contract sources are in `contracts/soroban`.
+## Proof and verification
 
-## Public documentation
+- **`/proof`**: real Testnet contracts, the VTAED test asset, the latest ledger, and the lifecycle of three reference facilities with an explorer link per recorded event.
+- **`/technical`**: the full technical architecture, state model, finality, indexing, reconciliation, security and every recorded transaction.
+- `/verify/facility/<number>` reads a facility live from the contract and exposes no private data.
 
-The public papers share one facts file, `lib/docs/product.ts`, so status, roadmap, and regulatory wording stay identical: `/pitch`, `/whitepaper`, `/how-it-works`, `/technical`, `/grant`, `/docs`, and draft legal documents under `/legal`. Status labels are LIVE IN ALPHA, TESTNET, INTEGRATION IN PROGRESS, IN DEVELOPMENT, SECURITY GATE, PARTNER DEPENDENCY, REGULATORY GATE, and MAINNET GATE. A current summary is in `docs/project-status-2026-10.md`.
+Stellar Testnet references (also in `lib/docs/testnet-record.generated.json`):
 
-## Run locally
+| Item | Value |
+| --- | --- |
+| VTAED issuer | `GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32` |
+| VTAED Stellar Asset Contract | `CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS` |
+| wallet_registry (v3) | `CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC` |
+| facility_contract (v3) | `CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM` |
+
+Facility #001 (150,000 VTAED, 1,500 Participation Units), #002 (early settlement) and #003 (default and recovery) ran on contract v3 with reconciliation HEALTHY. Superseded v1 and v2 contracts are listed on `/technical`. These are Testnet values with no monetary value.
+
+## Security
+
+Current controls: separate role wallets (administrator, pauser, treasury, underwriter, operations, compliance), release limit, pause, two-step admin rotation, timelocked upgrades, admin MFA, encrypted provider secrets, private signed document storage, audit log, idempotency keys, rate limiting, signed webhooks. Multisig policies are defined but not enforced on-chain, keys are single Testnet keys, and **no independent audit or penetration test has been done**. The internal security documents (INTERNAL / PRE-AUDIT) are in `docs/security`, and the audit-readiness package is in `docs/audit-package`.
+
+## Current environment
+
+Stellar Testnet. The public website runs Demo mode (virtual balances); the Alpha path (real Soroban calls) ran in an isolated Testnet environment with its own database. Not current: Mainnet, real-money investor activity, a regulated public offering, licensed lending, production custody, an independent security audit, production settlement rails.
+
+## Road to Mainnet
+
+1. **Independent security:** external Soroban audit, platform penetration test, production key and custody review, production multisig, security monitoring.
+2. **Regulated operating structure:** UAE legal classification, final facility structure, asset ownership and security model, licensed or regulated partner model where required, client-money responsibilities, approved agreements.
+3. **Production financial rails:** approved settlement asset, regulated payment rails, custody, treasury operations, fiat and Stellar connectivity, settlement reconciliation.
+4. **Controlled real-world pilot:** real SMEs, real suppliers, qualified partners, one controlled facility. No fake traction.
+5. **Controlled Mainnet:** only after every applicable gate is satisfied. No date is promised.
+6. **Scale:** logistics fleets first, later business equipment and other productive asset classes.
+
+## Regulatory status
+
+Vartola is developed by RIMAL TECH - FZCO, a UAE Free Zone technology company. No licence is claimed and no real-money activity takes place. Regulated financial activities, where applicable, are intended to operate through appropriate legal structures and/or licensed partners, subject to legal and regulatory approval, and subject to the UAE legal and regulatory structure before any regulated deployment. Nothing here is an offer, a prospectus or investment advice, and returns are not guaranteed.
+
+## Development
 
 Requirements: Node.js 20+.
 
@@ -62,33 +110,28 @@ npm run db:seed:demo
 npm run dev
 ```
 
-The app listens on [http://localhost:4200](http://localhost:4200).
+The app listens on [http://localhost:4200](http://localhost:4200). `DATABASE_URL` for this schema is SQLite; `file:./prisma/dev.db` is resolved from the `prisma` directory, so the file is `prisma/prisma/dev.db`. Hosted deployments use PostgreSQL; `scripts/prepare-prisma.js` and `scripts/sync-postgres-schema.js` run during the Vercel build and apply additive schema changes only.
 
-`DATABASE_URL` for this schema is SQLite. A value of `file:./prisma/dev.db` is resolved from the `prisma` directory, so the file is `prisma/prisma/dev.db`.
-
-The demo seed password for every account on the login screen is `demo123`.
+The demo seed password for every account on the login screen is `demo123`:
 
 | Role | Email |
 | --- | --- |
-| Investor | fatima@investor.ae |
-| Investor | khalid@investor.ae |
-| Investor | mohammed@investor.ae |
-| Investor | sara@investor.demo |
-| SME, Desert Mile | omar@desertmile.demo |
-| SME, Falcon Route | layla@falconroute.demo |
-| SME, Harbour Cold Chain | noor@harbourcoldchain.demo |
+| Investor | fatima@investor.ae, khalid@investor.ae, mohammed@investor.ae, sara@investor.demo |
+| SME | omar@desertmile.demo, layla@falconroute.demo, noor@harbourcoldchain.demo |
 | Underwriter | underwriter@assetfi.ae |
 | Operations admin | operations@vartola.demo |
 
-The seeded opportunities are Dubai Last-Mile Fleet, Abu Dhabi Cargo Vans, and Cold Chain Expansion. They start open and waiting for investors.
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Development server on port 4200 |
+| `npm run build` | Generate the Prisma client and build Next.js |
+| `npm run db:seed:demo` | Load the demo companies, pools and login accounts |
+| `npm run lint` | ESLint |
+| `npm test` | TypeScript unit tests (`lib/**/*.test.ts`) |
+| `npm run test:contracts` | Soroban contract tests (`cargo test`) |
+| `npm run benchmark:local` | Local load simulation (not a Testnet benchmark) |
 
-## Demo and Alpha
-
-Demo login accounts and the password `demo123` are unchanged. Alpha adds registration states (`EMAIL_PENDING` through `ACTIVE`), phone verification, Sumsub KYC/KYB copied onto the wallet registry, and an embedded Testnet wallet. The wallet secret is encrypted with `WALLET_KEK` and is never returned to the browser.
-
-Alpha participation units are 100 VTAED. Investor cash moves from the embedded wallet into the facility escrow, then to the supplier address after the release checklist. Repayment and recovery run in the facility contract and are mirrored into Prisma.
-
-Issue the test asset, then deploy, initialize, and link the contracts (the script wraps VTAED as a Stellar Asset Contract, sets a separate pauser, validates the result, and records IDs, hashes, and ledgers):
+Demo and Alpha: `APP_MODE=DEMO` keeps virtual balances in Prisma. `APP_MODE=ALPHA` routes the financial path through Soroban and needs the Testnet setup below. Alpha participation units are 100 VTAED.
 
 ```bash
 npx tsx scripts/alpha/issue-vtaed.ts
@@ -96,86 +139,10 @@ npx tsx scripts/alpha/deploy-contracts.ts
 npx tsx scripts/alpha/verify-deployment.ts   # read-only on-chain check
 ```
 
-Secrets for that local Testnet setup are written to `.alpha/testnet-keys.json`, which is gitignored. `scripts/alpha/fleet-001.ts` creates Dubai SME Delivery Fleet — Facility #001 with new accounts. It does not change the seeded demo users.
+Testnet secrets for that setup are written to `.alpha/testnet-keys.json`, which is gitignored. Reports: `docs/institutional-maturity-report.md`, `docs/alpha-completion-report.md`. Operations documents: `docs/operations`. Partner templates (non-binding): `docs/partners`.
 
-Mainnet stays closed until there is regulatory approval, a legal structure, a KYC/KYB and custody partner, a smart-contract audit, a security audit, and an operations review.
+The public papers (`/pitch`, `/whitepaper`, `/how-it-works`, `/technical`, `/grant`, `/docs`) read from one facts file, `lib/docs/product.ts`, so status, roadmap and regulatory wording stay identical.
 
-## Alpha status (October 2026)
+Contact: the public form at `/contact` stores enquiries in the database; staff review them at `/admin/contacts`. Optional email notification uses `EMAIL_PROVIDER_URL` and `CONTACT_NOTIFY_EMAIL`.
 
-### Stellar Testnet references
-
-| Item | Value |
-| --- | --- |
-| Network | Stellar Testnet |
-| VTAED issuer | `GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32` |
-| VTAED Stellar Asset Contract | `CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS` |
-| wallet_registry (v3) | `CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC` |
-| facility_contract (v3) | `CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM` |
-| Administrator | `GCKPCTIBILOCNFZRN6Q2P3GM6Q3RY3EADRDSAPF7IMUATE2UGPERXM7T` |
-| Pauser | `GCIG5QFLRMCAC2BTC2XUJBXKXK3WFN5G2KPQKZ2VKO3YZ2QQZZHASNAJ` |
-| Treasury | `GA4QQ7PLFRWZW7BDBPPKGTQ2UOBL6IJ35HOMWNEEZ7I52A3VPAEGI3DB` |
-| Underwriter role wallet | `GDKEWLFB4VYJ2ASU434QETOTEAV4NVG2V7CHOMCU5IEUBACRFSGYQCGU` |
-| Operations role wallet | `GCQGIQNAJEHL3P57A64W3FZP4YAAS54X6T2I56DHOKBMHTWM3RGHAGMM` |
-| Compliance role wallet | `GAJGA57FTBLDB4KZYTL5QV3N3B54OOAUP46MY4K7AJTCKPG3C42JJ54H` |
-
-Earlier versions (v1, v2) are listed as superseded on `/technical`. Transaction hashes and ledgers for the deployment and for Facility #001, #002 (early settlement) and #003 (default and recovery) are on the public `/technical` page and in `lib/docs/testnet-record.generated.json`. Anyone can check a facility live on `/verify/facility/<facility number>`. These are Testnet values with no monetary value.
-
-### What is complete, partial, demo, and planned
-
-| Area | Status | Notes |
-| --- | --- | --- |
-| SME, underwriting, facilities, pools, servicing, audit log | COMPLETE | Demo ledger by default |
-| VTAED on Testnet, embedded wallets, trustlines | COMPLETE | Alpha mode |
-| Soroban contracts v3: escrow states, release attestations, waterfall, distribution totals, roles, limits, upgrade timelock | COMPLETE | Testnet only, not audited |
-| Facility #001 (150,000 VTAED, 1,500 units), #002 settlement, #003 default and recovery on contract v3 | COMPLETE | Isolated test environment, not the public site |
-| Chain-first Alpha lifecycle (CHAIN_PENDING/CONFIRMED/FAILED) | COMPLETE | Prisma is updated only after confirmation |
-| Receipts, participation certificate, position and portfolio analytics, public facility verification | COMPLETE | Alpha mode; certificate is a platform record, not a security or proof of title |
-| Reconciliation and event indexer | COMPLETE on Testnet | Manual and scheduled (cron: daily on Hobby, 15 minutes on Pro; needs CRON_SECRET); retry and dead letters; alerts to audit log, Firebase, optional email |
-| Firebase journal | COMPLETE | Append-only with retry; not financial authority |
-| Facility risk score (`facility-risk-v2`) with on-chain attestation | COMPLETE | Rule-based, hashed inputs, drivers shown; not a rating agency score |
-| Admin MFA (TOTP) | COMPLETE in Alpha mode | Demo quick-login unchanged |
-| Provider secrets encrypted at rest | COMPLETE | Needs SERVER_MASTER_KEY; run `scripts/alpha/encrypt-settings.ts` once |
-| Supplier portal and supplier users | COMPLETE | Apply migration `20261006000000_supplier_users_mfa` to the hosted database |
-| Sumsub webhook | PARTIAL | Signed, idempotent, transactional, full states; production screening needs the provider agreement and credentials |
-| Private storage: signed uploads, short-lived downloads, real deletion | PARTIAL | Not yet tested against a real bucket |
-| Email and SMS providers | PARTIAL | Abstractions and templates; no provider connected; default notices are blocked without counsel approval |
-| Demo mode (virtual tAED, funded-pool shortcut, quick login) | DEMO | Public site |
-| Multisig, production custody, external audit | PLANNED | Security gate |
-| Licensed financing, client money, Mainnet | PLANNED | Regulatory gate; no date |
-
-### Roles of each layer
-
-- **Soroban / Stellar:** authoritative financial execution in Alpha mode (escrow, participation units, release, repayment, distribution, settlement, recovery).
-- **Prisma:** application and read model. In Alpha it is updated only after a confirmed chain transaction.
-- **Firebase:** operations journal and admin visibility. A Firebase failure never blocks or reverses a confirmed transaction.
-
-### Known open issues
-
-See `docs/alpha-completion-report.md` (latest) and `docs/audit-2026-10-05.md` (earlier audit).
-
-## Money and the chain
-
-`FINANCIAL_MODE` can still anchor demo events on Stellar Testnet with `manage_data`. Those hashes prove an event. They do not move VTAED. Alpha financial calls are Soroban invocations and are stored only when the transaction status is confirmed. A failed invocation is `CHAIN_FAILED` and does not mark the payment or investment successful.
-
-The worker accepts the Testnet passphrase only and rejects a mainnet Horizon URL. A hash is shown only when it is 64 hexadecimal characters. Missing historical hashes are left blank.
-
-## Firebase
-
-Confirmed chain events, submitted applications, underwriting decisions, and stored document metadata can be written to `operations` in `vartola-ops`. Demo journal rows are still one document per entity. Alpha rows include the transaction hash so a later event does not replace the earlier one. Demo uploads stay on local disk. Alpha uploads use private object storage when `S3_BUCKET` is set.
-
-Website sign-in uses the demo accounts above. It does not use Firebase Authentication.
-
-## Scripts
-
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Development server on port 4200 |
-| `npm run build` | Generate the Prisma client and build Next.js |
-| `npm run db:seed:demo` | Load the Vartola demo companies, pools, and login accounts |
-| `npm run lint` | ESLint |
-| `npm test` | All TypeScript unit tests (`lib/**/*.test.ts`) |
-| `npm run test:contracts` | Soroban contract tests (`cargo test`) |
-
-## Further reading
-
-Product language and the intended lifecycle are in `docs/product-direction.md`. The database shape is in `prisma/schema.prisma`. Older notes under `docs/` describe earlier AssetFi plans and are historical when they disagree with this file.
+Older notes under `docs/` describe earlier plans and are historical when they disagree with this file.

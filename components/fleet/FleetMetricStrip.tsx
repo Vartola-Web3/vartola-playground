@@ -1,9 +1,9 @@
 const metrics = [
-  { value: 'Alpha', label: 'Working platform' },
-  { value: 'Fleets', label: 'First asset class' },
-  { value: 'Testnet', label: 'Stellar rail' },
-  { value: 'VTAED', label: 'No cash value' },
-  { value: 'Gated', label: 'Mainnet later' },
+  { value: 'Testnet', label: 'Working on Stellar' },
+  { value: 'Soroban v3', label: 'Facility contracts' },
+  { value: '3', label: 'Reference facilities' },
+  { value: 'VTAED', label: 'Test asset, no value' },
+  { value: 'Gated', label: 'Mainnet, no date' },
 ];
 
 export function FleetMetricStrip() {

@@ -24,6 +24,12 @@ import {
   STRUCTURE_LINE,
 } from '@/lib/docs/product';
 
+import type { Metadata } from 'next';
+import { SEO } from '@/lib/docs/product';
+
+export const metadata: Metadata = { title: SEO.pitch.title, description: SEO.pitch.description };
+
+
 
 function Slide({ n, kicker, title, children, light = false }: { n: string; kicker: string; title: string; children: ReactNode; light?: boolean }) {
   return (
@@ -78,9 +84,9 @@ export default function PitchPage() {
         <header className="overflow-hidden rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#091713]">
           <img src="/fleet/hero.jpg" alt="Commercial fleet used by operating businesses" className="h-64 w-full object-cover sm:h-80" />
           <div className="p-6 sm:p-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">01 — Vartola · Pitch · October 2026</p>
-            <h1 className="mt-3 max-w-4xl break-words text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">Productive Asset Finance Infrastructure for UAE SMEs</h1>
-            <p className="mt-4 max-w-3xl text-lg leading-8 text-[#9FB8AD]">Financing productive real-world assets through programmable infrastructure on Stellar.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">01 — Vartola · Pitch · CURRENT — STELLAR TESTNET</p>
+            <h1 className="mt-3 max-w-4xl break-words text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">Programmable Financial Infrastructure for Productive Real-World Assets</h1>
+            <p className="mt-4 max-w-3xl text-lg leading-8 text-[#9FB8AD]">Working Financial Web3 infrastructure on Stellar Testnet. Built on Stellar. Programmable through Soroban. Designed for real-world financial operations.</p>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-[#C3D1CB]">{POSITIONING} {CORE_STATEMENT}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               {PILLARS.map((pillar) => (
@@ -89,7 +95,7 @@ export default function PitchPage() {
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/whitepaper" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">Read the White Paper</Link>
-              <Link href="/technical" className="rounded-full border border-[rgba(112,255,184,0.3)] px-5 py-3 text-sm">Technical architecture</Link>
+              <Link href="/proof" className="rounded-full border border-[rgba(112,255,184,0.3)] px-5 py-3 text-sm">View Technical Proof</Link>
             </div>
           </div>
         </header>
@@ -156,13 +162,13 @@ export default function PitchPage() {
               ['Investor', 'Fund a wallet, review opportunities, participate, and receive principal and income.'],
               ['Underwriter', 'Score business, asset, and deal, then approve or reject.'],
               ['Operations / Admin', 'Create pools, run release and activation checklists, and review the operation log.'],
-              ['Supplier / Partner', 'Approved payee, invoice and asset verification, delivery confirmation. Supplier self-service is in development.'],
+              ['Supplier / Partner', 'Approved payee, invoice and asset verification, delivery confirmation. A supplier portal and performance score exist; the score shows NOT ENOUGH DATA until there is real history.'],
               ['Asset lifecycle and servicing', 'Release, activation, repayment, early settlement, late, default, and recovery states.'],
             ]}
           />
         </Slide>
 
-        <Slide n="08" kicker="Vartola Finance Engine" title="Five layers of risk, scored and tracked separately." light>
+        <Slide n="08" kicker="Vartola Finance Engine" title="Five layers of risk, an explainable score and an Expected Loss estimate." light>
           <ul className="space-y-3">
             {RISK_LAYERS.map((layer) => (
               <li key={layer.name} className="flex flex-col gap-2 border-t border-[#DDE7E1] pt-3 sm:flex-row sm:items-start sm:justify-between">
@@ -181,12 +187,30 @@ export default function PitchPage() {
           <p className="mt-4">The passport holds the asset identity, supplier, facility, operator, and status. Private values stay off-chain. A hash and status are anchored on Soroban. The passport model and contract function exist and are published once the contracts are deployed on Testnet.</p>
         </Slide>
 
-        <Slide n="10" kicker="Investor participation" title="Participation Units: a record of economic share in one facility.">
+        <Slide n="10" kicker="Servicing, collections and treasury" title="The facility is managed after funding, not just created.">
+          <Cards
+            items={[
+              ['Asset servicing', 'Registration, insurance, maintenance, valuation and an internal Asset Health indicator.'],
+              ['Collections and recovery', 'Cases move along allowed stages with an audit trail. Lawful recovery under the applicable agreement and applicable law.'],
+              ['Insurance and supplier failure', 'Claims and supplier failures are tracked; no silent change to facility terms.'],
+              ['Treasury control', 'Committed, funded, released, repaid and outstanding, with chain state compared to application state.'],
+              ['Reconciliation', 'Indexer and reconciliation report HEALTHY, WARNING or FAILED and never rewrite chain history.'],
+              ['Operations health', 'RPC, indexer, providers and security signals in one view.'],
+            ]}
+          />
+        </Slide>
+
+        <Slide n="11" kicker="Proof Center" title="Verifiable without trusting Vartola." light>
+          <p>The public Proof Center lists the real contracts, the VTAED test asset and three reference facilities executed on Stellar Testnet, including an early settlement and a default with recovery. Every recorded event links to the explorer. What it does not prove is stated beside it: no audit, no real money, no licence.</p>
+          <Link href="/proof" className="mt-3 inline-block font-medium text-[#087A50] underline underline-offset-4">Open the Proof Center</Link>
+        </Slide>
+
+        <Slide n="12" kicker="Investor participation" title="Participation Units: a record of economic share in one facility.">
           <p>A facility is divided into Participation Units. Units determine each investor’s share of principal, income, and eligible recovery. They record economic participation. They are not legal ownership of the physical asset.</p>
           <p className="mt-3">Units are non-transferable in this phase. They are not described as sukuk, ownership tokens, or securities; any such classification requires legal approval. {STRUCTURE_LINE}</p>
         </Slide>
 
-        <Slide n="11" kicker="Why Stellar" title="Built for assets and payments, with contracts for the rules." light>
+        <Slide n="13" kicker="Why Stellar" title="Built for assets and payments, with contracts for the rules." light>
           <p>{STELLAR_ROLE} {SOROBAN_ROLE}</p>
           <div className="mt-4">
             <Cards
@@ -206,7 +230,7 @@ export default function PitchPage() {
           </div>
         </Slide>
 
-        <Slide n="12" kicker="On-chain financial architecture" title="Each step is a contract rule, not a database flag.">
+        <Slide n="14" kicker="On-chain financial architecture" title="Each step is a contract rule, not a database flag.">
           <Flow steps={ONCHAIN_FLOW} vertical />
           <p className="mt-4">In Alpha mode the application records a financial event only after the Soroban transaction confirms. The contracts are deployed on Stellar Testnet and Facility #001 has run end to end; the public walkthrough stays in Demo mode.</p>
           <p className="mt-3">Soroban is Stellar’s smart-contract layer. Vartola uses it for the facility lifecycle, escrow, compliance permissioning, investor participation, release conditions, repayment accounting, distribution, early settlement, default state, and recovery allocation.</p>
@@ -221,7 +245,7 @@ export default function PitchPage() {
           </details>
         </Slide>
 
-        <Slide n="13" kicker="Web3 without crypto UX" title="Blockchain underneath. Ordinary finance on screen.">
+        <Slide n="15" kicker="Web3 without crypto UX" title="Blockchain underneath. Ordinary finance on screen.">
           <Cards
             items={[
               ['Normal login', 'Email and password, with verification.'],
@@ -234,7 +258,7 @@ export default function PitchPage() {
           />
         </Slide>
 
-        <Slide n="14" kicker="Compliance" title="Permission state on-chain. Identity data off-chain.">
+        <Slide n="16" kicker="Compliance" title="Permission state on-chain. Identity data off-chain.">
           <Cards
             items={[
               ['Investors', 'Identity, sanctions, PEP, source of funds where required, eligibility, limits, jurisdiction.'],
@@ -245,7 +269,7 @@ export default function PitchPage() {
           <p className="mt-4">The Soroban wallet registry stores only non-sensitive permission flags. Documents stay in private storage; only their SHA-256 fingerprints are attested on-chain. KYC provider integration exists; production screening depends on the provider contract.</p>
         </Slide>
 
-        <Slide n="15" kicker="Business model" title="Revenue grows with financed and serviced volume." light>
+        <Slide n="17" kicker="Business model" title="Revenue grows with financed and serviced volume." light>
           <Cards
             light
             items={[
@@ -259,7 +283,7 @@ export default function PitchPage() {
           <p className="mt-4">All fees are potential and subject to the final regulatory structure. {STRUCTURE_LINE}</p>
         </Slide>
 
-        <Slide n="16" kicker="Defensibility" title="The moat is the full lifecycle, not one screen.">
+        <Slide n="18" kicker="Defensibility" title="The moat is the full lifecycle, not one screen.">
           <div className="flex flex-wrap gap-2">
             {['Performance data', 'Underwriting models', 'Asset lifecycle records', 'Servicing operations', 'Supplier network', 'Capital network', 'Stellar infrastructure'].map((item) => (
               <span key={item} className="rounded-full border border-[rgba(112,255,184,0.3)] px-3 py-1 text-xs text-[#D7E7DF]">{item}</span>
@@ -268,7 +292,7 @@ export default function PitchPage() {
           <p className="mt-4">More financed facilities produce more performance data, which improves underwriting, which supports more trusted opportunities and more capital.</p>
         </Slide>
 
-        <Slide n="17" kicker="Regulatory path" title="Technology now. Regulated deployment after the gates.">
+        <Slide n="19" kicker="Regulatory path" title="Technology now. Regulated deployment after the gates.">
           <p>{REGULATORY_LINE}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {['Legal structure', 'Licensed-partner model where required', 'Compliance', 'Custody and payment structure', 'Security audits'].map((item) => (
@@ -278,7 +302,7 @@ export default function PitchPage() {
           <p className="mt-4">{ENTITY.name} is a {ENTITY.form}. {ENTITY.note}</p>
         </Slide>
 
-        <Slide n="18" kicker="Current status" title="Working Alpha. Expanding the Stellar financial layer." light>
+        <Slide n="20" kicker="Current status" title="Working on Stellar Testnet. Independent security is next." light>
           <ul className="space-y-3">
             {built.map((item) => (
               <li key={item.area} className="flex flex-col gap-2 border-t border-[#DDE7E1] pt-3 sm:flex-row sm:items-start sm:justify-between">
@@ -301,11 +325,11 @@ export default function PitchPage() {
           <p className="mt-4 text-xs">No customer count, financed volume, revenue, or assets under management is claimed.</p>
         </Slide>
 
-        <Slide n="19" kicker="Roadmap" title="From today’s working platform to a gated Mainnet.">
+        <Slide n="21" kicker="Roadmap" title="From today’s working platform to a gated Mainnet.">
           <RoadmapTimeline />
         </Slide>
 
-        <Slide n="20" kicker="Why SCF" title="A real-economy use case for Stellar.">
+        <Slide n="22" kicker="Why SCF" title="A real-economy use case for Stellar.">
           <Cards
             items={[
               ['Real-world asset finance', 'Financing tied to vehicles that earn revenue.'],
@@ -318,21 +342,21 @@ export default function PitchPage() {
           />
         </Slide>
 
-        <Slide n="21" kicker="Grant use" title="Ecosystem support to accelerate the financial layer." light>
+        <Slide n="23" kicker="Grant use" title="Ecosystem support accelerates the move to production." light>
           <div className="flex flex-wrap gap-2">
             {GRANT_USE.map((item) => (
               <span key={item} className="rounded-full border border-[#DDE7E1] bg-white px-3 py-1 text-xs text-[#102019]">{item}</span>
             ))}
           </div>
-          <p className="mt-4">{GRANT_ASK}. {GRANT_SENTENCE} The grant accelerates an existing, functioning product; it does not fund a test of whether the idea works.</p>
-          <p className="mt-4 text-xs">Regulatory approval is not a deliverable Vartola controls. Deliverables are contracts, integrations, completed legal architecture, prepared partner structure, and documented dependencies.</p>
-          <Link href="/grant" className="mt-3 inline-block font-medium text-[#087A50] underline underline-offset-4">Grant objectives and milestones</Link>
+          <p className="mt-4">{GRANT_ASK}. {GRANT_SENTENCE} The detailed budget is not published here.</p>
+          <p className="mt-4 text-xs">Regulatory approval is not a deliverable Vartola controls. Committed work is independent security validation, structure, rails and a written list of gates.</p>
+          <Link href="/grant" className="mt-3 inline-block font-medium text-[#087A50] underline underline-offset-4">Grant brief</Link>
         </Slide>
 
-        <Slide n="22" kicker="Team" title="Founder-led, with the product as evidence.">
+        <Slide n="24" kicker="Team" title="Founder-led, with the product as evidence.">
           <Cards
             items={[
-              ['Founder', `Founder-led ${ENTITY.form}, ${ENTITY.name}. The working Alpha shows product, fintech, and engineering capability.`],
+              ['Founder', `Founder-led ${ENTITY.form}, ${ENTITY.name}. The working Testnet platform shows product, fintech, and engineering capability.`],
               ['Team', 'Product and engineering are founder-led today. Named biographies are published only from verified profiles.'],
               ['External providers', 'Legal and compliance advisers are engaged as the regulatory work requires.'],
               ['Future hires', 'Soroban engineering, compliance operations, and servicing. Not presented as current employees.'],
@@ -340,11 +364,11 @@ export default function PitchPage() {
           />
         </Slide>
 
-        <Slide n="23" kicker="Vision" title="From logistics assets to broader productive real-world assets.">
+        <Slide n="25" kicker="Vision" title="From logistics assets to broader productive real-world assets.">
           <Flow steps={['Logistics assets', 'Equipment', 'Broader productive real-world assets']} />
           <p className="mt-8 text-3xl font-semibold leading-tight tracking-tight text-[#F6FFF9]">{CLOSING_LINE}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/login" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">Open the Alpha</Link>
+            <Link href="/contact" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">Partner With Vartola</Link>
             <Link href="/how-it-works" className="rounded-full border border-[rgba(112,255,184,0.3)] px-5 py-3 text-sm text-[#F6FFF9]">How it works</Link>
           </div>
         </Slide>

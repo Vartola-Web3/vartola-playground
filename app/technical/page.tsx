@@ -21,9 +21,16 @@ import {
   MONEY_FLOW,
   NEXT_MILESTONE,
   SOROBAN_ROLE,
+  ON_CHAIN_ITEMS,
+  PRIVATE_ITEMS,
+  SEO,
   STELLAR_ROLE,
   VTAED,
 } from '@/lib/docs/product';
+import { QUALITY_STATUS } from '@/lib/docs/quality-status';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = { title: SEO.technical.title, description: SEO.technical.description };
 
 
 function Block({ id, letter, title, children }: { id: string; letter: string; title: string; children: ReactNode }) {
@@ -67,7 +74,7 @@ export default function TechnicalPage() {
       <SiteNav />
       <main className="vartola-frame space-y-6 py-14">
         <header>
-          <p className="text-xs uppercase tracking-[0.18em] text-[#70FFB8]">Technical & grant brief</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-[#70FFB8]">Technical architecture · CURRENT — STELLAR TESTNET</p>
           <h1 className="mt-3 max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight">Vartola Technical Architecture</h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-[#9FB8AD]">
             For Stellar reviewers, developers, technical partners, and institutional readers. Every claim on this page matches the repository. Contract IDs below are the real Stellar Testnet deployment.
@@ -87,6 +94,10 @@ export default function TechnicalPage() {
               ['gates', 'K · Mainnet gates'],
               ['facility', 'Facility #001'],
               ['references', 'L · References'],
+              ['state', 'M · State'],
+              ['risk', 'N · Risk'],
+              ['operations', 'O · Operations'],
+              ['governance', 'P · Governance'],
               ['priorities', 'Priorities'],
               ['status', 'Status'],
               ['grant', 'Grant'],
@@ -193,7 +204,7 @@ export default function TechnicalPage() {
         </Block>
 
         <Block id="indexing" letter="G · Event indexing" title="Chain events rebuild the read model.">
-          <p>Soroban / Stellar → event indexer → Prisma read model → optional Firebase operations journal. The indexer reads contract events with a stored cursor and mirrors them. <StatusBadge status="IN DEVELOPMENT" /></p>
+          <p>Soroban / Stellar → event indexer → Prisma read model → optional Firebase operations journal. The indexer reads contract events with a stored cursor and mirrors them. <StatusBadge status="TESTNET" /> Duplicate and out-of-order events are handled, failures retry and dead-letter, and re-indexing is safe.</p>
         </Block>
 
         <Block id="documents" letter="H · Document security" title="Private file → hash → attestation.">
@@ -208,11 +219,11 @@ export default function TechnicalPage() {
                   ['Role-based authorization', 'Per-role route protection for SME, investor, underwriter, and admin.', 'LIVE IN ALPHA'],
                   ['Rate limiting', 'On registration, subscription, and verification routes.', 'LIVE IN ALPHA'],
                   ['Webhook validation', 'Signed KYC webhooks.', 'LIVE IN ALPHA'],
-                  ['Key-management abstraction', 'Server-held keys, encrypted wallet secrets, wallet-provider interface.', 'INTEGRATION IN PROGRESS'],
-                  ['Emergency controls', 'Contract pause and admin rotation; role records for admin, treasury, pauser.', 'INTEGRATION IN PROGRESS'],
-                  ['Multisig', 'Prepared in the governance design; Testnet uses a single operator.', 'SECURITY GATE'],
-                  ['MFA-ready administration', 'Admin MFA required before Mainnet.', 'SECURITY GATE'],
-                  ['Auditing and monitoring', 'Audit log in the product; independent audit and production monitoring before Mainnet.', 'SECURITY GATE'],
+                  ['Key-management abstraction', 'Server-held keys, encrypted wallet secrets, wallet-provider interface. Production custody is a security gate.', 'TESTNET'],
+                  ['Emergency controls', 'Contract pause, two-step admin rotation, release limit, timelocked upgrades; separate role wallets.', 'TESTNET'],
+                  ['Multisig', 'Policies defined (for example 2-of-3, 3-of-5) but not enforced on-chain; Testnet uses single role keys.', 'SECURITY GATE'],
+                  ['Admin MFA and encrypted secrets', 'TOTP MFA for admin roles in Alpha mode; provider secrets encrypted at rest.', 'LIVE IN ALPHA'],
+                  ['Independent audit and monitoring', 'Audit log, operations health and an audit-readiness package exist. No independent audit or penetration test yet.', 'SECURITY GATE'],
                 ] as const).map(([control, body, status]) => (
                   <tr key={control} className="border-t border-white/10 align-top">
                     <th className="w-[28%] py-3 pr-4 font-semibold text-[#F6FFF9]">{control}</th>
@@ -229,7 +240,7 @@ export default function TechnicalPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <article className="rounded-2xl border border-[#70FFB8]/25 bg-[#091713] p-4">
               <h3 className="font-semibold text-[#F6FFF9]">Testnet</h3>
-              <p className="mt-1">VTAED issued, accounts and trustlines, event fingerprints, Soroban contracts ready for deployment. {VTAED.note}</p>
+              <p className="mt-1">VTAED issued, accounts and trustlines, event fingerprints, Soroban contracts v3 deployed and exercised by three reference facilities. {VTAED.note}</p>
             </article>
             <article className="rounded-2xl border border-amber-200/25 bg-[#091713] p-4">
               <h3 className="font-semibold text-[#F6FFF9]">Mainnet</h3>
@@ -311,10 +322,37 @@ export default function TechnicalPage() {
           </dl>
         </Block>
 
+        <Block id="state" letter="M · Financial state model" title="Wallet permission, facility, position, escrow, release, repayment, distribution, settlement, recovery.">
+          <p>Each stage is a contract state with events anyone can read. Permission and position live on-chain; identity and commercial documents do not. Release is authorized by one role and paid by another. One waterfall serves repayment, settlement and recovery, so the arithmetic cannot drift.</p>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <article className="rounded-2xl border border-[#70FFB8]/25 bg-[#091713] p-4"><h3 className="font-semibold text-[#F6FFF9]">On-chain</h3><ul className="mt-2 list-disc space-y-1 pl-5">{ON_CHAIN_ITEMS.map((item) => <li key={item}>{item}</li>)}</ul></article>
+            <article className="rounded-2xl border border-white/10 bg-[#091713] p-4"><h3 className="font-semibold text-[#F6FFF9]">Off-chain (private)</h3><ul className="mt-2 list-disc space-y-1 pl-5">{PRIVATE_ITEMS.map((item) => <li key={item}>{item}</li>)}</ul></article>
+          </div>
+        </Block>
+
+        <Block id="risk" letter="N · Risk, Expected Loss and attestation" title="Deterministic, explainable, and anchored.">
+          <p>Facility risk v2 combines nine components with versioned weights and a hashed input snapshot. An internal Expected Loss estimate (PD × LGD × EAD) uses configurable assumptions and stores the model version, input hash and explanation. Rule-based, not machine learning, not a regulated rating. The model version, score, grade and input hash can be attested on-chain so a score cannot be silently changed after funding; the inputs stay private.</p>
+        </Block>
+
+        <Block id="operations" letter="O · Passport, treasury, reconciliation and operations" title="What runs after funding.">
+          <ul className="list-disc space-y-1 pl-5">
+            <li>Digital Asset Passport: hashed serial, supplier, delivery, registration, insurance, valuation, recovery status and a verification panel that names each check&apos;s source.</li>
+            <li>Asset servicing and an internal Asset Health indicator; supplier network with a performance score that shows NOT ENOUGH DATA without real history.</li>
+            <li>Treasury control center with chain-versus-application state and facility reserves that are never presented as a guarantee.</li>
+            <li>Collections and recovery workspaces, insurance-event and supplier-failure workflows, all audit-logged.</li>
+            <li>Reconciliation reports HEALTHY, WARNING or FAILED and never rewrites chain history; operations health covers RPC, indexer, providers and security signals.</li>
+          </ul>
+        </Block>
+
+        <Block id="governance" letter="P · Governance, continuity and testing" title="Controlled, recoverable, tested.">
+          <p>Separate role wallets and a privileged role matrix; contract versions, deployments and authorizers are recorded; multisig-ready but not enforced. Facility state lives on the contracts, so an application outage does not change who holds what; backup, disaster-recovery and wind-down plans are documented but not yet drilled. An audit-readiness package (contract inventory, authorization matrix, invariants, known limitations) is prepared; no audit is engaged.</p>
+          <p className="mt-3">Recorded engineering evidence: {QUALITY_STATUS.applicationTests.passed} application tests, {QUALITY_STATUS.contractTests.passed} contract tests, {QUALITY_STATUS.lintErrors} lint errors, build {QUALITY_STATUS.build} ({QUALITY_STATUS.recordedOn}). Verify the contracts and each reference facility on the <Link className="text-[#70FFB8] underline underline-offset-4" href="/proof">Proof Center</Link>.</p>
+        </Block>
+
         <section id="priorities" className="scroll-mt-24 rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#0E211B] p-6 sm:p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">Current technical status</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">Immediate engineering priority</h2>
-          <p className="mt-3 text-sm leading-7 text-[#9FB8AD]">{CURRENT_POSITION} The immediate priority is to complete the real Soroban execution path end to end, not to expand documentation or add features. Vartola is not yet described as fully Soroban-native, Mainnet-ready, production-ready, or audit-ready.</p>
+          <p className="mt-3 text-sm leading-7 text-[#9FB8AD]">{CURRENT_POSITION} The Soroban execution path is complete end to end on Testnet. Vartola is not Mainnet-ready, production-ready or audited: the next stage is independent security, a regulated operating structure, production financial rails and a controlled pilot.</p>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             {ENGINEERING_PRIORITIES.map((group, index) => (
               <article key={group.title} className="rounded-2xl border border-white/10 bg-[#091713] p-4">
@@ -326,7 +364,7 @@ export default function TechnicalPage() {
               </article>
             ))}
           </div>
-          <p className="mt-4 text-sm leading-7 text-[#D7E7DF]"><strong>Next milestone:</strong> {NEXT_MILESTONE} After that, Vartola moves from a Stellar-enabled fintech Alpha to a Soroban-native asset-finance Alpha.</p>
+          <p className="mt-4 text-sm leading-7 text-[#D7E7DF]"><strong>Next milestone:</strong> {NEXT_MILESTONE}</p>
         </section>
 
         <section id="status" className="scroll-mt-24 rounded-[28px] border border-white/10 bg-[#0D211A] p-6 sm:p-8">
@@ -352,8 +390,8 @@ export default function TechnicalPage() {
         </section>
 
         <section id="grant" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-6 text-[#102019] sm:p-8">
-          <h2 className="text-2xl font-semibold">Grant milestones · {GRANT_ASK}</h2>
-          <p className="mt-3 text-sm leading-7 text-[#52635C]">{GRANT_SENTENCE} Regulatory approval is not a deliverable Vartola controls.</p>
+          <h2 className="text-2xl font-semibold">Ecosystem support · {GRANT_ASK}</h2>
+          <p className="mt-3 text-sm leading-7 text-[#52635C]">{GRANT_SENTENCE} Regulatory approval is not a deliverable Vartola controls. The detailed budget is shared privately.</p>
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
             {GRANT_MILESTONES.map((milestone) => (
               <article key={milestone.name} className="rounded-2xl border border-[#DDE7E1] bg-white p-4">

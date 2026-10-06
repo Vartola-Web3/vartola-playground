@@ -6,10 +6,10 @@ export function RoadmapTimeline() {
       {ROADMAP.map((item, index) => (
         <li key={item.when} className="relative rounded-3xl border border-[rgba(112,255,184,0.14)] bg-[#0E211B] p-5">
           <span
-            className={`absolute -left-[31px] top-6 h-3 w-3 rounded-full ${index === 0 ? 'bg-[#35F49A]' : item.when === 'Mainnet' ? 'bg-amber-200' : 'border border-[#70FFB8] bg-[#07120F]'}`}
+            className={`absolute -left-[31px] top-6 h-3 w-3 rounded-full ${index === 0 ? 'bg-[#35F49A]' : item.when === 'CONTROLLED MAINNET' ? 'bg-amber-200' : 'border border-[#70FFB8] bg-[#07120F]'}`}
           />
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <p className={`text-xs font-semibold uppercase tracking-[0.14em] ${item.when === 'Mainnet' ? 'text-amber-200' : 'text-[#70FFB8]'}`}>{item.when}</p>
+            <p className={`text-xs font-semibold uppercase tracking-[0.14em] ${item.when === 'CONTROLLED MAINNET' ? 'text-amber-200' : 'text-[#70FFB8]'}`}>{item.when}</p>
             <h3 className="font-semibold">{item.title}</h3>
             {index === 0 ? <span className="rounded-full bg-[#35F49A]/15 px-2 py-0.5 text-[11px] font-semibold text-[#9DFFD2]">NOW</span> : null}
           </div>

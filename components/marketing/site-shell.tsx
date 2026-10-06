@@ -16,6 +16,9 @@ export function SiteFooter() {
           <Link href="/login" className="rounded-full bg-[#35F49A] px-5 py-3 text-sm font-semibold text-[#07120F]">
             Launch Demo
           </Link>
+          <Link href="/contact" className="rounded-full border border-[rgba(112,255,184,0.24)] px-5 py-3 text-sm font-medium text-[#F6FFF9]">
+            Contact
+          </Link>
           <Link href="/docs" className="rounded-full border border-[rgba(112,255,184,0.24)] px-5 py-3 text-sm font-medium text-[#F6FFF9]">
             Documentation
           </Link>

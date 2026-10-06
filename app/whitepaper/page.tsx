@@ -4,6 +4,12 @@ import { SiteFooter, SiteNav } from '@/components/marketing/site-shell';
 import { DISCLAIMER, ENTITY } from '@/lib/docs/product';
 import { WHITEPAPER_NAV, WHITEPAPER_SECTIONS } from '@/lib/docs/whitepaper';
 
+import type { Metadata } from 'next';
+import { SEO } from '@/lib/docs/product';
+
+export const metadata: Metadata = { title: SEO.whitepaper.title, description: SEO.whitepaper.description };
+
+
 export default function WhitepaperPage() {
   return (
     <div className="vartola-grid min-h-screen text-[#F6FFF9]">
@@ -14,7 +20,7 @@ export default function WhitepaperPage() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">Product paper · October 2026</p>
               <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-6xl">
-                Productive-asset finance infrastructure for UAE SMEs.
+                Programmable financial infrastructure for productive real-world assets.
               </h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-[#A9BDB5]">
                 The authoritative description of Vartola: the financing model, servicing, ownership questions, Stellar and Soroban rail, and the gates before any live deployment. {ENTITY.name} publishes this as a technology company.
@@ -28,9 +34,9 @@ export default function WhitepaperPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#70FFB8]">Document status</p>
               <dl className="mt-6 space-y-5 text-sm">
                 {[
-                  ['Stage', 'Working Alpha platform'],
+                  ['Stage', 'Working on Stellar Testnet'],
                   ['Initial assets', 'UAE logistics and commercial fleets'],
-                  ['Financial rail', 'Application ledger live; Soroban path in development'],
+                  ['Financial rail', 'Soroban facility contracts v3 on Stellar Testnet'],
                   ['Test asset', 'VTAED on Stellar Testnet, no cash value'],
                 ].map(([term, value]) => (
                   <div key={term}>

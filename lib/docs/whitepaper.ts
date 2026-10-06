@@ -26,8 +26,8 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     title: 'Productive-asset finance infrastructure for UAE SMEs.',
     paragraphs: [
       'Vartola is a productive-asset finance infrastructure platform for UAE SMEs. It combines underwriting, asset acquisition, servicing, investor participation, and programmable financial execution using Stellar and Soroban.',
-      'The working Alpha already runs the full cycle: an SME applies, an underwriter scores the business, asset, and deal, an approved facility opens for funding, investors participate, release and delivery checks gate activation, and the SME repays while investors receive principal and income. Early settlement, late payment, default, and recovery are implemented.',
-      'Stellar is the network and settlement layer. Soroban is the contract layer that executes the financing rules. VTAED, a non-redeemable test asset, is issued on Stellar Testnet. The Soroban registry and facility contracts are written and tested and are being deployed to Testnet. Mainnet and live money follow the regulatory, legal, security, payment and custody, and operational gates.',
+      'The working platform on Stellar Testnet already runs the full cycle: an SME applies, an underwriter scores the business, asset, and deal, an approved facility opens for funding, investors participate, release and delivery checks gate activation, and the SME repays while investors receive principal and income. Early settlement, late payment, default, and recovery are implemented.',
+      'Stellar is the network and settlement layer. Soroban is the contract layer that executes the financing rules. VTAED, a non-redeemable test asset, is issued on Stellar Testnet. The Soroban wallet registry and facility contracts (v3) are deployed on Testnet and have executed three reference facilities, including an early settlement and a default with recovery. There is no independent audit yet, and no real money. Mainnet and live money follow the regulatory, legal, security, payment and custody, and operational gates.',
       `${ENTITY.name} is a ${ENTITY.form}. ${ENTITY.note}`,
     ],
   },
@@ -133,7 +133,7 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
       'Receive payment only after the release checklist is complete.',
       'Confirm delivery and support registration and asset data.',
     ],
-    paragraphs: ['Supplier records and release payouts are in the product today. A self-service supplier portal is in development.'],
+    paragraphs: ['Supplier records, quotations, invoices, asset allocation, delivery evidence and release status are in the product, with a supplier portal and an internal performance score that shows NOT ENOUGH DATA until there is a real delivery history. A supplier cannot approve its own release or change facility terms.'],
   },
   {
     id: 'underwriting',
@@ -173,7 +173,7 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     label: 'Participation Units',
     title: 'Economic participation, not legal ownership of the asset.',
     paragraphs: [
-      'A facility is divided into Participation Units. In the Alpha design one unit is 100 of the settlement asset. Example only: a facility of 1,000,000 has 10,000 units; a commitment of 25,000 is 250 units.',
+      'A facility is divided into Participation Units. One unit is 100 of the settlement asset. Example only: a facility of 1,000,000 has 10,000 units; a commitment of 25,000 is 250 units.',
       'Units determine an investor’s share of principal, income, and eligible recovery. They are economic participation in the facility. They do not give legal ownership of the physical asset. Initially, units are non-transferable or permissioned and allowlist-restricted. They are not described as sukuk, security tokens, or ownership tokens until legal classification is complete. The interface calls them a Digital Investment Position, recorded as an Economic Participation Record.',
     ],
   },
@@ -296,6 +296,42 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     ],
   },
   {
+    id: 'expected-loss',
+    label: 'Expected Loss',
+    title: "An explainable internal estimate: PD × LGD × EAD.",
+    paragraphs: ["Vartola computes an Expected Loss for each facility from a probability of default by risk grade, a loss given default from asset value, resale liquidity and recovery cost, and the exposure at default. Assumptions are explicit, configurable and versioned. Each result stores the model version, the input snapshot hash, PD, LGD, EAD, expected loss, grade and the explanation.","This is an internal Vartola risk estimate. It is not a regulated credit rating, uses no credit bureau data, and is not calibrated on real default history yet. Rule-based and deterministic: no machine learning is claimed."],
+  },
+  {
+    id: 'facility-risk',
+    label: 'Facility Risk',
+    title: "Why this score? Positives, negatives, risks and mitigants.",
+    paragraphs: ["The facility risk score combines nine components: business, asset, deal, servicing, portfolio concentration, SME contribution, finance-to-value, payment capacity and asset liquidity. For each facility the underwriter sees the positive factors, the negative factors, the key risks, the mitigants and the suggested actions, all derived from the same components so the explanation always matches the number.","A snapshot of the risk model version, score, grade and input hash can be attested on Soroban. The confidential inputs stay private. Anyone can later check that the assessment was not silently altered after funding."],
+  },
+  {
+    id: 'portfolio-risk',
+    label: 'Portfolio Risk',
+    title: "Concentration, exposure and scenario analysis.",
+    paragraphs: ["The portfolio view shows outstanding principal, expected loss, weighted grade, late, default and recovery exposure, and concentration by SME, supplier, asset class, sector, geography and risk grade, with limits and upcoming breaches. Stress scenarios (higher defaults, lower recovery, asset depreciation, payment delays, a supplier event) are labelled scenario analysis, not a forecast."],
+  },
+  {
+    id: 'reserve',
+    label: 'Facility Reserve',
+    title: "Optional, set by the facility terms, never a guarantee.",
+    paragraphs: ["A facility may define a reserve rate, target, balance and permitted uses (temporary shortfall, servicing cost, approved recovery cost, insurance deductible or another configured expense). A reserve is not presented as guaranteed investor protection and no unapproved legal waterfall is hard-coded: the facility terms decide."],
+  },
+  {
+    id: 'asset-servicing',
+    label: 'Asset Servicing',
+    title: "The asset stays serviced after funding.",
+    paragraphs: ["Each asset moves through purchase, registration, insurance, delivery, activation, maintenance, revaluation, renewal, recovery and disposal. The platform tracks registration and insurance expiry, maintenance, downtime, usage, condition, valuation and its source, accident and recovery status. An internal Asset Health indicator (HEALTHY, WATCH, AT RISK) feeds the facility risk view. A verification panel shows how many checks (VIN, invoice, supplier, delivery, registration, insurance) are verified and, for each, the source: manual, supplier, document, provider, API or on-chain attestation. A manual check is never described as an API check."],
+  },
+  {
+    id: 'treasury',
+    label: 'Treasury',
+    title: "Committed, funded, deployed, released, repaid, outstanding.",
+    paragraphs: ["The treasury control center shows commitments, funding, deployment, escrow, supplier releases, expected and received repayments, outstanding principal, investor liabilities, reserves, recovery and settlement amounts, and compares chain state with application state alongside the reconciliation status. Release authorization and supplier payment are separate roles."],
+  },
+  {
     id: 'business-model',
     label: 'Platform Business Model',
     title: 'Revenue follows volume and servicing.',
@@ -374,6 +410,24 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     paragraphs: [`${ARCHITECTURE[2].body} Firebase is not being removed.`],
   },
   {
+    id: 'indexing',
+    label: 'Event Indexing',
+    title: "Soroban events rebuild the read model.",
+    paragraphs: ["A cursor-based indexer reads contract events, stores them idempotently, retries failures, keeps dead letters and can safely re-index. Out-of-order and duplicate events are handled, and finality is never recorded unless the chain confirmed it."],
+  },
+  {
+    id: 'reconciliation',
+    label: 'Reconciliation',
+    title: "Detect drift, never rewrite history.",
+    paragraphs: ["Scheduled and manual reconciliation compares each facility on the contract with the application projection: state, funding, units, outstanding principal, positions and transaction references. The result is HEALTHY, WARNING or FAILED with findings. It never writes to the chain or rewrites its history. An operations health center shows RPC, indexer, reconciliation, providers and security signals."],
+  },
+  {
+    id: 'proof',
+    label: 'Proof Center',
+    title: "Verify it without trusting Vartola.",
+    paragraphs: ["The public Proof Center lists the real Testnet contracts and asset, the latest ledger, and the lifecycle of each reference facility with an explorer link for every recorded event. Public facility verification reads the contract live and exposes no private data. Engineering evidence is shown with the date it was recorded, and what the proof does not show is stated beside it."],
+  },
+  {
     id: 'security',
     label: 'Security Architecture',
     title: 'Controls in place, and controls that are gates.',
@@ -385,6 +439,12 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
       'Contract pause and admin rotation exist on Testnet; multisig and a separated pauser are prepared.',
       'Independent smart-contract audit, penetration test, production key custody, and admin MFA are security gates before Mainnet.',
     ],
+  },
+  {
+    id: 'governance',
+    label: 'Governance',
+    title: "Separated roles, controlled upgrades.",
+    paragraphs: ["Administrator, pauser, treasury, underwriter, operations and compliance roles have separate wallets. Release needs eight attested conditions, one authorizer and a different payer, within a daily limit. Admin rotation is two-step, upgrades are timelocked and every contract version, deployment and authorizer is recorded. Multisig thresholds are defined but not yet enforced on-chain; production multisig and managed key custody are part of the independent security stage. A privileged role matrix, admin MFA, encrypted platform secrets and private signed document storage complete the current controls."],
   },
   {
     id: 'kyc',
@@ -440,7 +500,7 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     label: 'Business Continuity',
     title: 'The financial record survives the application.',
     paragraphs: [
-      'If the operations journal fails, a confirmed Soroban result still stands and can be re-indexed. If the read model lags, it is rebuilt from chain events. Production drills are part of the February 2027 security and resilience work.',
+      'If the operations journal fails, a confirmed Soroban result still stands and can be re-indexed. If the read model lags, it is rebuilt from chain events. Facility state, positions, escrow and distributions live on the contracts, so an application outage does not change who holds what. Backup, restore and succession procedures are documented; production restore drills come with the independent security work.',
     ],
   },
   {
@@ -450,6 +510,12 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     paragraphs: [
       'New facilities stop. Existing facilities continue to be serviced or are transferred to a successor servicer under the agreements. Facility state remains readable on the public chain record, and read-model data is exported. No live client money is held today. A full wind-down plan is part of the regulatory and partner structure.',
     ],
+  },
+  {
+    id: 'pilot',
+    label: 'Pilot Strategy',
+    title: "Real counterparties only, no fabricated traction.",
+    paragraphs: ["Vartola has built the infrastructure to run a pilot: a pilot pipeline for SMEs, suppliers, fleet, finance, custody, insurance and servicing partners, non-binding partner templates and an institutional sandbox. The pipeline shows only what an administrator enters and starts at zero. No signed SME, supplier, partner or LOI is claimed. A controlled real-world pilot follows the security, regulatory and rails stages."],
   },
   {
     id: 'expansion',
@@ -509,7 +575,7 @@ const sections: (Omit<DocBlock, 'kicker'> & { label: string })[] = [
     label: 'Disclaimer',
     title: CLOSING_LINE,
     paragraphs: [
-      'This document describes a working Alpha and a Testnet financial layer. It is not an offer, prospectus, or solicitation, and nothing here is a forecast of profit. Returns are not guaranteed. Investment eligibility and offering structure remain subject to applicable regulation.',
+      'This document describes working Financial Web3 infrastructure on Stellar Testnet. It is not an offer, prospectus, or solicitation, and nothing here is a forecast of profit. Returns are not guaranteed. Investment eligibility and offering structure remain subject to applicable regulation.',
     ],
   },
 ];

@@ -191,6 +191,7 @@ function getNavigationForRole(role: string) {
         { label: 'Contracts', href: '/admin/contracts' },
         { label: 'Operations health', href: '/admin/operations-health' },
         { label: 'Pilots', href: '/admin/pilots' },
+        { label: 'Contacts', href: '/admin/contacts' },
         { label: 'Mainnet readiness', href: '/admin/mainnet-readiness' },
         { label: 'Reports', href: '/admin/reports' },
         { label: 'Data lineage', href: '/admin/lineage' },

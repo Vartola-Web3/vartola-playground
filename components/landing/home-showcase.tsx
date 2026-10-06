@@ -25,9 +25,9 @@ export function HomeShowcase() {
             <img src="/brand/vartola-logo.png" alt="" className="h-14 w-14 rounded-2xl shadow-[0_0_40px_rgba(53,244,154,0.45)]" />
             <p className="text-5xl font-semibold tracking-tight text-white sm:text-6xl">Vartola</p>
           </div>
-          <p className="mt-4 text-lg text-[#D7E7DF] sm:text-2xl">Productive asset finance, made transparent.</p>
+          <p className="mt-4 text-lg text-[#D7E7DF] sm:text-2xl">Programmable financial infrastructure for productive real-world assets.</p>
           <div className="mt-5 flex flex-wrap justify-center gap-2 text-sm">
-            {['Real assets', 'Clear terms', 'Every payment recorded', 'Stellar Testnet'].map((item) => (
+            {['Real assets', 'Programmable escrow', 'Verifiable on Stellar', 'Testnet'].map((item) => (
               <span key={item} className="rounded-full border border-[#35F49A]/50 px-3 py-1 text-[#E8FFF4]">{item}</span>
             ))}
           </div>

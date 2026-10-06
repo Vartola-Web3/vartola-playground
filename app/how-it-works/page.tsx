@@ -1,7 +1,19 @@
 import { HowTabs } from '@/components/docs/how-tabs';
 import { ExplainerVideo } from '@/components/marketing/explainer-video';
 import { SiteFooter, SiteNav } from '@/components/marketing/site-shell';
-import { DISCLAIMER, RETURNS_NOTE } from '@/lib/docs/product';
+import Link from 'next/link';
+import type { Metadata } from 'next';
+import { DISCLAIMER, ON_CHAIN_ITEMS, PRIVATE_ITEMS, RETURNS_NOTE, ROLE_FLOWS, SEO } from '@/lib/docs/product';
+
+export const metadata: Metadata = { title: SEO.howItWorks.title, description: SEO.howItWorks.description };
+
+const FLOWS: [string, string, readonly string[]][] = [
+  ['For SMEs', 'Request a Pilot', ROLE_FLOWS.sme],
+  ['For investors', 'Partner With Vartola', ROLE_FLOWS.investor],
+  ['For suppliers', 'Join Supplier Network', ROLE_FLOWS.supplier],
+  ['For operations', 'View Technical Proof', ROLE_FLOWS.operations],
+];
+const FLOW_LINKS: Record<string, string> = { 'Request a Pilot': '/contact?type=sme', 'Partner With Vartola': '/contact?type=capital', 'Join Supplier Network': '/contact?type=supplier', 'View Technical Proof': '/proof' };
 
 const FULL_FLOW: [string, string][] = [
   ['SME applies', 'The business requests a productive asset.'],
@@ -57,6 +69,31 @@ export default function HowItWorksPage() {
               </li>
             ))}
           </ol>
+        </section>
+
+
+        <section className="mt-8 grid gap-4 md:grid-cols-2">
+          {FLOWS.map(([title, cta, steps]) => (
+            <article key={title} className="rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#0E211B] p-6">
+              <h2 className="text-xl font-semibold">{title}</h2>
+              <ol className="mt-4 space-y-2 text-sm text-[#C3D1CB]">
+                {steps.map((step, index) => <li key={step} className="flex gap-3"><span className="w-5 shrink-0 text-xs font-semibold text-[#70FFB8]">{index + 1}</span>{step}</li>)}
+              </ol>
+              <Link href={FLOW_LINKS[cta]} className="mt-4 inline-block text-sm font-medium text-[#70FFB8] underline underline-offset-4">{cta}</Link>
+            </article>
+          ))}
+        </section>
+
+        <section className="mt-8 grid gap-4 md:grid-cols-2">
+          <article className="rounded-[28px] border border-[rgba(112,255,184,0.25)] bg-[#091713] p-6">
+            <h2 className="text-xl font-semibold">What happens on-chain?</h2>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[#C3D1CB]">{ON_CHAIN_ITEMS.map((item) => <li key={item}>{item}</li>)}</ul>
+          </article>
+          <article className="rounded-[28px] border border-white/10 bg-[#091713] p-6">
+            <h2 className="text-xl font-semibold">What remains private?</h2>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-[#C3D1CB]">{PRIVATE_ITEMS.map((item) => <li key={item}>{item}</li>)}</ul>
+            <p className="mt-3 text-xs text-[#9FB8AD]">Only hashes and non-sensitive permissions are anchored. Everything runs on Stellar Testnet with a test asset that has no monetary value.</p>
+          </article>
         </section>
 
         <section className="mt-8 grid gap-4 sm:grid-cols-3">

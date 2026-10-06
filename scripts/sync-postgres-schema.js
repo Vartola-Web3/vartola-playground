@@ -3,6 +3,8 @@
 // data makes `prisma db push` refuse (no --accept-data-loss), and in that case the step reports it and the
 // build continues, so a schema problem never blocks a deploy silently or destroys data.
 const { spawnSync } = require('child_process');
+// Run the Prisma CLI directly (no shell) so database URLs with & or ? are passed through untouched.
+const PRISMA = require.resolve('prisma/build/index.js');
 
 const url = process.env.DATABASE_URL || '';
 if (!(url.startsWith('postgres://') || url.startsWith('postgresql://'))) {
@@ -11,7 +13,7 @@ if (!(url.startsWith('postgres://') || url.startsWith('postgresql://'))) {
 }
 
 const schema = 'prisma/schema.postgres.prisma';
-const diff = spawnSync('npx', ['prisma', 'migrate', 'diff', '--from-url', url, '--to-schema-datamodel', schema, '--script'], { encoding: 'utf8', shell: true });
+const diff = spawnSync(process.execPath, [PRISMA, 'migrate', 'diff', '--from-url', url, '--to-schema-datamodel', schema, '--script'], { encoding: 'utf8' });
 const script = (diff.stdout || '').trim();
 console.log('sync-postgres-schema: planned changes:');
 console.log(script || '(none)');
@@ -23,6 +25,6 @@ if (/\bDROP\s+(TABLE|COLUMN)\b/i.test(script)) {
 // Only skip the push when the diff ran and found nothing. If the diff itself failed, db push still decides safely.
 if (diff.status === 0 && (!script || /^-- This is an empty migration/i.test(script))) process.exit(0);
 
-const push = spawnSync('npx', ['prisma', 'db', 'push', `--schema=${schema}`, '--skip-generate'], { stdio: 'inherit', shell: true });
+const push = spawnSync(process.execPath, [PRISMA, 'db', 'push', `--schema=${schema}`, '--skip-generate'], { stdio: 'inherit' });
 if (push.status !== 0) console.log('sync-postgres-schema: db push did not complete. The deploy continues; check the output above.');
 process.exit(0);

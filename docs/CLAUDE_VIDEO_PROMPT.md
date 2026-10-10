@@ -4,7 +4,7 @@ Copy everything below into Claude, then upload all six PNG files from `docs/vide
 
 ---
 
-Create a polished 80-second, 16:9 English product explainer video for **Vartola**, a UAE productive-asset financing and tokenization platform. Deliver a final MP4 suitable for a grant committee, investor meeting, accelerator application, and website hero section.
+Create a polished 80-second, 16:9 English product explainer video for **Vartola**, a UAE productive-asset financing and tokenization platform. Deliver a final MP4 suitable for an investor meeting, accelerator application, and website hero section.
 
 ## Mandatory visual direction
 

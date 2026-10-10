@@ -12,9 +12,6 @@ import {
   ENGINEERING_PRIORITIES,
   GATED,
   GITHUB,
-  GRANT_ASK,
-  GRANT_MILESTONES,
-  GRANT_SENTENCE,
   IMPLEMENTATION,
   MAINNET_GATES,
   MAINNET_STATEMENT,
@@ -100,7 +97,6 @@ export default function TechnicalPage() {
               ['governance', 'P · Governance'],
               ['priorities', 'Priorities'],
               ['status', 'Status'],
-              ['grant', 'Grant'],
             ].map(([id, label]) => (
               <a key={id} href={`#${id}`} className="rounded-full border border-[rgba(112,255,184,0.25)] px-3 py-1.5 text-[#D7E7DF] hover:border-[#70FFB8]">{label}</a>
             ))}
@@ -387,22 +383,6 @@ export default function TechnicalPage() {
         <section className="rounded-[28px] border border-[rgba(112,255,184,0.14)] bg-[#091713] p-6 sm:p-8">
           <h2 className="text-2xl font-semibold">Roadmap</h2>
           <RoadmapTimeline />
-        </section>
-
-        <section id="grant" className="scroll-mt-24 rounded-[28px] bg-[#F7FAF8] p-6 text-[#102019] sm:p-8">
-          <h2 className="text-2xl font-semibold">Ecosystem support · {GRANT_ASK}</h2>
-          <p className="mt-3 text-sm leading-7 text-[#52635C]">{GRANT_SENTENCE} Regulatory approval is not a deliverable Vartola controls. The detailed budget is shared privately.</p>
-          <div className="mt-6 grid gap-4 lg:grid-cols-3">
-            {GRANT_MILESTONES.map((milestone) => (
-              <article key={milestone.name} className="rounded-2xl border border-[#DDE7E1] bg-white p-4">
-                <p className="text-xs font-semibold text-[#087A50]">{milestone.name} · {milestone.window}</p>
-                <ul className="mt-3 list-disc space-y-1 pl-4 text-sm leading-6 text-[#52635C]">
-                  {milestone.deliverables.map((item) => <li key={item}>{item}</li>)}
-                </ul>
-              </article>
-            ))}
-          </div>
-          <Link href="/grant" className="mt-4 inline-block text-sm font-medium text-[#087A50] underline underline-offset-4">Open the grant narrative</Link>
         </section>
 
         <p className="text-sm leading-7 text-[#9FB8AD]">{DISCLAIMER}</p>

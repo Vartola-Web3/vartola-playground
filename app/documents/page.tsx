@@ -19,9 +19,6 @@ export default function DocumentsPage() {
             <p className="text-xl text-blue-200">
               Documentation requirements for SMEs, Investors, and Underwriters
             </p>
-            <p className="text-lg text-blue-300 mt-2" dir="rtl" lang="ar">
-              المستندات المطلوبة ومتطلبات KYC للشركات والمستثمرين والمكتتبين
-            </p>
           </div>
 
           {/* Main Content */}
@@ -29,13 +26,10 @@ export default function DocumentsPage() {
 
             {/* Important Notice */}
             <div className="bg-red-500/20 rounded-xl p-6 border border-red-500/50">
-              <h2 className="text-2xl font-bold text-red-200 mb-3">⚠️ Important Notice | إشعار هام</h2>
+              <h2 className="text-2xl font-bold text-red-200 mb-3">⚠️ Important Notice</h2>
               <div className="space-y-2 text-red-100 text-sm">
                 <p>
                   <strong>English:</strong> Vartola is a working Alpha from RIMAL TECH - FZCO. It is not licensed to take real applications, documents, or investments. This page lists documents a future licensed process would require. Do not submit real personal or business documents here.
-                </p>
-                <p dir="rtl" lang="ar">
-                  <strong>العربية:</strong> فارتولا منصة عاملة ضمن مرحلة ألفا لشركة RIMAL TECH - FZCO. ليست مرخصة لقبول طلبات أو مستندات أو استثمارات حقيقية. تعرض هذه الصفحة الوثائق التي قد يطلبها مسار مرخص لاحقاً. لا ترسل مستندات شخصية أو تجارية حقيقية هنا.
                 </p>
               </div>
             </div>
@@ -46,19 +40,16 @@ export default function DocumentsPage() {
                 <span className="text-4xl">🏢</span>
                 <h2 className="text-3xl font-bold text-white">For SMEs (Financing Applicants)</h2>
               </div>
-              <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                للشركات الصغيرة والمتوسطة (المتقدمون للتمويل)
-              </p>
 
               <div className="space-y-6">
                 {/* Company Documents */}
                 <div className="bg-blue-500/10 rounded-lg p-6 border border-blue-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">1. Company Documents | وثائق الشركة</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">1. Company Documents</h3>
                   <ul className="space-y-3 text-blue-100">
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Trade License (DED/DED) | الرخصة التجارية:</strong>
+                        <strong className="text-white">Trade License (DED):</strong>
                         <p className="text-sm mt-1">Valid UAE trade license issued by Department of Economic Development. Must show company name, license number, activities, and expiry date. Arabic or English accepted.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 5MB</p>
                       </div>
@@ -66,7 +57,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Memorandum of Association | عقد التأسيس:</strong>
+                        <strong className="text-white">Memorandum of Association:</strong>
                         <p className="text-sm mt-1">Company formation documents showing ownership structure, authorized signatories, and share capital.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 10MB</p>
                       </div>
@@ -74,7 +65,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Certificate of Incorporation | شهادة التأسيس:</strong>
+                        <strong className="text-white">Certificate of Incorporation:</strong>
                         <p className="text-sm mt-1">Official company registration certificate from relevant authority (DED, ADGM, DIFC, Free Zone).</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 5MB</p>
                       </div>
@@ -84,12 +75,12 @@ export default function DocumentsPage() {
 
                 {/* Financial Documents */}
                 <div className="bg-green-500/10 rounded-lg p-6 border border-green-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">2. Financial Documents | الوثائق المالية</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">2. Financial Documents</h3>
                   <ul className="space-y-3 text-blue-100">
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Bank Statements | كشوفات حسابات بنكية:</strong>
+                        <strong className="text-white">Bank Statements:</strong>
                         <p className="text-sm mt-1">Last 6 months of business bank account statements showing revenue, expenses, and cash flow. All pages required.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF (bank-issued) | Max 20MB</p>
                       </div>
@@ -97,7 +88,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Financial Statements | القوائم المالية:</strong>
+                        <strong className="text-white">Financial Statements:</strong>
                         <p className="text-sm mt-1">Latest audited or management accounts: Balance Sheet, Income Statement, Cash Flow Statement. For companies &gt;3 years, last 2 years required.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 15MB</p>
                       </div>
@@ -105,7 +96,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-orange-400 text-xl flex-shrink-0">○</span>
                       <div>
-                        <strong className="text-white">Tax Returns (if applicable) | الإقرارات الضريبية:</strong>
+                        <strong className="text-white">Tax Returns (if applicable):</strong>
                         <p className="text-sm mt-1">VAT returns or Corporate Tax filings if business is registered. Optional but strengthens application.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 10MB</p>
                       </div>
@@ -115,12 +106,12 @@ export default function DocumentsPage() {
 
                 {/* Owner/Signatory Documents */}
                 <div className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">3. Owner/Signatory Documents | وثائق المالك/المفوض بالتوقيع</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">3. Owner/Signatory Documents</h3>
                   <ul className="space-y-3 text-blue-100">
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Emirates ID | الهوية الإماراتية:</strong>
+                        <strong className="text-white">Emirates ID:</strong>
                         <p className="text-sm mt-1">Copy of valid Emirates ID for all company owners and authorized signatories. Both sides required. Must be clear and readable.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 2MB per person</p>
                       </div>
@@ -128,7 +119,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Passport Copy | نسخة جواز السفر:</strong>
+                        <strong className="text-white">Passport Copy:</strong>
                         <p className="text-sm mt-1">Valid passport copy (information page) for all owners and signatories.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 2MB per person</p>
                       </div>
@@ -136,7 +127,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Visa Page | صفحة التأشيرة:</strong>
+                        <strong className="text-white">Visa Page:</strong>
                         <p className="text-sm mt-1">UAE residence visa page (for expatriate owners/signatories).</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 2MB per person</p>
                       </div>
@@ -146,12 +137,12 @@ export default function DocumentsPage() {
 
                 {/* Asset Documents */}
                 <div className="bg-orange-500/10 rounded-lg p-6 border border-orange-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">4. Asset-Specific Documents | وثائق خاصة بالأصل</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">4. Asset-Specific Documents</h3>
                   <ul className="space-y-3 text-blue-100">
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Supplier Invoice/Proforma | فاتورة المورد:</strong>
+                        <strong className="text-white">Supplier Invoice/Proforma:</strong>
                         <p className="text-sm mt-1">Official invoice or proforma invoice from asset supplier showing asset details, price, and specifications.</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 5MB</p>
                       </div>
@@ -159,7 +150,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Asset Specifications | مواصفات الأصل:</strong>
+                        <strong className="text-white">Asset Specifications:</strong>
                         <p className="text-sm mt-1">Technical specifications, brochures, or photos of the asset. For vehicles: make, model, year, VIN (if known).</p>
                         <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 10MB</p>
                       </div>
@@ -167,7 +158,7 @@ export default function DocumentsPage() {
                     <li className="flex items-start gap-3">
                       <span className="text-orange-400 text-xl flex-shrink-0">○</span>
                       <div>
-                        <strong className="text-white">Usage Justification | مبرر الاستخدام:</strong>
+                        <strong className="text-white">Usage Justification:</strong>
                         <p className="text-sm mt-1">Brief explanation of how the asset will be used in business operations (can be submitted in application form).</p>
                         <p className="text-sm mt-1 text-blue-300">Format: Text or PDF | Max 2 pages</p>
                       </div>
@@ -189,47 +180,44 @@ export default function DocumentsPage() {
                 <span className="text-4xl">💰</span>
                 <h2 className="text-3xl font-bold text-white">For Investors</h2>
               </div>
-              <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                للمستثمرين
-              </p>
 
               <div className="space-y-6">
                 {/* Individual Investors */}
                 <div className="bg-green-500/10 rounded-lg p-6 border border-green-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">Individual Investors | المستثمرون الأفراد</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">Individual Investors</h3>
                   <ul className="space-y-3 text-blue-100">
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Emirates ID | الهوية الإماراتية:</strong>
+                        <strong className="text-white">Emirates ID:</strong>
                         <p className="text-sm mt-1">Valid Emirates ID (both sides). For UAE nationals and residents.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Passport & Visa | جواز السفر والتأشيرة:</strong>
+                        <strong className="text-white">Passport & Visa:</strong>
                         <p className="text-sm mt-1">Valid passport (information page) and UAE residence visa (for expats).</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Proof of Address | إثبات العنوان:</strong>
+                        <strong className="text-white">Proof of Address:</strong>
                         <p className="text-sm mt-1">Recent utility bill, rental contract, or bank statement (within last 3 months) showing UAE address.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Bank Account Details | تفاصيل الحساب البنكي:</strong>
+                        <strong className="text-white">Bank Account Details:</strong>
                         <p className="text-sm mt-1">UAE bank account in investor&apos;s name for investment transfers and return distributions. Bank letter or cancelled cheque.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Accredited Investor Qualification | مؤهلات المستثمر المعتمد:</strong>
+                        <strong className="text-white">Accredited Investor Qualification:</strong>
                         <p className="text-sm mt-1">Documentation proving accredited investor status (if required by regulations):</p>
                         <ul className="ml-6 mt-2 space-y-1 text-sm">
                           <li>- Net worth statement (if threshold applies)</li>
@@ -243,33 +231,33 @@ export default function DocumentsPage() {
 
                 {/* Institutional Investors */}
                 <div className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">Institutional Investors | المستثمرون المؤسسيون</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">Institutional Investors</h3>
                   <ul className="space-y-3 text-blue-100">
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Company Registration | سجل الشركة:</strong>
+                        <strong className="text-white">Company Registration:</strong>
                         <p className="text-sm mt-1">Trade license, certificate of incorporation, memorandum of association.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Board Resolution | قرار مجلس الإدارة:</strong>
+                        <strong className="text-white">Board Resolution:</strong>
                         <p className="text-sm mt-1">Board resolution authorizing investment and naming authorized signatories.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Signatory Documents | وثائق المفوض بالتوقيع:</strong>
+                        <strong className="text-white">Signatory Documents:</strong>
                         <p className="text-sm mt-1">Emirates ID, passport, and authorization letter for each authorized signatory.</p>
                       </div>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="text-green-400 text-xl flex-shrink-0">✓</span>
                       <div>
-                        <strong className="text-white">Financial Statements | القوائم المالية:</strong>
+                        <strong className="text-white">Financial Statements:</strong>
                         <p className="text-sm mt-1">Latest audited financials of the investing entity.</p>
                       </div>
                     </li>
@@ -278,7 +266,7 @@ export default function DocumentsPage() {
 
                 {/* KYC/AML */}
                 <div className="bg-blue-500/10 rounded-lg p-6 border border-blue-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">Additional KYC/AML Requirements | متطلبات إضافية</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">Additional KYC/AML Requirements</h3>
                   <ul className="space-y-2 text-sm text-blue-100">
                     <li>• Source of funds declaration</li>
                     <li>• Beneficial ownership disclosure (for entities)</li>
@@ -292,7 +280,7 @@ export default function DocumentsPage() {
 
               <div className="mt-6 bg-green-500/20 rounded-lg p-4 border border-green-500/50">
                 <p className="text-green-200 text-sm">
-                  <strong>Investor Protection:</strong> All investors will be added to the on-chain InvestorWhitelist contract only after full KYC/AML verification. Minimum investment amounts and suitability requirements ensure appropriate investor participation.
+                  <strong>Investor Protection:</strong> All investors will be added to the on-chain wallet registry only after full KYC/AML verification. Minimum investment amounts and suitability requirements ensure appropriate investor participation.
                 </p>
               </div>
             </section>
@@ -303,9 +291,6 @@ export default function DocumentsPage() {
                 <span className="text-4xl">⚖️</span>
                 <h2 className="text-3xl font-bold text-white">For Underwriters</h2>
               </div>
-              <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                للمكتتبين / مسؤولي الاعتماد
-              </p>
 
               <div className="space-y-4">
                 <div className="bg-yellow-500/10 rounded-lg p-6 border border-yellow-500/30">
@@ -353,9 +338,6 @@ export default function DocumentsPage() {
                 <span className="text-4xl">🔒</span>
                 <h2 className="text-3xl font-bold text-white">Document Security & Privacy</h2>
               </div>
-              <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                أمن الوثائق والخصوصية
-              </p>
 
               <div className="space-y-4 text-blue-100">
                 <div className="grid md:grid-cols-2 gap-4">
@@ -403,9 +385,6 @@ export default function DocumentsPage() {
                 <span className="text-4xl">🔍</span>
                 <h2 className="text-3xl font-bold text-white">Document Verification Process</h2>
               </div>
-              <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                عملية التحقق من الوثائق
-              </p>
 
               <div className="space-y-4">
                 <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
@@ -419,21 +398,21 @@ export default function DocumentsPage() {
                   <div className="flex-shrink-0 w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
                   <div className="text-blue-100">
                     <h3 className="text-lg font-semibold text-white mb-1">Hash Generation</h3>
-                    <p className="text-sm">System generates SHA-256 hash of document. This hash is recorded in the database and (in Phase 2) on Stellar blockchain.</p>
+                    <p className="text-sm">System generates a SHA-256 hash of document. This hash is recorded in the database and, in Alpha mode, anchored on Stellar Testnet.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
                   <div className="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
                   <div className="text-blue-100">
-                    <h3 className="text-lg font-semibold text-white mb-1">AI Extraction (Phase 3)</h3>
-                    <p className="text-sm">OCR extracts text from documents. AI parses structured data (license numbers, dates, amounts) for validation.</p>
+                    <h3 className="text-lg font-semibold text-white mb-1">Data Review</h3>
+                    <p className="text-sm">Operations review the document details (license numbers, dates, amounts) against the application.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
                   <div className="flex-shrink-0 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
                   <div className="text-blue-100">
                     <h3 className="text-lg font-semibold text-white mb-1">Manual Review</h3>
-                    <p className="text-sm">Underwriter reviews documents, cross-checks extracted data, and verifies authenticity. May request additional documents.</p>
+                    <p className="text-sm">Underwriter reviews documents, cross-checks details, and verifies authenticity. May request additional documents.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
@@ -452,17 +431,14 @@ export default function DocumentsPage() {
               <p className="text-blue-200 mb-6">
                 This page is informational. Vartola is a working Alpha and is not accepting real documents or applications.
               </p>
-              <p className="text-blue-200 mb-6" dir="rtl" lang="ar">
-                هذه الصفحة معلوماتية. فارتولا منصة عاملة ضمن مرحلة ألفا ولا تقبل حالياً مستندات أو طلبات حقيقية.
-              </p>
               <div className="flex gap-4 justify-center">
-                <Link 
+                <Link
                   href="/whitepaper"
                   className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
                 >
                   Read Whitepaper
                 </Link>
-                <Link 
+                <Link
                   href="/"
                   className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
                 >

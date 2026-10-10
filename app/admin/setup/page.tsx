@@ -132,7 +132,7 @@ export default function AdminSetupPage() {
                   <option value="mainnet" disabled>Mainnet (Production Only)</option>
                 </select>
                 <p className="text-xs text-gray-500 mt-1">
-                  ⚠️ Stay on Testnet for grant/demo. Mainnet requires production compliance.
+                  ⚠️ Stay on Testnet for the demo. Mainnet requires production compliance.
                 </p>
               </div>
 
@@ -296,7 +296,7 @@ export default function AdminSetupPage() {
             <div className="space-y-3 text-sm text-gray-700">
               <div>
                 <h3 className="font-semibold">Stellar Network:</h3>
-                <p>• Use <strong>Testnet</strong> for development and grant demo</p>
+                <p>• Use <strong>Testnet</strong> for development and demo</p>
                 <p>• Mainnet requires production compliance, licensed partner, and full KYC/AML</p>
               </div>
               

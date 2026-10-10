@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Types, lint, tests, build
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "file:./prisma/dev.db"
+      NEXTAUTH_SECRET: "ci-secret-not-for-production"
+      NEXTAUTH_URL: "http://localhost:4200"
+      STELLAR_NETWORK: "testnet"
+      APP_MODE: "DEMO"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate Prisma client
+        run: npx prisma generate
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Lint
+        run: npx eslint . --quiet
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+
+  contracts:
+    name: Soroban contract tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            contracts/soroban/target
+          key: cargo-${{ hashFiles('contracts/soroban/Cargo.lock') }}
+      - name: cargo test
+        working-directory: contracts/soroban
+        run: cargo test --workspace

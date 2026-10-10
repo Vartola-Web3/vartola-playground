@@ -1,6 +1,6 @@
 # Vartola product direction
 
-This is the canonical product direction. Older AssetFi documents remain useful as technical history, but this file wins when product language conflicts.
+This is the canonical product direction. It wins when product language conflicts.
 
 ## Positioning
 

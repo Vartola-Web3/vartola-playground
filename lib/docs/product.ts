@@ -146,63 +146,6 @@ export const NETWORK_EFFECT = [
 export const CAN_PROCEED = ['Technology development', 'Testnet operation', 'Smart-contract implementation and audit', 'KYC / KYB integration preparation', 'Security work', 'Legal document drafting', 'Partner integration preparation'];
 export const GATED = ['Live money', 'Mainnet financial launch', 'Real investor funds', 'Real financing', 'Real participation securities or investments'];
 
-export const GRANT_ASK = 'Up to USD 150,000 equivalent in XLM';
-
-export const GRANT_SENTENCE =
-  'Vartola has already built and validated a Financial Web3 architecture on Stellar Testnet. Ecosystem support accelerates independent security validation, regulated operating structure, production financial rails and controlled Mainnet readiness.';
-
-export const GRANT_OBJECTIVES = [
-  'Independent security validation',
-  'Regulated operating structure',
-  'Production financial rails',
-  'Controlled real-world pilot',
-  'Controlled Mainnet readiness',
-];
-
-export const GRANT_USE = [
-  'Independent Soroban contract audit',
-  'Platform penetration test',
-  'Production custody and multisig',
-  'Regulatory and legal structuring',
-  'Payment and settlement rail integration',
-  'Security monitoring and operations',
-  'Controlled pilot support',
-];
-
-// Sequenced work. No dates are promised and no amounts are shown publicly.
-export const GRANT_MILESTONES = [
-  {
-    name: 'Independent security',
-    window: 'First after the current Testnet phase',
-    deliverables: [
-      'External Soroban contract audit and remediation',
-      'Platform penetration test and fixes',
-      'Production key and custody review',
-      'Production multisig configuration and security monitoring',
-    ],
-  },
-  {
-    name: 'Operating structure and rails',
-    window: 'Alongside security work',
-    deliverables: [
-      'UAE legal classification and final facility structure',
-      'Asset ownership and security model',
-      'Licensed or regulated partner model where required',
-      'Approved settlement asset, payment rails, custody and treasury operations',
-    ],
-  },
-  {
-    name: 'Controlled pilot and readiness',
-    window: 'Only after the applicable gates',
-    deliverables: [
-      'Controlled pilot with real SMEs, suppliers and qualified partners',
-      'No fabricated traction: only real, verifiable pilot data',
-      'Mainnet readiness review against the written gates',
-      'Controlled Mainnet only after every applicable gate is satisfied',
-    ],
-  },
-] as const;
-
 // The one master timeline. It begins with the current Testnet architecture and promises no Mainnet date.
 export const ROADMAP = [
   {
@@ -267,7 +210,7 @@ export const IMPLEMENTATION: { area: string; status: DocStatus; detail: string }
   { area: 'KYC / KYB permissioning', status: 'PARTNER DEPENDENCY', detail: 'Sumsub token and signed webhook handling exist. Approval updates a compliance case and, in Alpha mode, a non-sensitive permission flag in the registry. Production screening depends on the provider contract.' },
   { area: 'Private document storage with on-chain fingerprints', status: 'IN DEVELOPMENT', detail: 'Alpha mode requires private object storage (no silent local fallback), with SHA-256 fingerprints, signed upload and download URLs, content-type checks, server-side encryption, and real deletion. The signed-upload path has unit tests but has not been exercised against a real bucket.' },
   { area: 'Role separation, release limits, pause, upgrade timelock, and admin rotation', status: 'TESTNET', detail: 'Administrator, pauser, treasury, underwriter, operations and compliance roles have separate wallets on Testnet; release is authorized by one role and executed by another, with a daily release limit, a pause switch, two-step admin rotation, and a scheduled-upgrade timelock.' },
-  { area: 'Proof Center and reviewer overview', status: 'LIVE IN ALPHA', detail: 'Public /proof shows the real Testnet contracts, asset, reference facilities, live ledger and recorded engineering evidence; /proof/facility/<id> walks a facility lifecycle with explorer links; /grant/reviewer is a ten-minute overview without budget detail.' },
+  { area: 'Proof Center', status: 'LIVE IN ALPHA', detail: 'Public /proof shows the real Testnet contracts, asset, reference facilities, live ledger and recorded engineering evidence; /proof/facility/<id> walks a facility lifecycle with explorer links.' },
   { area: 'Portfolio risk, expected loss, treasury, and stress scenarios', status: 'LIVE IN ALPHA', detail: 'Admin pages for portfolio concentration by SME, supplier, asset, sector, geography and grade, expected loss, treasury control with chain-versus-application state, and scenario analysis that is not a forecast.' },
   { area: 'Asset servicing, collections, recovery, insurance and supplier failure workflows', status: 'LIVE IN ALPHA', detail: 'Asset health indicator, verification panel with sources, collections cases with allowed stage paths and an audit trail, recovery workspace, insurance claims and supplier failure cases. Time periods are facility parameters, not legal periods.' },
   { area: 'Operations health, contract governance, compliance cases and role matrix', status: 'LIVE IN ALPHA', detail: 'Operations health, contract version history, compliance case view without personal data, a privileged role matrix with separated duties, and institutional reports (printable or JSON).' },
@@ -333,7 +276,6 @@ export const SEO = {
   proof: { title: 'Vartola Proof Center | Stellar Testnet Execution', description: 'Verify the contracts, asset and reference facilities on Stellar Testnet.' },
   howItWorks: { title: 'How Vartola Works | Productive Asset Finance', description: 'The path for SMEs, investors, suppliers and operations, and what happens on-chain and what stays private.' },
   contact: { title: 'Contact Vartola | Partnerships & SME Pilots', description: 'Talk to Vartola about SME pilots, suppliers, capital partners, institutions and technical collaboration.' },
-  grant: { title: 'Vartola Grant Brief | Stellar Ecosystem Support', description: 'What exists today on Stellar Testnet, why Soroban is necessary, and what ecosystem support accelerates.' },
   about: { title: 'About Vartola | RIMAL TECH - FZCO', description: 'A technology company building programmable financial infrastructure for productive real-world assets.' },
 } as const;
 

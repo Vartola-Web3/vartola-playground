@@ -108,7 +108,7 @@ export default async function ProofPage() {
             <li>Facilities are reference runs executed by Vartola with test wallets, not customer facilities.</li>
             <li>Chain proof shows what happened on Testnet. It does not prove legal enforceability or asset title.</li>
           </ul>
-          <p className="mt-4 text-sm"><Link className="text-[#70FFB8] underline underline-offset-4" href="/grant/reviewer">Reviewer overview</Link> · <Link className="text-[#70FFB8] underline underline-offset-4" href="/technical">Technical record</Link> · <Link className="text-[#70FFB8] underline underline-offset-4" href="/sandbox">Partner sandbox</Link></p>
+          <p className="mt-4 text-sm"><Link className="text-[#70FFB8] underline underline-offset-4" href="/technical">Technical record</Link> · <Link className="text-[#70FFB8] underline underline-offset-4" href="/sandbox">Partner sandbox</Link></p>
         </section>
       </main>
       <SiteFooter />

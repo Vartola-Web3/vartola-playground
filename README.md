@@ -141,8 +141,8 @@ npx tsx scripts/alpha/verify-deployment.ts   # read-only on-chain check
 
 Testnet secrets for that setup are written to `.alpha/testnet-keys.json`, which is gitignored. Reports: `docs/institutional-maturity-report.md`, `docs/alpha-completion-report.md`. Operations documents: `docs/operations`. Partner templates (non-binding): `docs/partners`.
 
-The public papers (`/pitch`, `/whitepaper`, `/how-it-works`, `/technical`, `/grant`, `/docs`) read from one facts file, `lib/docs/product.ts`, so status, roadmap and regulatory wording stay identical.
+The public papers (`/pitch`, `/whitepaper`, `/how-it-works`, `/technical`, `/docs`) read from one facts file, `lib/docs/product.ts`, so status, roadmap and regulatory wording stay identical.
 
 Contact: the public form at `/contact` stores enquiries in the database; staff review them at `/admin/contacts`. Optional email notification uses `EMAIL_PROVIDER_URL` and `CONTACT_NOTIFY_EMAIL`.
 
-Older notes under `docs/` describe earlier plans and are historical when they disagree with this file.
+The current status is in `docs/project-status.md`; the delivery plan is in `docs/updated-general-plan.md`.

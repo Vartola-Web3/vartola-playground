@@ -4,18 +4,16 @@ import { DISCLAIMER } from '@/lib/docs/product';
 import { LEGAL_DOCS } from '@/lib/docs/legal';
 
 const primary = [
-  ['Pitch', '/pitch', 'Investor and SCF narrative, progress, and the grant ask.'],
+  ['Pitch', '/pitch', 'The investor narrative, progress, and product story.'],
   ['White Paper', '/whitepaper', 'The authoritative product and business document.'],
   ['How it works', '/how-it-works', 'SME, investor, and partner paths in plain language.'],
   ['Proof Center', '/proof', 'Real Testnet contracts, asset, reference facilities and engineering evidence you can verify.'],
-  ['Reviewer overview', '/grant/reviewer', 'A ten-minute technical overview for grant and technical reviewers.'],
   ['Partner sandbox', '/sandbox', 'Six facility scenarios on illustrative numbers, from normal to default and recovery.'],
   ['Technical architecture', '/technical', 'System overview, on-chain and off-chain model, finality, and indexing.'],
   ['Stellar / Soroban', '/technical#soroban', 'Network, settlement asset, and the contracts that run the financing rules.'],
   ['Security', '/technical#security', 'Controls in place and the security gates before Mainnet.'],
   ['Compliance', '/whitepaper#kyc', 'KYC, KYB, AML, permissioning, and privacy.'],
   ['Regulatory readiness', '/whitepaper#regulation', 'Launch gates, licensed-partner strategy, and the pre-Mainnet checklist.'],
-  ['Grant brief', '/grant', 'Use of Stellar, integration plan, objectives, and milestones.'],
   ['Roadmap', '/technical#status', 'Implementation status and the master timeline from October 2026.'],
   ['Risk framework', '/whitepaper#underwriting', 'Five risk layers, default, recovery, and key risks.'],
   ['Legal framework', '/whitepaper#ownership', 'Ownership, Participation Units, and open legal questions.'],

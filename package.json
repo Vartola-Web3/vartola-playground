@@ -9,7 +9,7 @@
     "start": "next start -p 4200",
     "lint": "eslint",
     "benchmark:local": "tsx scripts/benchmark/local-load.ts",
-    "test": "tsx --test lib/**/*.test.ts",
+    "test": "tsx --test \"lib/**/*.test.ts\"",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:demo": "tsx prisma/seed-realistic-demo.ts",
     "test:contracts": "cd contracts/soroban && cargo test"

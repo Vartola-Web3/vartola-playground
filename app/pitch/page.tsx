@@ -8,9 +8,6 @@ import {
   CORE_STATEMENT,
   DISCLAIMER,
   ENTITY,
-  GRANT_ASK,
-  GRANT_SENTENCE,
-  GRANT_USE,
   IMPLEMENTATION,
   LIFECYCLE,
   MONEY_FLOW,
@@ -329,31 +326,7 @@ export default function PitchPage() {
           <RoadmapTimeline />
         </Slide>
 
-        <Slide n="22" kicker="Why SCF" title="A real-economy use case for Stellar.">
-          <Cards
-            items={[
-              ['Real-world asset finance', 'Financing tied to vehicles that earn revenue.'],
-              ['Soroban usage', 'Escrow, release, repayment, distribution, and recovery on contracts.'],
-              ['Wallet adoption', 'Embedded wallets for SMEs and investors who never touch crypto UX.'],
-              ['Asset settlement', 'Installments and distributions settled on Stellar.'],
-              ['Programmable finance', 'Facility rules enforced by code, not spreadsheets.'],
-              ['Economic activity', 'Each facility represents a real business asset in use.'],
-            ]}
-          />
-        </Slide>
-
-        <Slide n="23" kicker="Grant use" title="Ecosystem support accelerates the move to production." light>
-          <div className="flex flex-wrap gap-2">
-            {GRANT_USE.map((item) => (
-              <span key={item} className="rounded-full border border-[#DDE7E1] bg-white px-3 py-1 text-xs text-[#102019]">{item}</span>
-            ))}
-          </div>
-          <p className="mt-4">{GRANT_ASK}. {GRANT_SENTENCE} The detailed budget is not published here.</p>
-          <p className="mt-4 text-xs">Regulatory approval is not a deliverable Vartola controls. Committed work is independent security validation, structure, rails and a written list of gates.</p>
-          <Link href="/grant" className="mt-3 inline-block font-medium text-[#087A50] underline underline-offset-4">Grant brief</Link>
-        </Slide>
-
-        <Slide n="24" kicker="Team" title="Founder-led, with the product as evidence.">
+        <Slide n="22" kicker="Team" title="Founder-led, with the product as evidence.">
           <Cards
             items={[
               ['Founder', `Founder-led ${ENTITY.form}, ${ENTITY.name}. The working Testnet platform shows product, fintech, and engineering capability.`],
@@ -364,7 +337,7 @@ export default function PitchPage() {
           />
         </Slide>
 
-        <Slide n="25" kicker="Vision" title="From logistics assets to broader productive real-world assets.">
+        <Slide n="23" kicker="Vision" title="From logistics assets to broader productive real-world assets.">
           <Flow steps={['Logistics assets', 'Equipment', 'Broader productive real-world assets']} />
           <p className="mt-8 text-3xl font-semibold leading-tight tracking-tight text-[#F6FFF9]">{CLOSING_LINE}</p>
           <div className="mt-6 flex flex-wrap gap-3">

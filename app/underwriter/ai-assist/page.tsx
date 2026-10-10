@@ -113,7 +113,7 @@ export default function AIAssistPage() {
           <Card className="p-6 bg-yellow-50">
             <h3 className="font-semibold mb-2">⚠️ Demo provider: rule-based stub, not a live AI service</h3>
             <ul className="text-sm text-gray-700 space-y-1">
-              <li>• This is a <strong>stub implementation</strong> for grant demonstration</li>
+              <li>• This is a <strong>stub implementation</strong> for demonstration</li>
               <li>• Real AI models would require: OpenAI/Claude API, custom ML training, labeled datasets</li>
               <li>• Production implementation: 6-12 months of model training and validation</li>
               <li>• Outputs are assistance inside the Alpha. They are not a credit decision</li>

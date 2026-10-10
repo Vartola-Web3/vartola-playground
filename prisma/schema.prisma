@@ -853,3 +853,19 @@ model ContactInquiry {
   @@index([status, createdAt])
   @@map("contact_inquiries")
 }
+
+// Interactive sandbox sessions. One row per visitor; the whole simulated world lives in the JSON `state`
+// column, so the sandbox is fully isolated from every other table and can be reset by replacing the state.
+model SandboxSession {
+  id          String   @id @default(cuid())
+  scenarioKey String   @map("scenario_key")
+  state       String
+  version     Int      @default(1)
+  step        Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  expiresAt   DateTime @map("expires_at")
+
+  @@index([expiresAt])
+  @@map("sandbox_sessions")
+}

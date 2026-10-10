@@ -21,7 +21,7 @@ jobs:
       # The gitleaks GitHub Action now needs a paid licence for organization accounts, so run the
       # open-source gitleaks binary directly from its container image instead.
       - name: gitleaks
-        run: docker run --rm -v "$PWD:/repo" -w /repo ghcr.io/gitleaks/gitleaks:latest detect --source . --redact --verbose
+        run: docker run --rm -v "$PWD:/repo" -w /repo ghcr.io/gitleaks/gitleaks:latest detect --source . --config .gitleaks.toml --redact --verbose
 
   dependency-audit:
     name: Dependency audit

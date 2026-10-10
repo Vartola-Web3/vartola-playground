@@ -1,0 +1,11 @@
+title = "Vartola gitleaks configuration"
+
+# Keep the default gitleaks rules, and add one narrow allowlist for a public test vector.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "The RFC 6238 published TOTP test vector secret is public, not a credential"
+regexes = [
+  '''GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ''',
+]

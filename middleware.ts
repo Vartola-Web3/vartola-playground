@@ -12,7 +12,7 @@ export default auth((req) => {
 
   const isAuthPage = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register');
   const publicRoutes = ['/', '/about', '/how-it-works', '/whitepaper', '/pitch', '/paperwork', '/technical', '/docs', '/legal', '/contact', '/sandbox'];
-  const isPublicPage = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/legal/') || nextUrl.pathname.startsWith('/marketplace') || nextUrl.pathname.startsWith('/verify/') || nextUrl.pathname === '/proof' || nextUrl.pathname.startsWith('/proof/') || nextUrl.pathname === '/sandbox' || nextUrl.pathname.startsWith('/api/verify/') || nextUrl.pathname === '/api/contact' || nextUrl.pathname.startsWith('/api/marketplace') || nextUrl.pathname.startsWith('/_next') || nextUrl.pathname.startsWith('/api/auth');
+  const isPublicPage = publicRoutes.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/legal/') || nextUrl.pathname.startsWith('/marketplace') || nextUrl.pathname.startsWith('/verify/') || nextUrl.pathname === '/proof' || nextUrl.pathname.startsWith('/proof/') || nextUrl.pathname === '/sandbox' || nextUrl.pathname.startsWith('/api/verify/') || nextUrl.pathname === '/api/health' || nextUrl.pathname === '/api/contact' || nextUrl.pathname.startsWith('/api/marketplace') || nextUrl.pathname.startsWith('/_next') || nextUrl.pathname.startsWith('/api/auth');
 
   if (isPublicPage) {
     return NextResponse.next();

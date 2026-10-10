@@ -186,8 +186,8 @@ export async function alphaActivate(facilityId: string, actorId: string) {
   const result = await activateOnChain(facilityId);
   const passport = await prisma.assetPassport.findFirst({ where: { facilityId }, orderBy: { createdAt: 'desc' } });
   if (passport) {
-    await setAssetStatus(facilityId, passport.assetId, 3, 1).catch((error) => console.error('Asset delivery event failed:', error instanceof Error ? error.message : error));
-    await setAssetStatus(facilityId, passport.assetId, 4, 1).catch((error) => console.error('Asset activation event failed:', error instanceof Error ? error.message : error));
+    await setAssetStatus(facilityId, passport.assetId, 3, 1).catch((error) => console.error(`Asset delivery event failed for facility ${facilityId}:`, error instanceof Error ? error.message : error));
+    await setAssetStatus(facilityId, passport.assetId, 4, 1).catch((error) => console.error(`Asset activation event failed for facility ${facilityId}:`, error instanceof Error ? error.message : error));
   }
   const start = new Date();
   await prisma.facility.update({

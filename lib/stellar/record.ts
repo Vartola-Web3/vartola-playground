@@ -41,7 +41,7 @@ export async function tryRecordChainEvent(input: {
   try {
     return await recordChainEvent(input);
   } catch (error) {
-    console.error('Stellar record failed:', error);
+    console.error(`Stellar record failed (${input.type} ${input.entityType} ${input.entityId}):`, error instanceof Error ? error.message : error);
     return null;
   }
 }

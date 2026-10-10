@@ -149,34 +149,36 @@ export async function updateJobStatus(
  * Get pending jobs (ready to process)
  */
 export async function getPendingJobs(limit: number = 10): Promise<BlockchainJob[]> {
-  const jobs = await prisma.stellarTransaction.findMany({
+  // Fetch a bounded set of pending rows, then apply the `attempts < maxAttempts` filter in memory.
+  // The Prisma `fields` reference API is a preview feature and is not enabled in this project.
+  const rows = await prisma.stellarTransaction.findMany({
     where: {
       status: 'PENDING',
-      attempts: {
-        lt: prisma.stellarTransaction.fields.maxAttempts,
-      },
     },
     orderBy: {
       createdAt: 'asc',
     },
-    take: limit,
+    take: Math.max(limit * 5, limit),
   });
 
-  return jobs.map(job => ({
-    id: job.id,
-    type: job.type as JobType,
-    entityType: job.entityType,
-    entityId: job.entityId,
-    payload: JSON.parse(job.payload),
-    status: job.status as JobStatus,
-    txHash: job.txHash || undefined,
-    attempts: job.attempts,
-    maxAttempts: job.maxAttempts,
-    error: job.error || undefined,
-    createdAt: job.createdAt,
-    submittedAt: job.submittedAt || undefined,
-    confirmedAt: job.confirmedAt || undefined,
-  }));
+  return rows
+    .filter((job) => job.attempts < job.maxAttempts)
+    .slice(0, limit)
+    .map(job => ({
+      id: job.id,
+      type: job.type as JobType,
+      entityType: job.entityType,
+      entityId: job.entityId,
+      payload: JSON.parse(job.payload),
+      status: job.status as JobStatus,
+      txHash: job.txHash || undefined,
+      attempts: job.attempts,
+      maxAttempts: job.maxAttempts,
+      error: job.error || undefined,
+      createdAt: job.createdAt,
+      submittedAt: job.submittedAt || undefined,
+      confirmedAt: job.confirmedAt || undefined,
+    }));
 }
 
 /**
@@ -225,10 +227,27 @@ export async function processJob(jobId: string): Promise<string | null> {
     // Mark as submitted
     await updateJobStatus(jobId, 'SUBMITTED', { txHash });
 
-    // Simulate confirmation (in production, poll for actual confirmation)
+    // Confirm on the ledger before marking CONFIRMED. Horizon's submit already returns the
+    // transaction record, but we verify the transaction is successful and included on a ledger.
+    let confirmed = false;
+    const confirmationDeadline = Date.now() + 60_000;
+    while (Date.now() < confirmationDeadline) {
+      try {
+        const record = await server.transactions().transaction(txHash).call();
+        if (record?.successful) {
+          confirmed = true;
+          break;
+        }
+      } catch {
+        // Not found on a ledger yet; retry until the deadline.
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1_500));
+    }
+    if (!confirmed) throw new Error(`Stellar did not confirm ${txHash} in time`);
+
     await updateJobStatus(jobId, 'CONFIRMED');
 
-    console.log(`✅ Job ${jobId} processed successfully: ${txHash}`);
+    console.log(`✅ Job ${jobId} confirmed on ledger: ${txHash}`);
 
     return txHash;
   } catch (caught) {

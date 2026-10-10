@@ -1,7 +1,15 @@
-firebase-debug.log
+# Keep the upload small. Vercel installs node_modules and builds .next itself; the Rust build output is
+# produced by cargo and is not needed to build the Next.js app. The demo SQLite database stays: the build
+# traces it into the output (outputFileTracingIncludes).
+node_modules
+.next
+.git
+.vercel
 .codex-tmp
+contracts/soroban/target
+uploads
+firebase-debug.log
 SUPER_ADMIN_DEMO.txt
-app/HowItworks.mp4
-app/vartola-avatar-800.png
-app/vartola-banner-2560x1440.png
-app/vartola-thumbnail-1280x720.png
+docs/video-assets
+docs/*.zip
+*.db-journal

@@ -5,7 +5,12 @@ title = "Vartola gitleaks configuration"
 useDefault = true
 
 [allowlist]
-description = "The RFC 6238 published TOTP test vector secret is public, not a credential"
+description = "Public test vectors, demo seed data and empty example variables are not credentials"
 regexes = [
   '''GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ''',
+  '''OPENAI_API_KEY=""''',
+]
+paths = [
+  '''prisma/seed-realistic-demo\.ts''',
+  '''docs/ai-features\.md''',
 ]

@@ -50,7 +50,12 @@ These must be enabled in the GitHub repository settings (owner action):
 
 ---
 
-## 5. Next (per plan)
+## 5. Progress
 
-- **Week 1, Day 5:** critical fixes — real chain confirmation in the outbox (H1), stop swallowing chain errors (H7), fix the experimental `fields` API usage (H8).
-- **Week 1, Day 6–7:** integration test harness and first integration tests (auth + facility lifecycle).
+- **Week 1, Day 1–4:** CI, secret scanning, CodeQL, Dependabot, and a cross-platform test glob — done.
+- **Week 1, Day 5:** real on-ledger confirmation in the outbox (H1), chain-error visibility (H7), and the experimental `fields` API removed (H8) — done.
+- **Week 1, Day 6–7:** integration harness (`lib/test-utils/integration-db.ts`, `lib/test-utils/factories.ts`) and facility-lifecycle integration tests (`lib/__tests__/integration/lifecycle.test.ts`) — done. The suite is now **152 tests** (147 unit + 5 integration). Tests run offline against a throwaway SQLite copy; the harness forces the simulation ledger so no test touches Stellar.
+
+## 6. Next (per plan)
+
+- **Week 2:** monitoring and alerting, health endpoint, backup and restore, SQLite↔Postgres parity, security hardening, idempotency review.

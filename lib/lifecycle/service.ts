@@ -229,15 +229,15 @@ export async function recordRepayment(facilityId: string, actorId: string, gross
   });
   if (!facility) throw new Error('Facility not found');
   if (facility.incomeStartDate == null || facility.status !== 'ACTIVE') throw new Error('Income starts only after the facility is active');
-  const payer = await prisma.user.findFirst({ where: { companyId: facility.application?.companyId, role: 'SME' } });
-  if (payer) await debitWallet('SME', payer.id, gross, `sme-pay:${key}`, facility.facilityNo);
-  const feeSplit = splitPayment(gross, facility.serviceFeeRate, facility.reserveRate);
   const scheduledRows = facility.payments
     .filter((row) => row.status !== 'PAID')
     .sort((a, b) => a.paymentNo - b.paymentNo);
   const scheduled = scheduledRows[0];
   if (!scheduled) throw new Error('No unpaid installment is available');
   if (Math.abs(gross - scheduled.amount) > 0.01) throw new Error(`Payment amount must equal the installment amount ${scheduled.amount}`);
+  const payer = await prisma.user.findFirst({ where: { companyId: facility.application?.companyId, role: 'SME' } });
+  if (payer) await debitWallet('SME', payer.id, gross, `sme-pay:${key}`, facility.facilityNo);
+  const feeSplit = splitPayment(gross, facility.serviceFeeRate, facility.reserveRate);
   const alreadyReturned = facility.allocations.reduce((sum, row) => sum + row.principalReturned, 0);
   const remainingPrincipal = Math.max(Math.round((facility.financeAmount - alreadyReturned) * 100) / 100, 0);
   const equalPrincipal = Math.round((facility.financeAmount / Math.max(facility.term, 1)) * 100) / 100;

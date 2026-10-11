@@ -20,7 +20,15 @@ export type SandboxAction =
   | { type: 'MARK_DEFAULT' }
   | { type: 'RECOVER'; proceeds: number };
 
-export type AvailableAction = { id: SandboxAction['type']; label: string; role: SandboxRole; kind: 'primary' | 'risk'; enabled: boolean; hint?: string };
+export type AvailableAction = {
+  id: SandboxAction['type'];
+  label: string;
+  role: SandboxRole;
+  kind: 'primary' | 'risk';
+  enabled: boolean;
+  hint?: string;
+  action: SandboxAction;
+};
 
 const clone = (state: SandboxState): SandboxState => JSON.parse(JSON.stringify(state)) as SandboxState;
 const addDays = (iso: string, days: number) => new Date(new Date(iso).getTime() + days * 86_400_000).toISOString();
@@ -267,25 +275,57 @@ export function applyAction(current: SandboxState, action: SandboxAction): Sandb
 
 export function nextActions(state: SandboxState): AvailableAction[] {
   const actions: AvailableAction[] = [];
-  const push = (id: SandboxAction['type'], label: string, role: SandboxRole, kind: 'primary' | 'risk' = 'primary', enabled = true, hint?: string) => {
-    if (state.actor === role) actions.push({ id, label, role, kind, enabled, hint });
+  const add = (entry: AvailableAction) => {
+    if (entry.role === state.actor) actions.push(entry);
   };
+  const money = (value: number) => value.toLocaleString('en-US');
+  const allVerified = (rows: { status: string }[]) => rows.every((row) => row.status === 'VERIFIED');
 
-  if (state.phase === 'APPLICATION') push('SUBMIT_APPLICATION', 'Submit the financing application', 'SME');
-  if (state.phase === 'UNDER_REVIEW') push('UNDERWRITE_APPROVE', 'Approve the facility', 'UNDERWRITER');
-  if (state.phase === 'APPROVED') push('OPEN_POOL', 'Open the investment pool', 'OPERATIONS');
-  if (state.phase === 'POOL_OPEN' || state.phase === 'FUNDING') push('INVEST', 'Reserve an investment', 'INVESTOR');
-  if (state.phase === 'RELEASE_READY') {
-    push('RELEASE_TO_SUPPLIER', 'Release funds to the supplier', 'OPERATIONS', 'primary', state.conditions.every((row) => row.status === 'VERIFIED'), 'Attest every release condition first');
+  switch (state.phase) {
+    case 'APPLICATION':
+      add({ id: 'SUBMIT_APPLICATION', label: 'Submit the financing application', role: 'SME', kind: 'primary', enabled: true, action: { type: 'SUBMIT_APPLICATION' } });
+      break;
+    case 'UNDER_REVIEW':
+      add({ id: 'UNDERWRITE_APPROVE', label: 'Approve the facility', role: 'UNDERWRITER', kind: 'primary', enabled: true, action: { type: 'UNDERWRITE_APPROVE' } });
+      break;
+    case 'APPROVED':
+      add({ id: 'OPEN_POOL', label: 'Open the investment pool', role: 'OPERATIONS', kind: 'primary', enabled: true, action: { type: 'OPEN_POOL' } });
+      break;
+    case 'POOL_OPEN':
+    case 'FUNDING':
+      for (const investor of state.investors) {
+        if (investor.wallet.available > 0) {
+          add({ id: 'INVEST', label: `${investor.name} reserves ${money(investor.wallet.available)}`, role: 'INVESTOR', kind: 'primary', enabled: true, action: { type: 'INVEST', investorId: investor.id, amount: investor.wallet.available } });
+        }
+      }
+      break;
+    case 'RELEASE_READY':
+      for (const condition of state.conditions) {
+        if (condition.status !== 'VERIFIED') {
+          add({ id: 'ATTEST_CONDITION', label: `Attest: ${condition.label}`, role: 'OPERATIONS', kind: 'primary', enabled: true, action: { type: 'ATTEST_CONDITION', conditionType: condition.type } });
+        }
+      }
+      add({ id: 'RELEASE_TO_SUPPLIER', label: 'Release funds to the supplier', role: 'OPERATIONS', kind: 'primary', enabled: allVerified(state.conditions), hint: allVerified(state.conditions) ? undefined : 'Attest every release condition first', action: { type: 'RELEASE_TO_SUPPLIER' } });
+      break;
+    case 'DELIVERY_PENDING':
+      for (const check of state.checks) {
+        if (check.status !== 'VERIFIED') {
+          add({ id: 'VERIFY_CHECK', label: `Verify: ${check.label}`, role: 'OPERATIONS', kind: 'primary', enabled: true, action: { type: 'VERIFY_CHECK', checkType: check.type } });
+        }
+      }
+      add({ id: 'ACTIVATE_FACILITY', label: 'Activate the facility', role: 'OPERATIONS', kind: 'primary', enabled: allVerified(state.checks), hint: allVerified(state.checks) ? undefined : 'Verify every delivery check first', action: { type: 'ACTIVATE_FACILITY' } });
+      break;
+    case 'ACTIVE':
+      add({ id: 'PAY_INSTALLMENT', label: 'Pay the next installment', role: 'SME', kind: 'primary', enabled: true, action: { type: 'PAY_INSTALLMENT' } });
+      add({ id: 'SETTLE_EARLY', label: 'Settle the outstanding principal early', role: 'SME', kind: 'primary', enabled: true, action: { type: 'SETTLE_EARLY' } });
+      add({ id: 'MARK_DEFAULT', label: 'Mark the facility in default', role: 'OPERATIONS', kind: 'risk', enabled: true, action: { type: 'MARK_DEFAULT' } });
+      break;
+    case 'DEFAULTED':
+      add({ id: 'RECOVER', label: 'Record recovery proceeds (90,000)', role: 'OPERATIONS', kind: 'risk', enabled: true, action: { type: 'RECOVER', proceeds: 90_000 } });
+      break;
+    default:
+      break;
   }
-  if (state.phase === 'DELIVERY_PENDING') {
-    push('ACTIVATE_FACILITY', 'Activate the facility', 'OPERATIONS', 'primary', state.checks.every((row) => row.status === 'VERIFIED'), 'Verify every delivery check first');
-  }
-  if (state.phase === 'ACTIVE') {
-    push('PAY_INSTALLMENT', 'Pay the next installment', 'SME');
-    push('SETTLE_EARLY', 'Settle the outstanding principal early', 'SME');
-    push('MARK_DEFAULT', 'Mark the facility in default', 'OPERATIONS', 'risk');
-  }
-  if (state.phase === 'DEFAULTED') push('RECOVER', 'Record recovery proceeds', 'OPERATIONS', 'risk');
+
   return actions;
 }

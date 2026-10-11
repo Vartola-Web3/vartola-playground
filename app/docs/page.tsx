@@ -8,7 +8,7 @@ const primary = [
   ['White Paper', '/whitepaper', 'The authoritative product and business document.'],
   ['How it works', '/how-it-works', 'SME, investor, and partner paths in plain language.'],
   ['Proof Center', '/proof', 'Real Testnet contracts, asset, reference facilities and engineering evidence you can verify.'],
-  ['Partner sandbox', '/sandbox', 'Six facility scenarios on illustrative numbers, from normal to default and recovery.'],
+  ['Partner sandbox', '/sandbox', 'Run a facility lifecycle in an isolated, resettable simulation on illustrative numbers.'],
   ['Technical architecture', '/technical', 'System overview, on-chain and off-chain model, finality, and indexing.'],
   ['Stellar / Soroban', '/technical#soroban', 'Network, settlement asset, and the contracts that run the financing rules.'],
   ['Security', '/technical#security', 'Controls in place and the security gates before Mainnet.'],

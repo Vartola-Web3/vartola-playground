@@ -81,18 +81,14 @@ export default function SandboxClient() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/sandbox/session', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ scenarioKey: 'normal' }),
-    })
+    fetch('/api/sandbox/session')
       .then((response) => response.json())
       .then((data) => {
         if (cancelled || !data?.state) return;
         setId(data.id);
         setState(data.state);
         setActions(data.actions);
-        setScenario('normal');
+        setScenario(data.state.scenarioKey ?? 'normal');
       })
       .catch(() => {});
     return () => {

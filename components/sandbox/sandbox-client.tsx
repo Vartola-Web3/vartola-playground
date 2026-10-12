@@ -80,6 +80,16 @@ export default function SandboxClient() {
     }
   }, [id]);
 
+  const runNext = useCallback(async () => {
+    if (!state) return;
+    const next = guide(state);
+    if (!next) return;
+    if (state.actor !== next.role) {
+      await command({ action: { type: 'SET_ACTOR', role: next.role } });
+    }
+    await command({ action: next.action });
+  }, [state, command]);
+
   useEffect(() => {
     let cancelled = false;
     fetch('/api/sandbox/session')
@@ -137,19 +147,12 @@ export default function SandboxClient() {
           {(() => {
             const next = guide(state);
             if (!next) return null;
-            const onRole = state.actor === next.role;
             return (
               <div className="rounded-2xl border border-[rgba(112,255,184,0.30)] bg-[#0E211B] p-4 text-sm text-[#C3D1CB]">
                 <span className="text-[#70FFB8]">Next step</span> · {next.label}
-                {onRole ? (
-                  <span className="text-[#9FB8AD]"> — you are acting as {next.role}. Use the action below.</span>
-                ) : (
-                  <>
-                    <span className="text-[#9FB8AD]"> — needs </span>
-                    <strong className="text-[#F6FFF9]">{next.role}</strong>.
-                    <button onClick={() => command({ action: { type: 'SET_ACTOR', role: next.role } })} disabled={busy} className="ml-3 rounded-full bg-[#15C77A] px-3 py-1 text-xs font-semibold text-[#07120F]">Act as {next.role}</button>
-                  </>
-                )}
+                <span className="text-[#9FB8AD]"> — needs </span>
+                <strong className="text-[#F6FFF9]">{next.role}</strong>.
+                <button onClick={runNext} disabled={busy} className="ml-3 rounded-full bg-[#15C77A] px-3 py-1 text-xs font-semibold text-[#07120F]">Do this step</button>
               </div>
             );
           })()}

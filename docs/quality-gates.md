@@ -52,10 +52,12 @@ These must be enabled in the GitHub repository settings (owner action):
 
 ## 5. Progress
 
-- **Week 1, Day 1–4:** CI, secret scanning, CodeQL, Dependabot, and a cross-platform test glob — done.
-- **Week 1, Day 5:** real on-ledger confirmation in the outbox (H1), chain-error visibility (H7), and the experimental `fields` API removed (H8) — done.
-- **Week 1, Day 6–7:** integration harness (`lib/test-utils/integration-db.ts`, `lib/test-utils/factories.ts`) and facility-lifecycle integration tests (`lib/__tests__/integration/lifecycle.test.ts`) — done. The suite is now **152 tests** (147 unit + 5 integration). Tests run offline against a throwaway SQLite copy; the harness forces the simulation ledger so no test touches Stellar.
+- **Week 1:** CI, secret scanning, CodeQL, Dependabot, a cross-platform test glob, outbox confirmation (H1), chain-error visibility (H7), the `fields` API fix (H8), the integration harness and facility-lifecycle tests.
+- **Week 2:** a public health endpoint (`/api/health`), a structured logger with request ids, an authorization-matrix test, a schema-parity test (which caught the demo database missing five tables), a backup and restore runbook, and money idempotency tests.
+- **Week 3:** the interactive sandbox — a pure engine, session storage and API routes under `/api/sandbox`, and an on-page explanation with a next-step guide and a one-click “Do this step” button.
+- Tests: **173** (unit + integration), run offline against a throwaway SQLite copy with the simulation ledger forced.
 
 ## 6. Next (per plan)
 
-- **Week 2:** monitoring and alerting, health endpoint, backup and restore, SQLite↔Postgres parity, security hardening, idempotency review.
+- **Week 3 (remaining):** wire one external provider end to end (Sumsub sandbox) and test storage against a real bucket.
+- **Week 4:** end-to-end suite, load test, documentation pass, release candidate and launch.

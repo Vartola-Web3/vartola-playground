@@ -343,11 +343,11 @@ const ROLE_BY_PHASE: Partial<Record<SandboxState['phase'], SandboxRole>> = {
 };
 
 // Who needs to act next, and the first action available to them, so the interface can guide the visitor.
-export function guide(state: SandboxState): { role: SandboxRole; label: string } | null {
+export function guide(state: SandboxState): { role: SandboxRole; label: string; action: SandboxAction } | null {
   const role = ROLE_BY_PHASE[state.phase];
   if (!role) return null;
   const actions = nextActions({ ...state, actor: role });
   const first = actions.find((entry) => entry.enabled) ?? actions[0];
   if (!first) return null;
-  return { role, label: first.label };
+  return { role, label: first.label, action: first.action };
 }

@@ -6,16 +6,16 @@ The only benchmark run so far is a **LOCAL LOAD SIMULATION**. It runs the platfo
 
 Reproduce: `npm run benchmark:local`. Raw output of the run recorded here: `docs/operations/benchmark-latest.json`.
 
-## Local load simulation (2026-10-06, Intel Core i9-14900HX, 32 threads, Node v22.17.0)
+## Local load simulation (2026-10-12, Intel Core i9-14900HX, 32 threads, Node v22.17.0)
 
 | Scenario | Size | Time | Throughput |
 | --- | --- | --- | --- |
-| Waterfall repayment splits | 50,000 repayments | 3.6 ms | about 14.0 million per second |
-| Distribution by Participation Units | 10,000 positions | 0.7 ms | about 14.8 million per second |
+| Waterfall repayment splits | 50,000 repayments | 3.7 ms | about 13.5 million per second |
+| Distribution by Participation Units | 10,000 positions | 0.7 ms | about 14.5 million per second |
 | Expected-loss calculation | 1,000 facilities | 12.4 ms | about 81,000 per second |
-| Concentration plus six stress scenarios | 1,000 facilities | 1.6 ms | about 642,000 per second |
-| Event dedupe and ordering | 100,000 events, 20,000 duplicates | 33.2 ms | about 3.0 million per second |
-| Reconciliation comparison | 1,000 facilities, 10 positions each | 13.4 ms | about 74,000 per second |
+| Concentration plus six stress scenarios | 1,000 facilities | 1.6 ms | about 629,000 per second |
+| Event dedupe and ordering | 100,000 events, 20,000 duplicates | 36.1 ms | about 2.8 million per second |
+| Reconciliation comparison | 1,000 facilities, 10 positions each | 14.7 ms | about 68,000 per second |
 
 Duplicate handling: 100,000 events with 20,000 duplicates produced exactly 80,000 stored events. Reconciliation of 1,000 consistent facilities returned HEALTHY.
 

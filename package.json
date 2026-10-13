@@ -55,18 +55,13 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.3",
     "@types/bcryptjs": "^2.4.6",
-    "@types/jest": "^30.0.0",
     "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
-    "jest": "^30.5.2",
     "tailwindcss": "^4",
-    "ts-jest": "^29.4.14",
     "tsx": "^4.23.15",
     "typescript": "^5"
   },

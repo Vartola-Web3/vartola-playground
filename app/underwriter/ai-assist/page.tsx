@@ -29,7 +29,7 @@ export default function AIAssistPage() {
         setAnalysis(data);
       }
     } catch (error) {
-      console.error('AI assist error:', error);
+      console.error('Underwriting assist error:', error);
     } finally {
       setLoading(false);
     }
@@ -44,32 +44,32 @@ export default function AIAssistPage() {
     <DashboardLayout role={session.user.role}>
       <div className="w-full">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">AI Underwriting Assistant</h1>
+          <h1 className="text-3xl font-bold">Rule-Based Underwriting Assistant (Prototype)</h1>
           <p className="text-gray-600 mt-2">
-            Automated risk analysis and underwriting insights (demo provider, rule-based stub)
+            Deterministic, rule-based checks and underwriting insights (demo provider, not a learning model)
           </p>
         </div>
 
         <div className="grid gap-6">
           <Card className="p-6 bg-blue-50">
-            <h2 className="text-xl font-semibold mb-4">🤖 AI Features (Phase 3 Stubs)</h2>
+            <h2 className="text-xl font-semibold mb-4">Prototype Checks (Rule-Based)</h2>
             <ul className="space-y-2 text-sm text-gray-700">
-              <li>✅ <strong>Document Extraction</strong> - OCR and data extraction from PDFs</li>
-              <li>✅ <strong>Financial Risk Analysis</strong> - Automated cash flow and debt ratio checks</li>
-              <li>✅ <strong>Fraud Detection</strong> - Pattern recognition in document uploads</li>
-              <li>✅ <strong>Market Risk Analysis</strong> - Industry and asset type risk signals</li>
-              <li>✅ <strong>Underwriting Insights</strong> - AI-generated recommendations</li>
-              <li>✅ <strong>Application Summaries</strong> - Natural language summaries</li>
+              <li>✅ <strong>Document Checks</strong> - Completeness and format checks on uploads</li>
+              <li>✅ <strong>Financial Risk Checks</strong> - Cash flow and debt ratio rules</li>
+              <li>✅ <strong>Fraud Signals</strong> - Rule-based patterns in document uploads</li>
+              <li>✅ <strong>Market Risk Checks</strong> - Industry and asset type risk rules</li>
+              <li>✅ <strong>Underwriting Insights</strong> - Rule-generated recommendations</li>
+              <li>✅ <strong>Application Summaries</strong> - Template summaries</li>
             </ul>
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Demo AI Analysis</h2>
+            <h2 className="text-xl font-semibold mb-4">Demo Analysis</h2>
             <p className="text-gray-600 mb-4">
-              Run a demo AI analysis to see how the system would analyze an application.
+              Run a demo analysis to see how the rule checks evaluate an application.
             </p>
             <Button onClick={runDemo} disabled={loading}>
-              {loading ? 'Running AI Analysis...' : 'Run Demo Analysis'}
+              {loading ? 'Running Demo Analysis...' : 'Run Demo Analysis'}
             </Button>
 
             {analysis && (
@@ -86,36 +86,35 @@ export default function AIAssistPage() {
             <h2 className="text-xl font-semibold mb-4">How It Works</h2>
             <div className="space-y-4 text-sm text-gray-700">
               <div>
-                <h3 className="font-semibold">1. Document Extraction</h3>
-                <p>AI extracts structured data from uploaded documents (trade licenses, financial statements, asset quotes) using OCR and NLP.</p>
+                <h3 className="font-semibold">1. Document Checks</h3>
+                <p>Uploaded documents (trade licenses, financial statements, asset quotes) are checked for completeness and format.</p>
               </div>
               <div>
-                <h3 className="font-semibold">2. Risk Signal Analysis</h3>
-                <p>Multiple AI models analyze financial ratios, detect anomalies, and assess market conditions to generate risk signals.</p>
+                <h3 className="font-semibold">2. Risk Rules</h3>
+                <p>Fixed rules evaluate financial ratios, flag anomalies, and assess market conditions to generate risk signals.</p>
               </div>
               <div>
-                <h3 className="font-semibold">3. Fraud Detection</h3>
-                <p>Pattern recognition identifies suspicious document patterns, inconsistencies, or unusual upload behavior.</p>
+                <h3 className="font-semibold">3. Fraud Signals</h3>
+                <p>Rule-based patterns identify suspicious document patterns, inconsistencies, or unusual upload behavior.</p>
               </div>
               <div>
-                <h3 className="font-semibold">4. Recommendation Engine</h3>
-                <p>Combines all signals to generate actionable recommendations: Approve, Conditional Approval, or Reject.</p>
+                <h3 className="font-semibold">4. Recommendation Rules</h3>
+                <p>Combined signals produce deterministic recommendations: Approve, Conditional Approval, or Reject.</p>
               </div>
               <div>
                 <h3 className="font-semibold">5. Human-in-the-Loop</h3>
                 <p className="font-semibold text-blue-600">
-                  ⚠️ All AI outputs are advisory only. Final decisions always require human underwriter approval.
+                  ⚠️ All outputs are advisory only. Final decisions always require human underwriter approval.
                 </p>
               </div>
             </div>
           </Card>
 
           <Card className="p-6 bg-yellow-50">
-            <h3 className="font-semibold mb-2">⚠️ Demo provider: rule-based stub, not a live AI service</h3>
+            <h3 className="font-semibold mb-2">⚠️ Demo provider: rule-based checks, not a learning model</h3>
             <ul className="text-sm text-gray-700 space-y-1">
               <li>• This is a <strong>stub implementation</strong> for demonstration</li>
-              <li>• Real AI models would require: OpenAI/Claude API, custom ML training, labeled datasets</li>
-              <li>• Production implementation: 6-12 months of model training and validation</li>
+              <li>• Real learning models would require: labelled datasets, model training, validation</li>
               <li>• Outputs are assistance inside the Alpha. They are not a credit decision</li>
               <li>• Testnet only - no real underwriting decisions</li>
             </ul>

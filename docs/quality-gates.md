@@ -57,7 +57,14 @@ These must be enabled in the GitHub repository settings (owner action):
 - **Week 3:** the interactive sandbox — a pure engine, session storage and API routes under `/api/sandbox`, and an on-page explanation with a next-step guide and a one-click “Do this step” button.
 - Tests: **173** (unit + integration), run offline against a throwaway SQLite copy with the simulation ledger forced.
 
-## 6. Next (per plan)
+## 6. Week 4 progress (13 October 2026)
 
-- **Week 3 (remaining):** wire one external provider end to end (Sumsub sandbox) and test storage against a real bucket.
-- **Week 4:** end-to-end suite, load test, documentation pass, release candidate and launch.
+- Removed the unused Jest system (config, setup, `jest`/`ts-jest`/`@types/jest`/`@testing-library` devDeps); the single runner is `tsx --test`. Closes M6.
+- Relabelled the underwriter assistant UI as a rule-based prototype (no learning-model claims). Closes H6.
+- Ran a manual security pass over the critical paths (middleware, role gating, session ownership, webhooks, storage, rate limits, secrets): no new findings. Report in `docs/security-pass.md`.
+- Refreshed the local load simulation numbers and added an end-to-end smoke test (`npm run test:e2e`) that CI runs after the build.
+
+## 7. Remaining (per plan)
+
+- **Week 3 (blocked on keys):** Sumsub sandbox end to end and storage against a real bucket need provider credentials.
+- **Before launch:** final documentation pass and release candidate (this report and `docs/project-status.md` are the current record).

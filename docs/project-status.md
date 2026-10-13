@@ -10,7 +10,7 @@ This is the single current status document. The delivery plan is `docs/updated-g
 
 | Check | Command | Result |
 | --- | --- | --- |
-| Unit tests | `npm test` | 147 pass, 0 fail |
+| Unit tests | `npm test` | 173 pass, 0 fail |
 | Lint | `npx eslint . --quiet` | 0 errors |
 | Types | `npx tsc --noEmit` | 0 errors |
 | Build | `npm run build` | passes |

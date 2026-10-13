@@ -13,8 +13,6 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     // Node CommonJS tooling and local scratch scripts, not application code.
-    "jest.config.js",
-    "jest.setup.js",
     "scripts/**/*.js",
     ".codex-tmp/**",
   ]),

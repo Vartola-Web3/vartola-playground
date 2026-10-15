@@ -236,7 +236,7 @@ export default function TechnicalPage() {
           <div className="grid gap-4 md:grid-cols-2">
             <article className="rounded-2xl border border-[#70FFB8]/25 bg-[#091713] p-4">
               <h3 className="font-semibold text-[#F6FFF9]">Testnet</h3>
-              <p className="mt-1">VTAED issued, accounts and trustlines, event fingerprints, Soroban contracts v3 deployed and exercised by three reference facilities. {VTAED.note}</p>
+              <p className="mt-1">VTAED issued, accounts and trustlines, event fingerprints, Soroban contracts (contract version 2) deployed and exercised by three reference facilities. {VTAED.note}</p>
             </article>
             <article className="rounded-2xl border border-amber-200/25 bg-[#091713] p-4">
               <h3 className="font-semibold text-[#F6FFF9]">Mainnet</h3>

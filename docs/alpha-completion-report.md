@@ -11,16 +11,16 @@ Vartola is a working Soroban-native asset-finance Alpha on Stellar Testnet: VTAE
 - Network: Stellar Testnet. VTAED (Vartola Test AED) issuer `GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32`; no real value, not redeemable.
 - VTAED Stellar Asset Contract `CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS`.
 
-## Deployed contracts (v3, current)
+## Deployed contracts (contract version 2, current)
 
 | Contract | ID |
 | --- | --- |
 | wallet_registry | `CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC` |
 | facility_contract | `CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM` |
 
-Deployed in ledgers 5045343 to 5045355 with separate wallets for the administrator, pauser, treasury, underwriter, operations and compliance roles (addresses and every transaction hash are on `/technical`). Superseded: v1 (`CBJQTADV…`, replaced after the authorization review) and v2 (`CACYOVPK…`, replaced by role separation and explicit escrow). Neither had real use.
+Deployed in ledgers 5045343 to 5045355 with separate wallets for the administrator, pauser, treasury, underwriter, operations and compliance roles (addresses and every transaction hash are on `/technical`). The deployed `facility_contract` reports `contract_version() = 2` on Testnet. Superseded: the first deployment (`CBJQTADV…`, replaced after the authorization review) and the second deployment (`CACYOVPK…`, replaced by role separation and explicit escrow); both predate the `contract_version` function and neither was used with real value.
 
-## What v3 added
+## What the current contract (version 2) added
 
 - **Explicit escrow states** (open, partially funded, fully funded, release locked, release authorized, released, refunded, closed) with an event on every transition; `reserve`, `cancel_reservation`, `refund`, `cancel_funding`, `mark_fully_funded`, `lock_release`, `authorize_release`, `release_supplier_payment`.
 - **Release governance**: eight conditions attested on-chain, each by its responsible role, with the hash of the evidence only. The administrator authorizes; a different role (treasury) pays the approved supplier, subject to a daily release limit. Capital never reaches the SME.
@@ -28,7 +28,7 @@ Deployed in ledgers 5045343 to 5045355 with separate wallets for the administrat
 - **Roles and controls**: separate wallets, role revocation, two-step admin rotation, pause, release limit, timelocked upgrade path with a contract version.
 - **Attestations**: risk (input hash, model version, score, grade), documents, and asset passport events (created, delivered, activated, insurance, registration, recovered, disposed).
 
-## Facilities executed on contract v3 (real Testnet transactions)
+## Facilities executed on the current contract (real Testnet transactions)
 
 | Facility | Result |
 | --- | --- |
@@ -58,7 +58,7 @@ Reconciliation on all three: HEALTHY, no findings. The indexer read 136 contract
 
 | Area | Status |
 | --- | --- |
-| Contracts v3 deployed, roles separated, facilities executed | COMPLETE (not audited) |
+| Contracts (version 2) deployed, roles separated, facilities executed | COMPLETE (not audited) |
 | Positions, receipts, certificate, verification page, analytics | COMPLETE |
 | Scheduled reconciliation and indexer health | COMPLETE on Testnet; cron needs configuration in the hosted environment |
 | Risk score v2 and attestation | COMPLETE |

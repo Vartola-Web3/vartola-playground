@@ -1,6 +1,6 @@
 const metrics = [
   { value: 'Testnet', label: 'Working on Stellar' },
-  { value: 'Soroban v3', label: 'Facility contracts' },
+  { value: 'Soroban v2', label: 'Facility contracts' },
   { value: '3', label: 'Reference facilities' },
   { value: 'VTAED', label: 'Test asset, no value' },
   { value: 'Gated', label: 'Mainnet, no date' },

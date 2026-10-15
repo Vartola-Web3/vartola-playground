@@ -304,7 +304,7 @@ Built from the snapshot without a network:
 - Evidence pack, mobile polish, error messages, session limits.
 
 **Phase 5 — (optional) read-only Testnet / ephemeral tenant**
-- `stellar.expert` links for equivalent events, then (later optional) managed execution on contracts v3 per session.
+- `stellar.expert` links for equivalent events, then (later optional) managed execution on the version 2 contracts per session.
 
 **Total estimate for phases 1–4:** ~2–3 weeks for one developer.
 

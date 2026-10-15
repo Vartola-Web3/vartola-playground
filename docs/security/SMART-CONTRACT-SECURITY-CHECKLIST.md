@@ -23,4 +23,4 @@ Status: INTERNAL / PRE-AUDIT self-review. This is not an independent audit.
 | Formal verification | NOT DONE | not planned |
 | Independent audit | NOT STARTED | audit readiness package in `docs/audit-package` |
 
-Known contract flaws found and fixed before v3: settlement terms were not set by operations, any payer could repay, the pause call was signed by the wrong role, recovery did not update allocations.
+Known contract flaws found and fixed before the current (version 2) contract: settlement terms were not set by operations, any payer could repay, the pause call was signed by the wrong role, recovery did not update allocations.

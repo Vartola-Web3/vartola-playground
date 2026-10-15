@@ -4,13 +4,13 @@ Source of truth for identifiers: `lib/docs/testnet-record.generated.json`, expor
 
 | Contract | Version | ID (Stellar Testnet) |
 | --- | --- | --- |
-| wallet_registry | v3 | CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC |
-| facility_contract | v3 | CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM |
+| wallet_registry | version 2 | CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC |
+| facility_contract | version 2 | CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM |
 | VTAED Stellar Asset Contract | n/a | CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS |
 
 VTAED issuer: GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32. Test asset, no value, not redeemable.
 
-Superseded and never used: v1 (CBJQTADV…, replaced after an authorization review) and v2 (CACYOVPK…, replaced by role separation and explicit escrow).
+Superseded and never used: the first deployment (CBJQTADV…, replaced after an authorization review) and the second deployment (CACYOVPK…, replaced by role separation and explicit escrow). The current contract reports `contract_version() = 2` on Testnet; the two earlier deployments predate that function.
 
 `finance_math` is a library crate used by `facility_contract`; it is not deployed on its own.
 

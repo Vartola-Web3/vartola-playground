@@ -21,7 +21,7 @@ SMEs need productive assets (vehicles, later equipment) to grow, but buying them
 | Layer | Role |
 | --- | --- |
 | **Stellar** | Asset and value settlement rail: VTAED test asset, accounts, trustlines, Stellar Asset Contract |
-| **Soroban** | Programmable financial execution: wallet registry and facility contracts (v3) |
+| **Soroban** | Programmable financial execution: wallet registry and facility contracts (contract version 2) |
 | **Prisma** | Application and read model (SQLite locally, PostgreSQL when hosted) |
 | **Firebase** | Append-only operations journal and admin visibility |
 | **Private object storage** | Sensitive documents with signed, short-lived access |
@@ -71,6 +71,8 @@ SME application → underwriting → facility → investor participation → esc
 
 **Network:** Stellar Testnet (`Test SDF Network ; September 2015`). There is no Mainnet deployment.
 
+**Contract version:** 2. The deployed `facility_contract` returns `contract_version() = 2` on Testnet. This is the Soroban contract version and is separate from the application version; the two earlier deployments were superseded before use and predate the `contract_version` function.
+
 **Deployed Soroban contracts and test asset**
 
 | Item | Contract / account |
@@ -89,7 +91,7 @@ SME application → underwriting → facility → investor participation → esc
 | Controlled supplier release — escrow release authorized (one role) then executed (another) after eight attested conditions | [`7d02f12491dc2852f2d83c48eb10c22847b16919851081a059ec7a29fbd0c02d`](https://stellar.expert/explorer/testnet/tx/7d02f12491dc2852f2d83c48eb10c22847b16919851081a059ec7a29fbd0c02d) | 5,045,507 |
 | Repayment recorded and distributed to holders through the single waterfall | [`704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c`](https://stellar.expert/explorer/testnet/tx/704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c) | 5,045,517 |
 
-Facility #001 (150,000 VTAED, 1,500 Participation Units), #002 (early settlement) and #003 (default and recovery) ran end to end on Testnet with reconciliation HEALTHY. Superseded v1 and v2 contract IDs are listed on `/technical`. Full IDs and every recorded hash are in `lib/docs/testnet-record.generated.json`. All values are Testnet only and carry no monetary value.
+Facility #001 (150,000 VTAED, 1,500 Participation Units), #002 (early settlement) and #003 (default and recovery) ran end to end on Testnet with reconciliation HEALTHY. The two earlier deployments that were superseded before use are listed on `/technical`. Full IDs and every recorded hash are in `lib/docs/testnet-record.generated.json`. All values are Testnet only and carry no monetary value.
 
 ## Security
 

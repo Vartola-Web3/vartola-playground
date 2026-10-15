@@ -5,7 +5,7 @@ export type Source = 'CONTRACT' | 'INDEXED EVENT' | 'CALCULATED' | 'ADMIN INPUT'
 export type Lineage = { field: string; source: Source; producedBy: string; reference: string };
 
 export const LINEAGE: Lineage[] = [
-  { field: 'Facility status', source: 'CONTRACT', producedBy: 'Soroban facility contract, projected to Prisma by the indexer', reference: 'facility_contract v3; lib/alpha/reconcile.ts' },
+  { field: 'Facility status', source: 'CONTRACT', producedBy: 'Soroban facility contract, projected to Prisma by the indexer', reference: 'facility_contract (version 2); lib/alpha/reconcile.ts' },
   { field: 'Funded amount and issued units', source: 'CONTRACT', producedBy: 'Facility contract subscription and reserve calls', reference: 'funded_amount, issued_units' },
   { field: 'Investor position units', source: 'CONTRACT', producedBy: 'Facility contract positions, non-transferable', reference: 'lib/alpha/positions.ts' },
   { field: 'Transaction hash and ledger', source: 'INDEXED EVENT', producedBy: 'Cursor-based indexer from Soroban events', reference: 'lib/stellar/indexer.ts; chain_events' },

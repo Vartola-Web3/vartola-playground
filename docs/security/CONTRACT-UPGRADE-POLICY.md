@@ -22,4 +22,4 @@ Independent audit of the diff, multisig approval, and a defined emergency pause 
 
 ## History
 
-v1 and v2 were replaced on Testnet before any real use (authorization review, then role separation and explicit escrow). v3 is current.
+The first and second deployments were replaced on Testnet before any real use (authorization review, then role separation and explicit escrow). The current deployment is contract version 2.

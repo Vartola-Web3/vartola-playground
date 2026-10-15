@@ -12,7 +12,7 @@ Overall: COMPLETE for platform capability on Testnet; PARTIAL for operational re
 
 ## 2. Current Stellar / Soroban architecture — COMPLETE
 
-Stellar settles value, Soroban executes facility logic (contracts v3), Prisma is the read model, Firebase the append-only journal, private storage holds documents. Flow: action, validation, Soroban, confirmation, Prisma projection, Firebase event, reconciliation. Unchanged and preserved.
+Stellar settles value, Soroban executes facility logic (contracts, version 2), Prisma is the read model, Firebase the append-only journal, private storage holds documents. Flow: action, validation, Soroban, confirmation, Prisma projection, Firebase event, reconciliation. Unchanged and preserved.
 
 ## 3. Public Proof Center — COMPLETE
 

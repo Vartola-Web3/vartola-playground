@@ -63,16 +63,16 @@
     "contractVersion": 2,
     "history": [
       {
-        "version": "v1",
+        "version": "deployment 1",
         "facilityContractId": "CBJQTADVGYRFR3XQLLE7XF252GPILPBYSJ5N7RLOLBPXJK4NNBN3I7II",
         "registryContractId": "CBDBVD2GE2MYWDRCM2XSQANSTIISECNP6ABFAH7O2K5SPOHKQRFVZ6KK",
-        "note": "Superseded before use: settle and record_repayment accepted caller-chosen terms."
+        "note": "Superseded before use: settle and record_repayment accepted caller-chosen terms. Predates the contract_version function."
       },
       {
-        "version": "v2",
+        "version": "deployment 2",
         "facilityContractId": "CACYOVPKDOO52KZPYZN22BMX6XFEDQIQRSW4RKXPVTTBW4M3HQRVAG42",
         "registryContractId": "CDQIPV2MPRQUQNAFUZP5SXRAP7BFYB6FZMWRR3YIZIVN2VTBWIGXC4AE",
-        "note": "Hardened authorization. Superseded by role separation, explicit escrow states and release attestations."
+        "note": "Hardened authorization. Superseded by role separation, explicit escrow states and release attestations. Predates the contract_version function."
       }
     ]
   },

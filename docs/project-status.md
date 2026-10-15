@@ -21,7 +21,7 @@ This is the single current status document. The delivery plan is `docs/updated-g
 
 - **Lifecycle:** SME application with documents → underwriting and risk scoring → facility and payment schedule → pool and investor participation → release conditions and delivery checks → repayment, distribution, early settlement, late, default, recovery → audit log.
 - **Alpha execution path (`APP_MODE=ALPHA`):** investment, escrow, release, repayment, distribution, settlement and recovery are written to the application only after a confirmed Soroban Testnet transaction.
-- **Soroban contracts (v3):** `wallet_registry` and `facility_contract` deployed and initialized on Stellar Testnet with separate role wallets; explicit escrow states, release-condition attestations, one waterfall, per-holder distributions, settlement, recovery.
+- **Soroban contracts (contract version 2):** `wallet_registry` and `facility_contract` deployed and initialized on Stellar Testnet with separate role wallets; explicit escrow states, release-condition attestations, one waterfall, per-holder distributions, settlement, recovery.
 - **Reference facilities:** #001 (150,000 VTAED, 1,500 Participation Units) through repayment; #002 early settlement; #003 default and recovery. Reconciliation HEALTHY.
 - **VTAED:** issued on Stellar Testnet; no monetary value, not redeemable.
 - **Risk:** business, asset and deal scores; facility risk score v2 (nine components, versioned, hashed inputs); expected-loss (PD×LGD×EAD) and portfolio risk.

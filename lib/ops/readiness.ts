@@ -5,7 +5,7 @@ export type Status = 'COMPLETE' | 'PARTIAL' | 'BLOCKED' | 'NOT STARTED';
 export type Requirement = { category: string; requirement: string; status: Status; evidence: string; required: boolean };
 
 export const REQUIREMENTS: Requirement[] = [
-  { category: 'TECHNICAL', requirement: 'Soroban contracts deployed and exercised on Testnet', status: 'COMPLETE', evidence: '/technical, /proof: v3 contracts, three facilities, 44 contract tests', required: true },
+  { category: 'TECHNICAL', requirement: 'Soroban contracts deployed and exercised on Testnet', status: 'COMPLETE', evidence: '/technical, /proof: version 2 contracts, three facilities, 44 contract tests', required: true },
   { category: 'TECHNICAL', requirement: 'Indexer and reconciliation running', status: 'COMPLETE', evidence: '/admin/reconciliation, scheduled cron', required: true },
   { category: 'TECHNICAL', requirement: 'Performance tested at production volume', status: 'PARTIAL', evidence: 'Local load simulation only (docs/operations/BENCHMARKS.md); no real volume test', required: true },
   { category: 'SECURITY', requirement: 'Independent smart-contract audit', status: 'NOT STARTED', evidence: 'Audit readiness package prepared (docs/audit-package); no audit engaged', required: true },

@@ -2,7 +2,7 @@
 
 **This is not an independent audit.** It is the material Vartola would hand an independent auditor, prepared so that an engagement can start quickly. No audit has been commissioned and none is claimed.
 
-Environment: Stellar Testnet. Contracts: v3. Date prepared: 2026-10-06.
+Environment: Stellar Testnet. Contracts: version 2. Date prepared: 2026-10-06.
 
 ## Contents
 

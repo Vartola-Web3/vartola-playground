@@ -36,7 +36,7 @@ export default function WhitepaperPage() {
                 {[
                   ['Stage', 'Working on Stellar Testnet'],
                   ['Initial assets', 'UAE logistics and commercial fleets'],
-                  ['Financial rail', 'Soroban facility contracts v3 on Stellar Testnet'],
+                  ['Financial rail', 'Soroban facility contracts (version 2) on Stellar Testnet'],
                   ['Test asset', 'VTAED on Stellar Testnet, no cash value'],
                 ].map(([term, value]) => (
                   <div key={term}>

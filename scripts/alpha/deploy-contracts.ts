@@ -187,6 +187,7 @@ async function main() {
     pauser: pauser.publicKey(),
     roles: roleAddresses,
     transactions: record,
+    contractVersion: 2,
   };
   fs.mkdirSync('.alpha', { recursive: true });
   fs.writeFileSync('.alpha/deployment.json', JSON.stringify(deployment, null, 2));

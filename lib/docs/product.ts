@@ -152,7 +152,7 @@ export const ROADMAP = [
     when: 'CURRENT — STELLAR TESTNET',
     title: 'Working Financial Web3 infrastructure',
     body: 'Embedded wallets and permissioning, Soroban facility contracts, Participation Units, programmable escrow, controlled supplier release, waterfalls, repayment, distribution, early settlement, default and recovery, asset servicing, risk and expected loss, treasury, reconciliation, proof and governance. Three reference facilities executed on Testnet.',
-    points: ['Facility contracts v3', 'Escrow and controlled release', 'Positions and distributions', 'Asset Passport and servicing', 'Risk and Expected Loss', 'Treasury and reconciliation', 'Proof Center', 'Audit-readiness package'],
+    points: ['Facility contracts (contract version 2)', 'Escrow and controlled release', 'Positions and distributions', 'Asset Passport and servicing', 'Risk and Expected Loss', 'Treasury and reconciliation', 'Proof Center', 'Audit-readiness package'],
   },
   {
     when: 'NEXT — INDEPENDENT SECURITY',
@@ -203,7 +203,7 @@ export const IMPLEMENTATION: { area: string; status: DocStatus; detail: string }
   { area: 'Firebase operations journal', status: 'LIVE IN ALPHA', detail: 'Confirmed operations are journaled for admin visibility. A failed journal write does not undo a confirmed result.' },
   { area: 'VTAED settlement asset', status: 'TESTNET', detail: 'Issued on Stellar Testnet. Testnet only, no real AED value, no redemption value.' },
   { area: 'Testnet event fingerprints', status: 'TESTNET', detail: 'Demo mode writes a SHA-256 fingerprint of each confirmed event with a manage_data operation. It is evidence of an event and does not move value.' },
-  { area: 'Soroban wallet registry and facility contract (v3)', status: 'TESTNET', detail: 'Deployed and initialized on Stellar Testnet. The facility contract holds explicit escrow states, release-condition attestations, the repayment waterfall, per-holder distributions and cumulative totals, settlement, recovery, risk and document attestations, and passport events. Covered by unit tests and exercised on Testnet by Facility #001, #002 and #003. Not audited.' },
+  { area: 'Soroban wallet registry and facility contract (contract version 2)', status: 'TESTNET', detail: 'Deployed and initialized on Stellar Testnet. The facility contract holds explicit escrow states, release-condition attestations, the repayment waterfall, per-holder distributions and cumulative totals, settlement, recovery, risk and document attestations, and passport events. Covered by unit tests and exercised on Testnet by Facility #001, #002 and #003. Not audited.' },
   { area: 'Alpha execution path (APP_MODE=ALPHA)', status: 'TESTNET', detail: 'Investment, escrow, release, repayment, distribution, settlement and recovery are finalized in the application only after a confirmed Soroban Testnet transaction. Run end to end for Facility #001 in an isolated Alpha test environment; the public walkthrough remains Demo mode.' },
   { area: 'Embedded Stellar wallets', status: 'TESTNET', detail: 'Alpha mode creates a Testnet account and VTAED trustline. The secret is encrypted server-side and never returned to the browser. An external wallet can be linked as an option.' },
   { area: 'Event indexing and reconciliation', status: 'TESTNET', detail: 'An idempotent, cursor-based indexer reads contract events into the read model with retry and a dead-letter list. Reconciliation compares chain state with the database for every confirmed facility. A scheduled worker runs both daily on the Vercel Hobby plan (every 15 minutes on Pro, by changing the schedule in vercel.json) in Alpha mode when CRON_SECRET is set; an operator can also run them from the admin page.' },
@@ -250,7 +250,7 @@ export const NEXT_MILESTONE =
 export const ENGINEERING_PRIORITIES: { title: string; items: string[] }[] = [
   {
     title: 'Completed on Testnet',
-    items: ['VTAED wrapped as a Stellar Asset Contract', 'Registry and facility contract v3 deployed, initialized and linked, with separate role wallets', 'Explicit escrow states and release-condition attestations', 'Facility #001 (150,000 VTAED, 1,500 Participation Units) executed through repayment', 'Early settlement and default-recovery paths executed on separate test facilities', 'Reconciliation, indexer health, receipts, participation certificate, and public facility verification', 'Proof Center, expected-loss and portfolio risk, treasury control, asset servicing, collections and recovery workspaces, operations health, contract governance, pilot pipeline and partner sandbox'],
+    items: ['VTAED wrapped as a Stellar Asset Contract', 'Registry and facility contract (contract version 2) deployed, initialized and linked, with separate role wallets', 'Explicit escrow states and release-condition attestations', 'Facility #001 (150,000 VTAED, 1,500 Participation Units) executed through repayment', 'Early settlement and default-recovery paths executed on separate test facilities', 'Reconciliation, indexer health, receipts, participation certificate, and public facility verification', 'Proof Center, expected-loss and portfolio risk, treasury control, asset servicing, collections and recovery workspaces, operations health, contract governance, pilot pipeline and partner sandbox'],
   },
   {
     title: 'Next engineering',

@@ -11,7 +11,7 @@ Recorded on 2026-10-06. Re-run before sharing.
 
 ## Real Testnet runs
 
-Three facilities executed on contract v3: #001 (150,000 VTAED, 1,500 units, three investors, two repayments distributed), #002 early settlement, #003 default and recovery. Reconciliation HEALTHY on all three. The indexer read 136 contract events without failures. Hashes and ledgers: `/technical`, `/proof`.
+Three facilities executed on the current contract (version 2): #001 (150,000 VTAED, 1,500 units, three investors, two repayments distributed), #002 early settlement, #003 default and recovery. Reconciliation HEALTHY on all three. The indexer read 136 contract events without failures. Hashes and ledgers: `/technical`, `/proof`.
 
 ## Resilience tests
 

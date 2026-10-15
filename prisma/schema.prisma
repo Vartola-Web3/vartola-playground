@@ -1,4 +1,4 @@
-// AssetFi UAE - Prisma Schema (SQLite Compatible)
+// Vartola - Prisma schema (SQLite compatible)
 generator client {
   provider = "prisma-client-js"
 }

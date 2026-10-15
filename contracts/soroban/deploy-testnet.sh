@@ -3,7 +3,7 @@
 
 set -e
 
-echo "🚀 Deploying AssetFi Soroban Contracts to Testnet..."
+echo "🚀 Deploying Vartola Soroban contracts to Testnet..."
 
 # Check if soroban CLI is installed
 if ! command -v soroban &> /dev/null; then

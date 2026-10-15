@@ -1,4 +1,4 @@
-# Firebase App Hosting configuration for AssetFi UAE
+# Firebase App Hosting configuration for Vartola (legacy; the current deployment runs on Vercel)
 # Requires Firebase Blaze plan for deployment
 
 runConfig:

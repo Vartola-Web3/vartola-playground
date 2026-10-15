@@ -67,16 +67,29 @@ SME application → underwriting → facility → investor participation → esc
 - **`/technical`**: the full technical architecture, state model, finality, indexing, reconciliation, security and every recorded transaction.
 - `/verify/facility/<number>` reads a facility live from the contract and exposes no private data.
 
-Stellar Testnet references (also in `lib/docs/testnet-record.generated.json`):
+## Stellar Testnet Deployment & Verification
 
-| Item | Value |
+**Network:** Stellar Testnet (`Test SDF Network ; September 2015`). There is no Mainnet deployment.
+
+**Deployed Soroban contracts and test asset**
+
+| Item | Contract / account |
 | --- | --- |
-| VTAED issuer | `GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32` |
-| VTAED Stellar Asset Contract | `CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS` |
-| wallet_registry (v3) | `CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC` |
-| facility_contract (v3) | `CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM` |
+| VTAED test asset (issuer account) | `GATMFYSVHN25CTFMW27USR65VTIIH4DSEA2MCRELBGWQBDEZRJTCOW32` |
+| VTAED Stellar Asset Contract | [`CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS`](https://stellar.expert/explorer/testnet/contract/CCSZAIHVNLOJWHMOZ7W4L3J3YR6I5UZXVMEAATIIRZD4OODODOT4KRJS) |
+| `wallet_registry` (wallet permissioning) | [`CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC`](https://stellar.expert/explorer/testnet/contract/CDJ5MMB2JZCWX2HZT7NOHBQRCQTDVEPKJNOQSGDMYVIX7GL5JO7EIDNC) |
+| `facility_contract` (escrow, release, waterfall, recovery) | [`CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM`](https://stellar.expert/explorer/testnet/contract/CDS5HIFCHMLR7VHOGHDMJEXMUI3CINY2R6FPRA4UVZIPPAUGQ6P4ERFM) |
 
-Facility #001 (150,000 VTAED, 1,500 Participation Units), #002 (early settlement) and #003 (default and recovery) ran on contract v3 with reconciliation HEALTHY. Superseded v1 and v2 contracts are listed on `/technical`. These are Testnet values with no monetary value.
+**Verified Testnet transactions** (each hash was confirmed successful on Horizon and links to Stellar Expert)
+
+| What it demonstrates | Transaction | Ledger |
+| --- | --- | --- |
+| Soroban contract deployment — `wallet_registry` | [`f2961e4720d0989427282e2b05ee2e4c44faf3401c0bcc70b2221ecc1dc1711c`](https://stellar.expert/explorer/testnet/tx/f2961e4720d0989427282e2b05ee2e4c44faf3401c0bcc70b2221ecc1dc1711c) | 5,045,343 |
+| Facility #001 escrow fully funded by three investors (1,500 Participation Units) | [`7ca780393ffdc6955bb186c09b9d2f9eee6ed7107418041008c716d6b8c09173`](https://stellar.expert/explorer/testnet/tx/7ca780393ffdc6955bb186c09b9d2f9eee6ed7107418041008c716d6b8c09173) | 5,045,496 |
+| Controlled supplier release — escrow release authorized (one role) then executed (another) after eight attested conditions | [`7d02f12491dc2852f2d83c48eb10c22847b16919851081a059ec7a29fbd0c02d`](https://stellar.expert/explorer/testnet/tx/7d02f12491dc2852f2d83c48eb10c22847b16919851081a059ec7a29fbd0c02d) | 5,045,507 |
+| Repayment recorded and distributed to holders through the single waterfall | [`704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c`](https://stellar.expert/explorer/testnet/tx/704064feab90cf39b15f7bbe34d023a4b5b1e0261737fe26bae57e4ca086302c) | 5,045,517 |
+
+Facility #001 (150,000 VTAED, 1,500 Participation Units), #002 (early settlement) and #003 (default and recovery) ran end to end on Testnet with reconciliation HEALTHY. Superseded v1 and v2 contract IDs are listed on `/technical`. Full IDs and every recorded hash are in `lib/docs/testnet-record.generated.json`. All values are Testnet only and carry no monetary value.
 
 ## Security
 
@@ -98,6 +111,10 @@ Stellar Testnet. The public website runs Demo mode (virtual balances); the Alpha
 ## Regulatory status
 
 Vartola is developed by RIMAL TECH - FZCO, a UAE Free Zone technology company. No licence is claimed and no real-money activity takes place. Regulated financial activities, where applicable, are intended to operate through appropriate legal structures and/or licensed partners, subject to legal and regulatory approval, and subject to the UAE legal and regulatory structure before any regulated deployment. Nothing here is an offer, a prospectus or investment advice, and returns are not guaranteed.
+
+## Team
+
+Vartola is built by RIMAL TECH - FZCO. Hicham Oujari recently joined the Vartola technical team as a Software and Blockchain Engineer. He is currently reviewing the existing architecture and codebase, particularly the Stellar/Soroban and tokenization components, as part of his onboarding before beginning active code contributions.
 
 ## Development
 
@@ -146,3 +163,7 @@ The public papers (`/pitch`, `/whitepaper`, `/how-it-works`, `/technical`, `/doc
 Contact: the public form at `/contact` stores enquiries in the database; staff review them at `/admin/contacts`. Optional email notification uses `EMAIL_PROVIDER_URL` and `CONTACT_NOTIFY_EMAIL`.
 
 The current status is in `docs/project-status.md`; the delivery plan is in `docs/updated-general-plan.md`.
+
+## How this is built
+
+This project was developed using AI-assisted engineering workflows. Architecture, financial logic, implementation decisions, code review, and final validation are performed by the Vartola technical team.

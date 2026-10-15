@@ -301,7 +301,7 @@ async function main() {
       entityId: pool.id,
       changes: JSON.stringify({ poolNo: 'POOL-001', status: 'ACTIVE' }),
       ipAddress: '127.0.0.1',
-      userAgent: 'AssetFi Seed Script',
+      userAgent: 'Vartola Seed Script',
     },
   });
 
@@ -313,7 +313,7 @@ async function main() {
       entityId: application.id,
       changes: JSON.stringify({ status: 'APPROVED', tier: 'TIER_B' }),
       ipAddress: '127.0.0.1',
-      userAgent: 'AssetFi Seed Script',
+      userAgent: 'Vartola Seed Script',
     },
   });
   console.log('✅ Audit logs created');

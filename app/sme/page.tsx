@@ -52,9 +52,14 @@ export default async function SMEDashboard() {
             <h1 className="text-3xl font-semibold">{user.company?.legalName}</h1>
             <p className="text-[#708078]">Your fleet, financing, and next payment.</p>
           </div>
-          <Link href="/sme/applications/new" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">
-            Finance a vehicle
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/verify-identity" className="rounded-full border border-[#E5ECE8] bg-white px-4 py-2 text-sm font-medium text-[#0A4934]">
+              Verify identity
+            </Link>
+            <Link href="/sme/applications/new" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">
+              Finance a vehicle
+            </Link>
+          </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

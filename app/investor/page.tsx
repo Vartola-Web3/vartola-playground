@@ -43,6 +43,9 @@ export default async function InvestorDashboard() {
         <div>
           <h1 className="text-3xl font-semibold">Welcome back, {firstName}</h1>
           <p className="mt-1 text-[#708078]">Build wealth through real fleet investments in the UAE.</p>
+          <Link href="/verify-identity" className="mt-3 inline-block rounded-full border border-[#E5ECE8] bg-white px-4 py-2 text-sm font-medium text-[#0A4934]">
+            Verify identity
+          </Link>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

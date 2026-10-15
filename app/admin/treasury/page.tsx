@@ -3,12 +3,19 @@ import { treasurySummary } from '@/lib/ops/portfolio-data';
 import { getLastReconciliation } from '@/lib/alpha/ops-state';
 import { MATRIX } from '@/lib/ops/roles';
 import { RecordManager } from '@/components/ops/record-manager';
+import { circleConfigured, circleEnvironment, getCircleBalances } from '@/lib/integrations/circle';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TreasuryPage() {
   const [t, last] = await Promise.all([treasurySummary(), getLastReconciliation().catch(() => null)]);
   const recon = last?.status || 'NOT RUN';
+  const circle = circleConfigured()
+    ? await getCircleBalances().then(
+        (balances) => ({ ok: true as const, balances }),
+        () => ({ ok: false as const, balances: [] as { currency: string; available: string }[] }),
+      )
+    : null;
   const metrics: [string, number, string][] = [
     ['Total committed', t.totalCommitted, 'Investor commitments'],
     ['Total funded', t.totalFunded, 'Facility funding'],
@@ -40,6 +47,18 @@ export default async function TreasuryPage() {
             ['Repayments, distributions, recovery', 'Soroban events / Prisma payments', <Badge key="c" tone={statusTone(recon)}>{recon}</Badge>],
           ]}
         />
+      </Card>
+      <Card title="Settlement provider (Circle Sandbox)" note="Read-only treasury check against the Circle sandbox. The API key stays on the server and is never shown here.">
+        {circle === null ? (
+          <p className="text-xs text-slate-500">Not connected. Set CIRCLE_API_KEY in the server environment to prove the sandbox credential.</p>
+        ) : circle.ok ? (
+          <Table
+            head={['Currency', 'Available']}
+            rows={circle.balances.length > 0 ? circle.balances.map((row) => [row.currency, row.available]) : [['—', 'No balances reported']]}
+          />
+        ) : (
+          <p className="text-xs text-slate-500">Credential is set ({circleEnvironment()}) but Circle did not return balances. Check the key and the sandbox account.</p>
+        )}
       </Card>
       <Card title="Who may move money" note="Least privilege. Release authorization and supplier payment are separate roles.">
         <Table head={['Action', 'Roles']} rows={(['authorize_release', 'pay_supplier', 'exceptional_release', 'change_settlement_asset', 'rotate_admin'] as const).map((action) => [action.replaceAll('_', ' '), MATRIX[action].join(', ')])} />

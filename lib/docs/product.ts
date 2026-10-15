@@ -53,6 +53,7 @@ export const PUBLIC_NAV = [
   ['White Paper', '/whitepaper'],
   ['Technical', '/technical'],
   ['Proof', '/proof'],
+  ['Sandbox', '/sandbox'],
   ['About', '/about'],
   ['Contact', '/contact'],
 ] as const;

@@ -48,7 +48,7 @@ test('balances parse the business-account payload and never leak the key', async
   const seen: { url: string; auth: string | null }[] = [];
   globalThis.fetch = (async (url: unknown, init?: { headers?: Record<string, string> }) => {
     seen.push({ url: String(url), auth: init?.headers?.Authorization || null });
-    return { ok: true, json: async () => ({ data: { balances: [{ currency: 'USD', available: '12.50' }, { currency: '', available: 'x' }] } }) };
+    return { ok: true, json: async () => ({ data: { available: [{ currency: 'USD', amount: '12.50' }], unsettled: [] } }) };
   }) as typeof fetch;
   try {
     await withEnv({ CIRCLE_ENVIRONMENT: undefined, CIRCLE_API_KEY: 'sandbox-key' }, async () => {

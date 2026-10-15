@@ -27,11 +27,15 @@ export type CircleBalance = { currency: string; available: string };
 
 function asBalances(data: unknown): CircleBalance[] {
   if (!data || typeof data !== 'object') return [];
-  const balances = (data as { data?: { balances?: unknown } }).data?.balances;
-  if (!Array.isArray(balances)) return [];
-  return balances
-    .filter((row): row is { available?: unknown; currency?: unknown } => Boolean(row && typeof row === 'object'))
-    .map((row) => ({ currency: String(row.currency || ''), available: String(row.available || '0') }))
+  // Live shape: { data: { available: [{ amount, currency }], unsettled: [...] } }.
+  const root = (data as { data?: unknown }).data;
+  if (!root || typeof root !== 'object') return [];
+  const available = (root as { available?: unknown; balances?: unknown }).available
+    ?? (root as { balances?: unknown }).balances;
+  if (!Array.isArray(available)) return [];
+  return available
+    .filter((row): row is Record<string, unknown> => Boolean(row && typeof row === 'object'))
+    .map((row) => ({ currency: String(row.currency || ''), available: String(row.amount ?? row.available ?? '0') }))
     .filter((row) => row.currency.length > 0);
 }
 

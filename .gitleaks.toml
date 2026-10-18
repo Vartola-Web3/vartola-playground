@@ -13,4 +13,5 @@ regexes = [
 paths = [
   '''prisma/seed-realistic-demo\.ts''',
   '''docs/ai-features\.md''',
+  '''\.env\.integrations\.example''',
 ]

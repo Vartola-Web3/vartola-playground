@@ -58,7 +58,7 @@ export const PUBLIC_NAV = [
   ['Contact', '/contact'],
 ] as const;
 
-export const GITHUB = 'https://github.com/fouxh/vartola-playground';
+export const GITHUB = 'https://github.com/Vartola-Web3/vartola-playground';
 
 export const VTAED = {
   code: 'VTAED',

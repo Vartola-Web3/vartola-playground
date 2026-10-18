@@ -154,6 +154,7 @@ function getNavigationForRole(role: string) {
         { label: 'Payments', href: '/sme/payments' },
         { label: 'Applications', href: '/sme/applications/new' },
         { label: 'Documents', href: '/documents' },
+        { label: 'Verify identity', href: '/verify-identity' },
       ];
     case 'INVESTOR':
       return [
@@ -162,6 +163,8 @@ function getNavigationForRole(role: string) {
         { label: 'Portfolio', href: '/investor/portfolio' },
         { label: 'Wallet', href: '/investor/wallet' },
         { label: 'Activity', href: '/investor/activity' },
+        { label: 'Documents', href: '/documents' },
+        { label: 'Verify identity', href: '/verify-identity' },
       ];
     case 'SUPPLIER':
       return [

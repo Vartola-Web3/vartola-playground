@@ -1,456 +1,175 @@
-import Link from 'next/link';
-import { SiteFooter, SiteNav } from '@/components/marketing/site-shell';
+import { auth } from '@/lib/auth/auth';
+import { redirect } from 'next/navigation';
+import DashboardLayout from '@/components/layout/dashboard-layout';
 
-export default function DocumentsPage() {
+export const dynamic = 'force-dynamic';
+
+type Group = { title: string; items: [string, string][] };
+
+const SME_GROUPS: Group[] = [
+  {
+    title: 'Company documents',
+    items: [
+      ['Trade license', 'Valid UAE trade license (DED, ADGM, DIFC or free zone), showing the company name, license number, activities and expiry.'],
+      ['Memorandum of association', 'Formation documents showing ownership, authorised signatories and share capital.'],
+      ['Certificate of incorporation', 'Official registration certificate from the relevant authority.'],
+    ],
+  },
+  {
+    title: 'Financial documents',
+    items: [
+      ['Bank statements', 'Last six months of business account statements; all pages.'],
+      ['Financial statements', 'Latest audited or management accounts: balance sheet, income statement and cash flow.'],
+      ['Tax returns', 'VAT or corporate tax filings where the business is registered. Optional but strengthens the application.'],
+    ],
+  },
+  {
+    title: 'Owner and signatory documents',
+    items: [
+      ['Emirates ID', 'Both sides, clear and readable, for every owner and authorised signatory.'],
+      ['Passport', 'Information page for every owner and signatory.'],
+      ['Visa page', 'UAE residence visa for expatriate owners and signatories.'],
+    ],
+  },
+  {
+    title: 'Asset documents',
+    items: [
+      ['Supplier invoice or proforma', 'Asset details, price and specifications.'],
+      ['Asset specifications', 'Brochure or photos; for vehicles, make, model, year and VIN if known.'],
+      ['Usage justification', 'A short explanation of how the asset supports the business.'],
+    ],
+  },
+];
+
+const INVESTOR_GROUPS: Group[] = [
+  {
+    title: 'Individual investors',
+    items: [
+      ['Emirates ID', 'Both sides, for UAE nationals and residents.'],
+      ['Passport and visa', 'Information page and UAE residence visa for expatriates.'],
+      ['Proof of address', 'Utility bill, rental contract or bank statement from the last three months.'],
+      ['Bank account details', 'UAE account in the investor’s name, with a bank letter or cancelled cheque.'],
+      ['Accredited investor evidence', 'Net worth or income evidence, or a professional certification, where required.'],
+    ],
+  },
+  {
+    title: 'Institutional investors',
+    items: [
+      ['Company registration', 'Trade license, certificate of incorporation and memorandum of association.'],
+      ['Board resolution', 'Authorises the investment and names the signatories.'],
+      ['Signatory documents', 'Emirates ID, passport and authorisation letter for each signatory.'],
+      ['Financial statements', 'Latest audited financials of the investing entity.'],
+    ],
+  },
+  {
+    title: 'Additional KYC and AML',
+    items: [
+      ['Source of funds', 'A declaration of where the invested funds come from.'],
+      ['Beneficial ownership', 'Disclosure of ultimate beneficial owners for entities.'],
+      ['Sanctions and PEP', 'Automatic sanctions screening and a politically exposed person declaration.'],
+      ['Suitability', 'An investment suitability questionnaire and a risk disclosure acknowledgement.'],
+    ],
+  },
+];
+
+const UNDERWRITER_ITEMS: [string, string][] = [
+  ['Professional qualifications', 'Background in banking, credit analysis or risk management; CFA, FRM or CPA preferred.'],
+  ['UAE work authorisation', 'A valid work permit or visa allowing financial-services employment.'],
+  ['Background verification', 'Criminal background and employment reference checks.'],
+  ['Conflict of interest', 'Disclosure of financial interests or relationships that could create a conflict.'],
+];
+
+function DocumentGroup({ group }: { group: Group }) {
   return (
-    <div className="vartola-grid min-h-screen text-[#F6FFF9]">
-      <SiteNav />
-
-      <div className="vartola-frame py-12">
-        <div className="w-full">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-block px-4 py-2 bg-yellow-500/20 rounded-lg border border-yellow-500/50 mb-6">
-              <span className="text-yellow-300 font-semibold">Working Alpha · not a licensed financing offer · do not upload real identity documents</span>
+    <section className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
+      <h2 className="text-xl font-semibold text-[#102019]">{group.title}</h2>
+      <ul className="mt-4 space-y-3">
+        {group.items.map(([title, body]) => (
+          <li key={title} className="flex gap-3">
+            <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#EAF9F1] text-xs text-[#0A4934]">✓</span>
+            <div>
+              <p className="font-medium text-[#102019]">{title}</p>
+              <p className="text-sm leading-6 text-[#52635C]">{body}</p>
             </div>
-            <h1 className="text-5xl font-bold text-white mb-4">
-              Required Documents & KYC Checklist
-            </h1>
-            <p className="text-xl text-blue-200">
-              Documentation requirements for SMEs, Investors, and Underwriters
-            </p>
-          </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
-          {/* Main Content */}
-          <div className="space-y-8">
+export default async function DocumentsPage() {
+  const session = await auth();
+  if (!session?.user) redirect('/login');
 
-            {/* Important Notice */}
-            <div className="bg-red-500/20 rounded-xl p-6 border border-red-500/50">
-              <h2 className="text-2xl font-bold text-red-200 mb-3">⚠️ Important Notice</h2>
-              <div className="space-y-2 text-red-100 text-sm">
-                <p>
-                  <strong>English:</strong> Vartola is a working Alpha from RIMAL TECH - FZCO. It is not licensed to take real applications, documents, or investments. This page lists documents a future licensed process would require. Do not submit real personal or business documents here.
-                </p>
-              </div>
-            </div>
-
-            {/* For SMEs */}
-            <section className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-4xl">🏢</span>
-                <h2 className="text-3xl font-bold text-white">For SMEs (Financing Applicants)</h2>
-              </div>
-
-              <div className="space-y-6">
-                {/* Company Documents */}
-                <div className="bg-blue-500/10 rounded-lg p-6 border border-blue-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">1. Company Documents</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Trade License (DED):</strong>
-                        <p className="text-sm mt-1">Valid UAE trade license issued by Department of Economic Development. Must show company name, license number, activities, and expiry date. Arabic or English accepted.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 5MB</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Memorandum of Association:</strong>
-                        <p className="text-sm mt-1">Company formation documents showing ownership structure, authorized signatories, and share capital.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 10MB</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Certificate of Incorporation:</strong>
-                        <p className="text-sm mt-1">Official company registration certificate from relevant authority (DED, ADGM, DIFC, Free Zone).</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 5MB</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Financial Documents */}
-                <div className="bg-green-500/10 rounded-lg p-6 border border-green-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">2. Financial Documents</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Bank Statements:</strong>
-                        <p className="text-sm mt-1">Last 6 months of business bank account statements showing revenue, expenses, and cash flow. All pages required.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF (bank-issued) | Max 20MB</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Financial Statements:</strong>
-                        <p className="text-sm mt-1">Latest audited or management accounts: Balance Sheet, Income Statement, Cash Flow Statement. For companies &gt;3 years, last 2 years required.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 15MB</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-orange-400 text-xl flex-shrink-0">○</span>
-                      <div>
-                        <strong className="text-white">Tax Returns (if applicable):</strong>
-                        <p className="text-sm mt-1">VAT returns or Corporate Tax filings if business is registered. Optional but strengthens application.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 10MB</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Owner/Signatory Documents */}
-                <div className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">3. Owner/Signatory Documents</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Emirates ID:</strong>
-                        <p className="text-sm mt-1">Copy of valid Emirates ID for all company owners and authorized signatories. Both sides required. Must be clear and readable.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 2MB per person</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Passport Copy:</strong>
-                        <p className="text-sm mt-1">Valid passport copy (information page) for all owners and signatories.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 2MB per person</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Visa Page:</strong>
-                        <p className="text-sm mt-1">UAE residence visa page (for expatriate owners/signatories).</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 2MB per person</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Asset Documents */}
-                <div className="bg-orange-500/10 rounded-lg p-6 border border-orange-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">4. Asset-Specific Documents</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Supplier Invoice/Proforma:</strong>
-                        <p className="text-sm mt-1">Official invoice or proforma invoice from asset supplier showing asset details, price, and specifications.</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF | Max 5MB</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Asset Specifications:</strong>
-                        <p className="text-sm mt-1">Technical specifications, brochures, or photos of the asset. For vehicles: make, model, year, VIN (if known).</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: PDF or JPG | Max 10MB</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-orange-400 text-xl flex-shrink-0">○</span>
-                      <div>
-                        <strong className="text-white">Usage Justification:</strong>
-                        <p className="text-sm mt-1">Brief explanation of how the asset will be used in business operations (can be submitted in application form).</p>
-                        <p className="text-sm mt-1 text-blue-300">Format: Text or PDF | Max 2 pages</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-6 bg-blue-500/20 rounded-lg p-4 border border-blue-500/50">
-                <p className="text-blue-200 text-sm">
-                  <strong>Note:</strong> All documents must be valid and not expired. Documents in Arabic are acceptable; English translation may be requested during underwriting. The risk engine uses document completeness as a scoring factor (5% weight in Company Risk Score).
-                </p>
-              </div>
-            </section>
-
-            {/* For Investors */}
-            <section className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-4xl">💰</span>
-                <h2 className="text-3xl font-bold text-white">For Investors</h2>
-              </div>
-
-              <div className="space-y-6">
-                {/* Individual Investors */}
-                <div className="bg-green-500/10 rounded-lg p-6 border border-green-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">Individual Investors</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Emirates ID:</strong>
-                        <p className="text-sm mt-1">Valid Emirates ID (both sides). For UAE nationals and residents.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Passport & Visa:</strong>
-                        <p className="text-sm mt-1">Valid passport (information page) and UAE residence visa (for expats).</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Proof of Address:</strong>
-                        <p className="text-sm mt-1">Recent utility bill, rental contract, or bank statement (within last 3 months) showing UAE address.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Bank Account Details:</strong>
-                        <p className="text-sm mt-1">UAE bank account in investor&apos;s name for investment transfers and return distributions. Bank letter or cancelled cheque.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Accredited Investor Qualification:</strong>
-                        <p className="text-sm mt-1">Documentation proving accredited investor status (if required by regulations):</p>
-                        <ul className="ml-6 mt-2 space-y-1 text-sm">
-                          <li>- Net worth statement (if threshold applies)</li>
-                          <li>- Income verification (salary certificate, tax returns)</li>
-                          <li>- Professional certification (CFA, CPA, etc.)</li>
-                        </ul>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Institutional Investors */}
-                <div className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">Institutional Investors</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Company Registration:</strong>
-                        <p className="text-sm mt-1">Trade license, certificate of incorporation, memorandum of association.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Board Resolution:</strong>
-                        <p className="text-sm mt-1">Board resolution authorizing investment and naming authorized signatories.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Signatory Documents:</strong>
-                        <p className="text-sm mt-1">Emirates ID, passport, and authorization letter for each authorized signatory.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-green-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Financial Statements:</strong>
-                        <p className="text-sm mt-1">Latest audited financials of the investing entity.</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* KYC/AML */}
-                <div className="bg-blue-500/10 rounded-lg p-6 border border-blue-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-4">Additional KYC/AML Requirements</h3>
-                  <ul className="space-y-2 text-sm text-blue-100">
-                    <li>• Source of funds declaration</li>
-                    <li>• Beneficial ownership disclosure (for entities)</li>
-                    <li>• Sanctions screening (automatic)</li>
-                    <li>• PEP (Politically Exposed Person) declaration</li>
-                    <li>• Investment suitability questionnaire</li>
-                    <li>• Risk disclosure acknowledgment</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-6 bg-green-500/20 rounded-lg p-4 border border-green-500/50">
-                <p className="text-green-200 text-sm">
-                  <strong>Investor Protection:</strong> All investors will be added to the on-chain wallet registry only after full KYC/AML verification. Minimum investment amounts and suitability requirements ensure appropriate investor participation.
-                </p>
-              </div>
-            </section>
-
-            {/* For Underwriters */}
-            <section className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-4xl">⚖️</span>
-                <h2 className="text-3xl font-bold text-white">For Underwriters</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-yellow-500/10 rounded-lg p-6 border border-yellow-500/30">
-                  <h3 className="text-xl font-semibold text-white mb-3">Professional Requirements:</h3>
-                  <ul className="space-y-3 text-blue-100">
-                    <li className="flex items-start gap-3">
-                      <span className="text-yellow-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Professional Qualifications:</strong>
-                        <p className="text-sm mt-1">Background in banking, credit analysis, or risk management. Relevant certifications (CFA, FRM, CPA) preferred.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-yellow-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">UAE Work Authorization:</strong>
-                        <p className="text-sm mt-1">Valid UAE work permit or visa allowing employment in financial services.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-yellow-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Background Verification:</strong>
-                        <p className="text-sm mt-1">Criminal background check and employment reference verification.</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-yellow-400 text-xl flex-shrink-0">✓</span>
-                      <div>
-                        <strong className="text-white">Conflict of Interest Declaration:</strong>
-                        <p className="text-sm mt-1">Disclosure of any financial interests or relationships that could create conflicts.</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <p className="text-sm text-blue-300">
-                  Underwriters are responsible for reviewing risk scores, validating documents, and making final approval decisions. All actions are logged in the audit trail.
-                </p>
-              </div>
-            </section>
-
-            {/* Document Security */}
-            <section className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-4xl">🔒</span>
-                <h2 className="text-3xl font-bold text-white">Document Security & Privacy</h2>
-              </div>
-
-              <div className="space-y-4 text-blue-100">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-green-500/10 rounded-lg p-4 border border-green-500/30">
-                    <h3 className="text-lg font-semibold text-white mb-2">✅ How Documents Are Stored:</h3>
-                    <ul className="space-y-1 text-sm">
-                      <li>• Encrypted storage (AES-256)</li>
-                      <li>• Access control by role</li>
-                      <li>• Audit log of all access</li>
-                      <li>• Secure deletion after retention period</li>
-                    </ul>
-                  </div>
-                  <div className="bg-red-500/10 rounded-lg p-4 border border-red-500/30">
-                    <h3 className="text-lg font-semibold text-white mb-2">❌ What Goes On-Chain:</h3>
-                    <ul className="space-y-1 text-sm">
-                      <li>• Document hash (SHA-256) only</li>
-                      <li>• No raw documents</li>
-                      <li>• No personal information</li>
-                      <li>• No identifiable data</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="bg-blue-500/20 rounded-lg p-6 border border-blue-500/50">
-                  <h3 className="text-lg font-semibold text-white mb-3">Privacy Compliance:</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li><strong>UAE Data Protection Law:</strong> All personal data handling complies with UAE DPA requirements</li>
-                    <li><strong>GDPR Principles:</strong> Data minimization, purpose limitation, right to access and deletion</li>
-                    <li><strong>Retention Policy:</strong> Documents retained only as long as required by regulation (typically 7 years for financial records)</li>
-                    <li><strong>Access Rights:</strong> You have the right to access, correct, or request deletion of your personal data</li>
-                  </ul>
-                </div>
-
-                <div className="bg-yellow-500/20 rounded-lg p-4 border border-yellow-500/50">
-                  <p className="text-yellow-200 text-sm">
-                    <strong>🔒 Privacy Guarantee:</strong> Vartola will never store raw documents or personally identifiable information on the Stellar blockchain. Only cryptographic hashes are recorded on-chain for verification purposes. All PII remains in secure off-chain storage with strict access controls.
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            {/* Document Verification Process */}
-            <section className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-4xl">🔍</span>
-                <h2 className="text-3xl font-bold text-white">Document Verification Process</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
-                  <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                  <div className="text-blue-100">
-                    <h3 className="text-lg font-semibold text-white mb-1">Upload</h3>
-                    <p className="text-sm">User uploads documents through secure portal. Files are scanned for viruses and validated for format/size.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
-                  <div className="flex-shrink-0 w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                  <div className="text-blue-100">
-                    <h3 className="text-lg font-semibold text-white mb-1">Hash Generation</h3>
-                    <p className="text-sm">System generates a SHA-256 hash of document. This hash is recorded in the database and, in Alpha mode, anchored on Stellar Testnet.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
-                  <div className="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
-                  <div className="text-blue-100">
-                    <h3 className="text-lg font-semibold text-white mb-1">Data Review</h3>
-                    <p className="text-sm">Operations review the document details (license numbers, dates, amounts) against the application.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
-                  <div className="flex-shrink-0 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
-                  <div className="text-blue-100">
-                    <h3 className="text-lg font-semibold text-white mb-1">Manual Review</h3>
-                    <p className="text-sm">Underwriter reviews documents, cross-checks details, and verifies authenticity. May request additional documents.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4 bg-white/5 rounded-lg p-4 border border-white/10">
-                  <div className="flex-shrink-0 w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">5</div>
-                  <div className="text-blue-100">
-                    <h3 className="text-lg font-semibold text-white mb-1">Approval/Rejection</h3>
-                    <p className="text-sm">Underwriter marks documents as verified or rejected. Status is logged in audit trail and user is notified.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Contact */}
-            <section className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-8 border border-blue-500/30 text-center">
-              <h2 className="text-2xl font-bold text-white mb-4">Questions About Documentation?</h2>
-              <p className="text-blue-200 mb-6">
-                This page is informational. Vartola is a working Alpha and is not accepting real documents or applications.
-              </p>
-              <div className="flex gap-4 justify-center">
-                <Link
-                  href="/whitepaper"
-                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors"
-                >
-                  Read Whitepaper
-                </Link>
-                <Link
-                  href="/"
-                  className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition-colors"
-                >
-                  Back to Home
-                </Link>
-              </div>
-            </section>
-
-          </div>
+  return (
+    <DashboardLayout role={session.user.role}>
+      <div className="w-full space-y-6">
+        <div>
+          <h1 className="text-3xl font-semibold">Required documents and KYC checklist</h1>
+          <p className="mt-1 text-[#708078]">Documentation for SMEs, investors and underwriters. This is a working Alpha and does not accept real documents yet.</p>
         </div>
+
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <strong>Important:</strong> Vartola is a working Alpha from RIMAL TECH - FZCO. It is not licensed to take real applications, documents or investments. Do not upload real personal or business documents here.
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {SME_GROUPS.map((group) => <DocumentGroup key={group.title} group={group} />)}
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {INVESTOR_GROUPS.map((group) => <DocumentGroup key={group.title} group={group} />)}
+        </div>
+
+        <DocumentGroup group={{ title: 'Underwriters', items: UNDERWRITER_ITEMS }} />
+
+        <section className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-[#102019]">Document security and privacy</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl bg-[#F3F8F5] p-4">
+              <p className="font-medium text-[#102019]">How documents are stored</p>
+              <ul className="mt-2 space-y-1 text-sm text-[#52635C]">
+                <li>• Encrypted storage (AES-256) with role-based access</li>
+                <li>• An audit log of access</li>
+                <li>• Secure deletion after the retention period</li>
+              </ul>
+            </div>
+            <div className="rounded-2xl bg-[#F3F8F5] p-4">
+              <p className="font-medium text-[#102019]">What goes on-chain</p>
+              <ul className="mt-2 space-y-1 text-sm text-[#52635C]">
+                <li>• A SHA-256 hash only</li>
+                <li>• No raw documents, no personal data</li>
+                <li>• No identifiable information</li>
+              </ul>
+            </div>
+          </div>
+          <p className="mt-4 text-sm leading-6 text-[#52635C]">
+            Vartola never stores raw documents or personally identifiable information on the Stellar blockchain. Only cryptographic hashes are recorded for verification; all personal data stays in secure off-chain storage.
+          </p>
+        </section>
+
+        <section className="rounded-3xl border border-[#E5ECE8] bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-[#102019]">Verification process</h2>
+          <ol className="mt-4 grid gap-3 md:grid-cols-2">
+            {[
+              ['Upload', 'Documents are uploaded through the secure portal, then scanned and validated for format and size.'],
+              ['Hash', 'A SHA-256 hash is recorded in the database and, in Alpha mode, anchored on Stellar Testnet.'],
+              ['Review', 'Operations check the document details against the application.'],
+              ['Decision', 'An underwriter verifies or rejects each document; the status is written to the audit trail.'],
+            ].map(([title, body]) => (
+              <li key={title} className="rounded-2xl border border-[#E5ECE8] p-4">
+                <p className="font-medium text-[#102019]">{title}</p>
+                <p className="mt-1 text-sm leading-6 text-[#52635C]">{body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <p className="text-sm leading-6 text-[#708078]">
+          This page is informational. Vartola is a working Alpha and is not accepting real documents or applications.
+        </p>
       </div>
-      <SiteFooter />
-    </div>
+    </DashboardLayout>
   );
 }

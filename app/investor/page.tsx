@@ -89,6 +89,13 @@ export default async function InvestorDashboard() {
             <h2 className="text-lg font-semibold">My investments</h2>
             <Link href="/investor/portfolio" className="text-sm text-[#0A4934]">View portfolio</Link>
           </div>
+          {investments.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-[#D6E3DC] bg-white p-8 text-center">
+              <p className="font-medium text-[#102019]">No investments yet</p>
+              <p className="mt-1 text-sm text-[#708078]">Browse the marketplace to reserve capital in a fleet facility and follow its repayment.</p>
+              <Link href="/marketplace" className="mt-4 inline-block rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">Browse opportunities</Link>
+            </div>
+          )}
           <div className="grid gap-4 lg:grid-cols-2">
             {investments.map((item) => {
               const types = item.pool.facilities.map((facility) => facility.application.assetType);
@@ -120,6 +127,9 @@ export default async function InvestorDashboard() {
             <h2 className="text-lg font-semibold">Discover investments</h2>
             <Link href="/marketplace" className="text-sm text-[#0A4934]">View all</Link>
           </div>
+          {opportunities.length === 0 && (
+            <p className="rounded-2xl border border-dashed border-[#D6E3DC] bg-white p-6 text-sm text-[#708078]">No open opportunities right now. Check back soon.</p>
+          )}
           <div className="grid gap-4 lg:grid-cols-3">
             {opportunities.map((pool) => {
               const types = pool.facilities.map((facility) => facility.application.assetType);

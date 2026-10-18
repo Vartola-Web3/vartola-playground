@@ -9,6 +9,7 @@ import { isAlphaMode } from '@/lib/config/app-mode';
 import { subscribeAlpha } from '@/lib/alpha/subscribe';
 import { assertSameOrigin } from '@/lib/security/origin';
 import { rateLimit } from '@/lib/security/rate-limit';
+import { assertVerifiedInAlpha, subjectForUser } from '@/lib/compliance/access';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,6 +17,8 @@ export async function POST(request: NextRequest) {
     if (!session || session.user.role !== 'INVESTOR') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    await assertVerifiedInAlpha(subjectForUser({ id: session.user.id, role: session.user.role }));
 
     const body = await request.json();
     const { poolId, amount } = body;

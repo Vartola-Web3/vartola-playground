@@ -5,6 +5,7 @@ import { calculateRisk } from '@/lib/risk-engine';
 import { AssetType } from '@/lib/types';
 import { inferDocumentType, saveUploads } from '@/lib/services/save-uploads';
 import { rememberOperation } from '@/lib/firebase/operations';
+import { assertVerifiedInAlpha } from '@/lib/compliance/access';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,9 @@ export async function POST(request: NextRequest) {
 
     const form = await request.formData();
     const asDraft = form.get('asDraft') === 'true';
+    if (!asDraft) {
+      await assertVerifiedInAlpha({ subjectType: 'COMPANY', subjectId: user.company.id });
+    }
     const assetType = String(form.get('assetType') || '');
     const unitCount = Math.max(1, Math.floor(Number(form.get('unitCount')) || 1));
     const assetDescription = String(form.get('assetDescription') || '');

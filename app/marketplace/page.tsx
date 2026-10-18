@@ -46,6 +46,8 @@ function MarketplaceContent() {
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [walletAvailable, setWalletAvailable] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const isInvestor = session?.user?.role === 'INVESTOR';
 
   useEffect(() => {
     fetch('/api/marketplace/pools')
@@ -75,19 +77,26 @@ function MarketplaceContent() {
   );
 
   const invest = async () => {
-    if (!open) return;
-    const response = await fetch('/api/investor/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ poolId: open.id, amount: Number(amount || open.minInvestment) }),
-    });
-    const data = await response.json();
-    setNote(data.error || data.message || 'Investment confirmed.');
-    if (!data.error) {
-      setWalletAvailable((current) => Math.max(0, current - Number(amount || open.minInvestment)));
-      setItems((current) => current.map((item) => item.id === open.id
-        ? { ...item, raisedAmount: item.raisedAmount + Number(amount || open.minInvestment), available: item.available - Number(amount || open.minInvestment) }
-        : item));
+    if (!open || busy) return;
+    setBusy(true);
+    try {
+      const response = await fetch('/api/investor/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ poolId: open.id, amount: Number(amount || open.minInvestment) }),
+      });
+      const data = await response.json();
+      setNote(data.error || data.message || 'Investment confirmed.');
+      if (!data.error) {
+        setWalletAvailable((current) => Math.max(0, current - Number(amount || open.minInvestment)));
+        setItems((current) => current.map((item) => item.id === open.id
+          ? { ...item, raisedAmount: item.raisedAmount + Number(amount || open.minInvestment), available: item.available - Number(amount || open.minInvestment) }
+          : item));
+      }
+    } catch {
+      setNote('Could not reach the server. Please try again.');
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -96,6 +105,9 @@ function MarketplaceContent() {
       <div>
         <h1 className="text-3xl font-semibold">Invest in real fleets</h1>
         <p className="mt-1 text-[#708078]">Choose a fleet, then decide how much to invest.</p>
+      </div>
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        Testnet demo · virtual balances · no real money. Investments, yields and repayments here are simulated.
       </div>
       <div className="flex flex-wrap gap-2 text-sm">
         {[
@@ -141,9 +153,13 @@ function MarketplaceContent() {
                 <TestnetAddress hash={item.txHash} reviewUrl={item.reviewUrl} />
                 <div className="flex gap-2">
                   {canInvest ? (
-                    <button type="button" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white" onClick={() => { setOpen(item); setAmount(String(item.minInvestment)); setNote(''); }}>
-                      Invest now
-                    </button>
+                    isInvestor ? (
+                      <button type="button" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white" onClick={() => { setOpen(item); setAmount(String(item.minInvestment)); setNote(''); }}>
+                        Invest now
+                      </button>
+                    ) : (
+                      <Link href="/login?callbackUrl=%2Fmarketplace" className="rounded-full bg-[#15C77A] px-4 py-2 text-sm font-semibold text-white">Sign in to invest</Link>
+                    )
                   ) : (
                     <span className="rounded-full bg-[#EDF2EF] px-4 py-2 text-sm font-semibold text-[#708078]">Fully funded</span>
                   )}
@@ -164,15 +180,19 @@ function MarketplaceContent() {
               <p className="text-xs uppercase tracking-wide text-[#708078]">Your available wallet balance</p>
               <p className="mt-1 text-2xl font-semibold">{money(walletAvailable)}</p>
             </div>
-            <input className="mt-4 w-full rounded-xl border border-[#E5ECE8] px-3 py-2" value={amount} onChange={(event) => setAmount(event.target.value)} />
+            <label htmlFor="invest-amount" className="mt-4 block text-sm font-medium text-[#13251E]">Amount to invest</label>
+            <input id="invest-amount" type="number" inputMode="decimal" min={open.minInvestment} step="1000" className="mt-1 w-full rounded-xl border border-[#E5ECE8] px-3 py-2" value={amount} onChange={(event) => setAmount(event.target.value)} />
+            <p className="mt-1 text-xs text-[#708078]">Minimum {money(open.minInvestment)} · available {money(open.available)} · your balance {money(walletAvailable)}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {[open.minInvestment, 25000, 50000].filter((value, index, list) => value <= open.available && list.indexOf(value) === index).map((value) => (
+              {[open.minInvestment, 25000, 50000].filter((value, index, list) => value <= open.available && value <= walletAvailable && list.indexOf(value) === index).map((value) => (
                 <button key={value} type="button" className="rounded-full bg-[#EAF9F1] px-3 py-1 text-xs text-[#0A4934]" onClick={() => setAmount(String(value))}>{money(value)}</button>
               ))}
             </div>
+            {Number(amount) > 0 && Number(amount) < open.minInvestment && <p className="mt-2 text-xs text-red-700">The minimum investment is {money(open.minInvestment)}.</p>}
+            {Number(amount) > walletAvailable && <p className="mt-2 text-xs text-red-700">Your wallet balance is lower than this amount. Add funds first.</p>}
             {note && <p className="mt-3 text-sm text-[#0A4934]">{note}</p>}
             <div className="mt-5 flex gap-2">
-              <button type="button" disabled={Number(amount) > walletAvailable || Number(amount) <= 0} className="rounded-full bg-[#0D7A52] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" onClick={invest}>Confirm investment</button>
+              <button type="button" disabled={busy || !Number.isFinite(Number(amount)) || Number(amount) < open.minInvestment || Number(amount) > walletAvailable || Number(amount) > open.available} className="rounded-full bg-[#0D7A52] px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" onClick={invest}>{busy ? 'Investing…' : 'Confirm investment'}</button>
               <Link href="/investor/wallet" className="rounded-full border border-[#E5ECE8] px-4 py-2 text-sm">Add funds</Link>
               <button type="button" className="rounded-full border border-[#E5ECE8] px-4 py-2 text-sm" onClick={() => setOpen(null)}>Cancel</button>
             </div>

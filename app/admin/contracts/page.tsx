@@ -16,8 +16,8 @@ export default async function ContractsPage() {
         <Table
           head={['Contract', 'Version', 'ID']}
           rows={[
-            ['wallet_registry', `v${d.contractVersion ?? 3}`, <a key="r" className="break-all text-emerald-700 underline" href={contractUrl(d.registryContractId)}>{d.registryContractId}</a>],
-            ['facility_contract', `v${d.contractVersion ?? 3}`, <a key="f" className="break-all text-emerald-700 underline" href={contractUrl(d.facilityContractId)}>{d.facilityContractId}</a>],
+            ['wallet_registry', `version ${d.contractVersion ?? 2}`, <a key="r" className="break-all text-emerald-700 underline" href={contractUrl(d.registryContractId)}>{d.registryContractId}</a>],
+            ['facility_contract', `version ${d.contractVersion ?? 2}`, <a key="f" className="break-all text-emerald-700 underline" href={contractUrl(d.facilityContractId)}>{d.facilityContractId}</a>],
             ['VTAED asset contract', 'SAC', <a key="a" className="break-all text-emerald-700 underline" href={contractUrl(d.asset.contractId)}>{d.asset.contractId}</a>],
           ]}
         />

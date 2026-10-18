@@ -28,8 +28,8 @@ export default async function ProofPage() {
   const q = QUALITY_STATUS;
   const contracts: [string, string, string][] = [
     ['Stellar Asset Contract (VTAED)', d.asset.contractId, 'Wraps the VTAED classic asset for Soroban'],
-    ['Wallet Registry', d.registryContractId, `v${d.contractVersion ?? 3}`],
-    ['Facility Contract', d.facilityContractId, `v${d.contractVersion ?? 3}`],
+    ['Wallet Registry', d.registryContractId, `version ${d.contractVersion ?? 2}`],
+    ['Facility Contract', d.facilityContractId, `version ${d.contractVersion ?? 2}`],
   ];
   return (
     <div className="vartola-grid min-h-screen text-[#F6FFF9]">
@@ -48,7 +48,7 @@ export default async function ProofPage() {
             ['Network', 'Stellar Testnet'],
             ['Asset', `${d.asset.code} · test asset only`],
             ['Latest ledger (live RPC)', latest ? String(latest) : 'RPC unreachable right now'],
-            ['Contract version', `v${d.contractVersion ?? 3} (deployed)`],
+            ['Contract version', `version ${d.contractVersion ?? 2} (deployed)`],
             ['Indexer health', health.replaceAll('_', ' ')],
             ['Last indexed ledger', indexer?.lastIndexedLedger ? String(indexer.lastIndexedLedger) : 'Not running on this deployment'],
             ['Reconciliation', reconciliation ? `${reconciliation.status} · ${new Date(reconciliation.checkedAt).toLocaleString('en-GB')}` : 'Not run on this deployment'],

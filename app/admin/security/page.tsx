@@ -22,7 +22,7 @@ export default async function SecurityPage() {
     <AdminPage title="Security center" intro="Controls and evidence. No secret is ever shown. Everything here is INTERNAL / PRE-AUDIT: no independent audit or penetration test has been completed.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Admin MFA" value={`${mfaEnrolled} of ${adminCount} enrolled`} hint={isAlphaMode() ? 'Enforced in Alpha mode' : 'Enforced in Alpha mode; demo accounts exempt'} />
-        <Stat label="Contract version" value={`v${TESTNET.deployment.contractVersion ?? 3}`} hint="Stellar Testnet" />
+        <Stat label="Contract version" value={`version ${TESTNET.deployment.contractVersion ?? 2}`} hint="Stellar Testnet" />
         <Stat label="Failed attempts (7d)" value={failed} />
         <Stat label="Privileged actions (7d)" value={privileged} />
         <Stat label="Emergency pause" value="Available" hint="Pauser role can pause; only the contract admin can resume" />

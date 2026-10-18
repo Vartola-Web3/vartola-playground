@@ -46,6 +46,7 @@ export function LandingPage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/how-it-works" className={btn}>Explore How It Works</Link>
               <Link href="/proof" className={btn2}>View Technical Proof</Link>
+              <Link href="/sandbox" className={btn2}>Try the sandbox</Link>
             </div>
             <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-[rgba(112,255,184,0.25)] px-4 py-2 text-xs text-[#D7E7DF]">
               <span className="h-2 w-2 rounded-full bg-[#35F49A]" aria-hidden="true" /> Working on Stellar Testnet · test asset only · no real money
@@ -157,6 +158,7 @@ export function LandingPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/how-it-works" className={btn}>Explore Vartola</Link>
             <Link href="/proof" className={btn2}>View Technical Proof</Link>
+            <Link href="/sandbox" className={btn2}>Try the sandbox</Link>
             <Link href="/contact?type=institution" className={btn2}>Partner With Vartola</Link>
           </div>
           <p className="mt-6 text-xs leading-6 text-[#9FB8AD]">{DISCLAIMER}</p>

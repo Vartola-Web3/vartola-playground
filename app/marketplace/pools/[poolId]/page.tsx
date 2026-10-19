@@ -77,9 +77,9 @@ export default function OpportunityPage() {
                 )}
               </ul>
             </section>
-            <div className="mt-5 flex flex-wrap gap-2 border-b border-[#E4ECE8] pb-4">
+            <div className="mt-5 flex gap-2 overflow-x-auto border-b border-[#E4ECE8] pb-4">
               {tabs.map((label) => (
-                <button key={label} type="button" onClick={() => setTab(label)} className={`rounded-full px-3 py-1.5 text-sm ${tab === label ? 'bg-[#0D7A52] text-white' : 'border border-[#E4ECE8] bg-white text-[#62736C]'}`}>
+                <button key={label} type="button" onClick={() => setTab(label)} className={`shrink-0 rounded-full px-3 py-1.5 text-sm ${tab === label ? 'bg-[#0D7A52] text-white' : 'border border-[#E4ECE8] bg-white text-[#62736C]'}`}>
                   {label}
                 </button>
               ))}
@@ -93,10 +93,10 @@ export default function OpportunityPage() {
                     ['Available to invest', money(item.available)],
                     ['Minimum', money(item.minInvestment)],
                     ['Term', `${String(item.termMonths || '—')} months`],
-                    ['Investment risk', `${String(item.riskRating)} · ${String(item.riskScore)}/100`],
-                    ['Indicative yield', `${String(item.indicativeYield)}%`],
-                    ['Vehicles', String(item.unitCount || item.assets)],
-                    ['Businesses', String(item.companies)],
+                    ['Investment risk', `${item.riskRating ?? 'Not rated'}${item.riskScore != null ? ` · ${item.riskScore}/100` : ''}`],
+                    ['Indicative yield', item.indicativeYield != null ? `${item.indicativeYield}%` : '—'],
+                    ['Vehicles', String(item.unitCount ?? item.assets ?? '—')],
+                    ['Businesses', item.companies != null ? String(item.companies) : '—'],
                   ].map(([label, value]) => (
                     <div key={label} className="rounded-2xl bg-[#F7FAF8] p-4">
                       <p className="text-[#62736C]">{label}</p>
@@ -106,26 +106,36 @@ export default function OpportunityPage() {
                 </div>
               )}
               {tab === 'Businesses' && (
-                <ul className="grid gap-3 sm:grid-cols-2 text-sm">
-                  {(((item.businesses as unknown) as { name: string; industry: string; emirate?: string; score: number | null; tier: string | null }[]) || []).map((company) => (
-                    <li key={company.name} className="rounded-2xl bg-[#F7FAF8] p-4">
-                      <p className="font-semibold">{company.name}</p>
-                      <p className="mt-1 text-[#62736C]">{company.industry}{company.emirate ? ` · ${company.emirate}` : ''}</p>
-                      <p className="mt-3 text-xs text-[#62736C]">Risk score {company.score ?? '—'} · {company.tier || 'Unrated'}</p>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul className="grid gap-3 sm:grid-cols-2 text-sm">
+                    {(((item.businesses as unknown) as { name: string; industry: string; emirate?: string; score: number | null; tier: string | null }[]) || []).map((company) => (
+                      <li key={company.name} className="rounded-2xl bg-[#F7FAF8] p-4">
+                        <p className="font-semibold">{company.name}</p>
+                        <p className="mt-1 text-[#62736C]">{company.industry}{company.emirate ? ` · ${company.emirate}` : ''}</p>
+                        <p className="mt-3 text-xs text-[#62736C]">Risk score {company.score ?? '—'} · {company.tier || 'Unrated'}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  {(!Array.isArray(item.businesses) || (item.businesses as unknown[]).length === 0) && (
+                    <p className="text-sm text-[#62736C]">No businesses are attached to this opportunity yet.</p>
+                  )}
+                </>
               )}
               {tab === 'Vehicles' && (
-                <ul className="grid gap-3 sm:grid-cols-2 text-sm">
-                  {(((item.vehicles as unknown) as { no: string; description: string; units?: number; value?: number; financeAmount: number; status: string }[]) || []).map((vehicle) => (
-                    <li key={vehicle.no} className="rounded-2xl bg-[#F7FAF8] p-4">
-                      <p className="font-semibold">{vehicle.description}</p>
-                      <p className="mt-1 text-[#62736C]">{vehicle.units || 1} units · Asset value {money(vehicle.value)}</p>
-                      <p className="mt-3 text-xs text-[#62736C]">{vehicle.no} · Finance {money(vehicle.financeAmount)} · {vehicle.status.replaceAll('_', ' ')}</p>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul className="grid gap-3 sm:grid-cols-2 text-sm">
+                    {(((item.vehicles as unknown) as { no: string; description: string; units?: number; value?: number; financeAmount: number; status: string }[]) || []).map((vehicle) => (
+                      <li key={vehicle.no} className="rounded-2xl bg-[#F7FAF8] p-4">
+                        <p className="font-semibold">{vehicle.description}</p>
+                        <p className="mt-1 text-[#62736C]">{vehicle.units || 1} units · Asset value {money(vehicle.value)}</p>
+                        <p className="mt-3 text-xs text-[#62736C]">{vehicle.no} · Finance {money(vehicle.financeAmount)} · {vehicle.status.replaceAll('_', ' ')}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  {(!Array.isArray(item.vehicles) || (item.vehicles as unknown[]).length === 0) && (
+                    <p className="text-sm text-[#62736C]">No vehicle details are attached to this opportunity yet.</p>
+                  )}
+                </>
               )}
               {tab === 'Risk' && <p className="max-w-3xl text-sm leading-7 text-[#62736C]">Vartola rating {String(item.riskRating)} ({String(item.riskScore)}/100) blends company quality, vehicle liquidity, diversification, SME contribution, and concentration. It is an internal simulation rating, not an external credit rating.</p>}
               {tab === 'Payment model' && <p className="max-w-3xl text-sm leading-7 text-[#62736C]">Investor capital stays reserved while the opportunity is funding. Once fully funded, it is deployed to the linked facility. The SME then pays scheduled monthly instalments and principal plus income are distributed proportionally to participating investors.</p>}
@@ -150,7 +160,7 @@ export default function OpportunityPage() {
           <aside className="rounded-[20px] border border-[#DCE6E1] bg-white p-5 shadow-sm lg:sticky lg:top-6">
             <p className="text-sm text-[#62736C]">Investment summary</p>
             <div className="mt-4 grid grid-cols-2 gap-4">
-              <div><p className="text-xs text-[#62736C]">Target return</p><p className="mt-1 text-2xl font-semibold">{String(item.indicativeYield)}%</p></div>
+              <div><p className="text-xs text-[#62736C]">Target return</p><p className="mt-1 text-2xl font-semibold">{item.indicativeYield != null ? `${item.indicativeYield}%` : '—'}</p></div>
               <div><p className="text-xs text-[#62736C]">Term</p><p className="mt-1 text-2xl font-semibold">{String(item.termMonths || '—')} <span className="text-sm font-normal">mo</span></p></div>
             </div>
             <div className="mt-5 border-t border-[#E4ECE8] pt-5">

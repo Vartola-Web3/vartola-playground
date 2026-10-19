@@ -32,19 +32,31 @@ export default async function ProofFacilityPage({ params }: { params: Promise<{ 
               </div>
               <p className="mt-1 text-xs text-[#9FB8AD]">Financial effect: {stage.effect}</p>
               {stage.events.length ? (
-                <div className="mt-3 overflow-x-auto">
-                  <table className="w-full min-w-[34rem] text-left text-xs">
-                    <thead><tr className="text-[#9FB8AD]"><th className="py-1 pr-3 font-medium">Event</th><th className="py-1 pr-3 font-medium">Ledger</th><th className="py-1 font-medium">Transaction</th></tr></thead>
-                    <tbody>
-                      {stage.events.map((event, i) => (
-                        <tr key={`${event.txHash}-${i}`} className="border-t border-white/10">
-                          <td className="py-1.5 pr-3">{event.eventType.replace('FacilityStatus:', 'Status: ')}</td>
-                          <td className="py-1.5 pr-3">{event.ledger}</td>
-                          <td className="break-all py-1.5"><a className="text-[#70FFB8] underline underline-offset-4" href={event.explorerUrl} target="_blank" rel="noreferrer">View on Stellar Explorer</a> <span className="text-[#9FB8AD]">{event.txHash.slice(0, 16)}…</span></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="mt-3">
+                  {/* On phones each event becomes a compact card; the table is used from the small breakpoint up. */}
+                  <ul className="space-y-2 sm:hidden">
+                    {stage.events.map((event, i) => (
+                      <li key={`${event.txHash}-${i}`} className="rounded-xl border border-white/10 bg-[#0E211B] p-3 text-xs">
+                        <p className="font-medium text-[#F6FFF9]">{event.eventType.replace('FacilityStatus:', 'Status: ')}</p>
+                        <p className="mt-1 text-[#9FB8AD]">Ledger {event.ledger}</p>
+                        <a className="mt-1 inline-block break-all text-[#70FFB8] underline underline-offset-4" href={event.explorerUrl} target="_blank" rel="noreferrer">{event.txHash.slice(0, 16)}…</a>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="hidden overflow-x-auto sm:block">
+                    <table className="w-full min-w-[34rem] text-left text-xs">
+                      <thead><tr className="text-[#9FB8AD]"><th className="py-1 pr-3 font-medium">Event</th><th className="py-1 pr-3 font-medium">Ledger</th><th className="py-1 font-medium">Transaction</th></tr></thead>
+                      <tbody>
+                        {stage.events.map((event, i) => (
+                          <tr key={`${event.txHash}-${i}`} className="border-t border-white/10">
+                            <td className="py-1.5 pr-3">{event.eventType.replace('FacilityStatus:', 'Status: ')}</td>
+                            <td className="py-1.5 pr-3">{event.ledger}</td>
+                            <td className="break-all py-1.5"><a className="text-[#70FFB8] underline underline-offset-4" href={event.explorerUrl} target="_blank" rel="noreferrer">View on Stellar Explorer</a> <span className="text-[#9FB8AD]">{event.txHash.slice(0, 16)}…</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ) : null}
             </li>

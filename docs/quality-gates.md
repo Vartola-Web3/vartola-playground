@@ -55,7 +55,7 @@ These must be enabled in the GitHub repository settings (owner action):
 - **Week 1:** CI, secret scanning, CodeQL, Dependabot, a cross-platform test glob, outbox confirmation (H1), chain-error visibility (H7), the `fields` API fix (H8), the integration harness and facility-lifecycle tests.
 - **Week 2:** a public health endpoint (`/api/health`), a structured logger with request ids, an authorization-matrix test, a schema-parity test (which caught the demo database missing five tables), a backup and restore runbook, and money idempotency tests.
 - **Week 3:** the interactive sandbox — a pure engine, session storage and API routes under `/api/sandbox`, and an on-page explanation with a next-step guide and a one-click “Do this step” button.
-- Tests: **173** (unit + integration), run offline against a throwaway SQLite copy with the simulation ledger forced.
+- Tests: **181** (unit + integration), run offline against a throwaway SQLite copy with the simulation ledger forced.
 
 ## 6. Week 4 progress (13 October 2026)
 

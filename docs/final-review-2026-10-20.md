@@ -70,18 +70,18 @@ Explorer links are in `README.md` under “Stellar Testnet Deployment & Verifica
 - Testnet only. No real money, no Mainnet, no licence or regulatory approval.
 - No independent contract audit or penetration test.
 - Single Testnet administrator key; multisig defined but not enforced; no HSM.
-- Sumsub end-to-end needs `SUMSUB_WEBHOOK_SECRET` and `SUMSUB_LEVEL_NAME`, plus the webhook URL in the Sumsub dashboard.
-- Production environment variables (Vercel) must mirror `.env.integrations.example`.
+- Sumsub end-to-end still needs `SUMSUB_WEBHOOK_SECRET` and the webhook URL registered in the Sumsub dashboard. The app token, secret key and level name (`vartola-demo`, which must exist in the dashboard) are configured.
+- Production environment variables are synced to Vercel (Production and Preview). Only `SUMSUB_WEBHOOK_SECRET` remains unset.
 - Private document storage is unit-tested but not exercised against a real bucket.
 - No real traction: three reference facilities run by Vartola with test wallets; no customers or partners.
 - In-memory rate limiting (per instance).
 
 ## 6. Manual actions before submission
 
-1. Add the Sumsub webhook secret and level name, and register `https://home.vartola.net/api/webhooks/sumsub` in Sumsub.
-2. Mirror the required variables in Vercel → Settings → Environment Variables.
-3. Add `VERCEL_TOKEN` as a GitHub secret (the deploy workflow is currently skipped) or reconnect the Vercel Git integration to the `Vartola-Web3` organisation.
-4. Complete the SCF application form itself (budget, milestones, team) on the SCF dashboard.
+1. Add `SUMSUB_WEBHOOK_SECRET` and register `https://home.vartola.net/api/webhooks/sumsub` in the Sumsub dashboard; confirm the `vartola-demo` level exists.
+2. ~~Mirror the required variables in Vercel~~ — done: Sumsub, Circle, mode, environment, cron and encryption keys are set for Production and Preview.
+3. ~~Add `VERCEL_TOKEN`~~ — done and verified: the `Deploy to Vercel` workflow now performs a real production deploy. The current secret uses a CLI session token that expires within hours; replace it with a non-expiring token from Vercel → Account Settings → Tokens before then.
+4. Complete the SCF application form itself (budget, milestones, team) on the SCF dashboard. A ready-to-paste draft is prepared; amounts and named team details still need confirmation.
 
 ## 7. Verdict
 

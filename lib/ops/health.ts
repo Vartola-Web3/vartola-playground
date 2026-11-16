@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import { logger } from '@/lib/ops/logger';
 
 export type HealthCheck = 'ok' | 'error';
 export type HealthReport = {
@@ -13,8 +14,13 @@ export async function healthReport(): Promise<HealthReport> {
   let database: HealthCheck = 'ok';
   try {
     await prisma.$queryRaw`SELECT 1`;
-  } catch {
+  } catch (error) {
     database = 'error';
+    // The public report stays free of details. Operators get a redacted reason in the logs.
+    const detail = error instanceof Error ? error.message : 'unknown error';
+    logger.error('database health check failed', {
+      detail: detail.replace(/postgres(ql)?:\/\/\S+/gi, '[redacted]').slice(0, 300),
+    });
   }
   return {
     status: database === 'ok' ? 'ok' : 'degraded',

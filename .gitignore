@@ -62,6 +62,9 @@ firebase-debug.log
 # local Alpha Testnet test databases (hold encrypted wallet secrets)
 prisma/alpha-fleet.db*
 
+# local scratch work (may contain connection strings)
+.codex-tmp/
+
 # Rust build output (large; never commit)
 contracts/soroban/target/
 

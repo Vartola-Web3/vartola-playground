@@ -6,14 +6,17 @@ const { spawnSync } = require('child_process');
 // Run the Prisma CLI directly (no shell) so database URLs with & or ? are passed through untouched.
 const PRISMA = require.resolve('prisma/build/index.js');
 
-const url = process.env.DATABASE_URL || '';
+// Schema changes run over the direct (unpooled) connection when the host provides one: DDL through a
+// transaction pooler can fail. The application itself keeps using the pooled DATABASE_URL.
+const url = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL || '';
 if (!(url.startsWith('postgres://') || url.startsWith('postgresql://'))) {
   console.log('sync-postgres-schema: DATABASE_URL is not PostgreSQL, nothing to do.');
   process.exit(0);
 }
+const childEnv = { ...process.env, DATABASE_URL: url };
 
 const schema = 'prisma/schema.postgres.prisma';
-const diff = spawnSync(process.execPath, [PRISMA, 'migrate', 'diff', '--from-url', url, '--to-schema-datamodel', schema, '--script'], { encoding: 'utf8' });
+const diff = spawnSync(process.execPath, [PRISMA, 'migrate', 'diff', '--from-url', url, '--to-schema-datamodel', schema, '--script'], { encoding: 'utf8', env: childEnv });
 const script = (diff.stdout || '').trim();
 console.log('sync-postgres-schema: planned changes:');
 console.log(script || '(none)');
@@ -25,6 +28,6 @@ if (/\bDROP\s+(TABLE|COLUMN)\b/i.test(script)) {
 // Only skip the push when the diff ran and found nothing. If the diff itself failed, db push still decides safely.
 if (diff.status === 0 && (!script || /^-- This is an empty migration/i.test(script))) process.exit(0);
 
-const push = spawnSync(process.execPath, [PRISMA, 'db', 'push', `--schema=${schema}`, '--skip-generate'], { stdio: 'inherit' });
+const push = spawnSync(process.execPath, [PRISMA, 'db', 'push', `--schema=${schema}`, '--skip-generate'], { stdio: 'inherit', env: childEnv });
 if (push.status !== 0) console.log('sync-postgres-schema: db push did not complete. The deploy continues; check the output above.');
 process.exit(0);
